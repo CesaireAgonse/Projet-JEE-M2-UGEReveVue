@@ -2,23 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
   <title>Log in</title>
+    <link rel="stylesheet" href="/css/login.css" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <form th:action="@{/login}" th:object="${user}" method="post">
-        <div>
-            <label for="l">Username:</label>
-            <input id="l" type="text" th:field="*{username}">
-            <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
-        </div>
-        <div>
-            <label for="p">Password:</label>
-            <input type="password" id="p" th:field="*{password}">
-            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
-        </div>
-        <div>
-            <button type="submit">Log in</button>
-        </div>
-    </form>
+<div class="container">
+    <div class="center">
+        <form th:action="@{/login}" th:object="${user}" method="post">
+            <div class="txt_field">
+                <label for="l">Username:</label>
+                <input id="l" type="text" name="username" th:field="*{username}">
+                <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+            </div>
+            <div class="txt_field">
+                <label for="p">Password:</label>
+                <input type="password" id="p" name="password"  th:field="*{password}">
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+            </div>
+            <input name="submit" type="Submit" value="Log in">
+            <div class="signup_link">
+                Don’t have an account ? <a href="/signup">Signup Here</a>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

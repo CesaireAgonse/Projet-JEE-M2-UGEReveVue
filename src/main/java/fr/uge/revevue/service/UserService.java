@@ -16,10 +16,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Insert an employee in the database
-     */
-    public void insert(User user) {
+    public void signup(User user) {
         userRepository.save(user);
     }
 

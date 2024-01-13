@@ -6,10 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
 import javax.validation.Valid;
 
@@ -32,7 +30,7 @@ public class UserController {
         if (result.hasErrors()){
             return "signup";
         }
-        service.insert(user);
+        service.signup(user);
         model.addAttribute("user", user);
         return "home-session";
     }
@@ -55,5 +53,11 @@ public class UserController {
             return "home-session";
         }
         return "login";
+    }
+
+    @GetMapping("/logout")
+    public String logout(Model model, SessionStatus sessionStatus){
+        sessionStatus.setComplete();
+        return "redirect:/login";
     }
 }

@@ -1,17 +1,18 @@
 package fr.uge.revevue.entity;
 
 import javax.persistence.*;
+import java.util.Set;
+
 
 @Entity
 @Table(name = "Users")
-public class User {
+public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-
+    @Column(nullable = false, unique = true)
     private String username;
-
     private String password;
 
     public User(){}

@@ -2,10 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
     <title>Home</title>
+    <link rel="stylesheet" href="/css/navbar.css">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <a th:href="'login'" role="button">Log in</a>
-    <a th:href="'signup'" role="button">Signup in</a>
+    <ul>
+        <li><a href="/">UGEReveVue</a></li>
+        <li class="right"><a th:href="'login'" role="button">Log in</a></li>
+        <li class="right"><a th:href="'signup'" role="button">Sign up</a></li>
+    </ul>
 </body>
 </html>
