@@ -6,16 +6,15 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
+<div th:replace="navbar :: navbar"></div>
 <div class="container">
     <div class="center">
         <form th:action="@{/login}" th:object="${user}" method="post">
             <div class="txt_field">
-                <label for="l">Username:</label>
                 <input id="l" type="text" name="username" placeholder="Username" th:field="*{username}">
                 <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
             </div>
             <div class="txt_field">
-                <label for="p">Password:</label>
                 <input type="password" id="p" name="password" placeholder="Password" th:field="*{password}">
                 <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
             </div>

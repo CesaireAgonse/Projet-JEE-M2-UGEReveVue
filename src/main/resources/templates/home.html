@@ -2,17 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
     <title>Home</title>
-    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/auth.css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <ul>
-        <li><a href="/">UGEReveVue</a></li>
-        <li th:if="${user == null}" class="right"><a th:href="'login'" role="button">Log in</a></li>
-        <li th:if="${user == null}" class="right"><a th:href="'signup'" role="button">Sign up</a></li>
-        <li th:if="${user != null}" class="right"><a th:href="'logout'" role="button">Log out</a></li>
-    </ul>
-    <h2 th:if="${user != null}" th:text="'Bienvenue ' + ${user.username}"></h2>
-
+    <div th:replace="navbar :: navbar"></div>
+    <h2 th:if="${auth != null}" th:text="'Bienvenue ' + ${auth.username}"></h2>
 </body>
 </html>

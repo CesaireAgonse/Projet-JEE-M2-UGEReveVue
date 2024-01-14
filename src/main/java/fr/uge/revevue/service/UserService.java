@@ -3,6 +3,7 @@ package fr.uge.revevue.service;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +20,7 @@ public class UserService implements UserDetailsService {
     public UserService(){}
 
     @Autowired
-    public UserService(UserRepository userRepository, @Autowired BCryptPasswordEncoder bCryptPasswordEncoder){
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder){
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -36,6 +37,11 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(""));
+        var user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
+            throw new UsernameNotFoundException("User not found");
+        }
+        return user.get();
     }
+
 }
