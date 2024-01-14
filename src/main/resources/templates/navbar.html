@@ -4,9 +4,11 @@
     <nav>
         <ul>
             <li><a href="/">UGEReveVue</a></li>
-            <li th:if="${auth == null}" class="right"><a th:href="'login'" role="button">Log in</a></li>
-            <li th:if="${auth == null}" class="right"><a th:href="'signup'" role="button">Sign up</a></li>
-            <li th:if="${auth != null}" class="right"><a th:href="'logout'" role="button">Log out</a></li>
+            <li><input type="search" placeholder="Search..."></li>
+            <li th:if="${auth == null}"><a th:href="'signup'" role="button">Sign up</a></li>
+            <li th:if="${auth == null}"><a th:href="'login'" role="button">Log in</a></li>
+            <li th:if="${auth != null}"><a href="/" th:text="${auth.username}"></a></li>
+            <li th:if="${auth != null}"><a th:href="'logout'" role="button">Log out</a></li>
         </ul>
     </nav>
 </div>

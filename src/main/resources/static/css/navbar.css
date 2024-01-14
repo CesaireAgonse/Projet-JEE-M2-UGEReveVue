@@ -3,26 +3,39 @@ ul {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    border: 1px solid rgba(236, 236, 236, 0.99);
-    background-color: #f3f3f3;
+    /* border: 1px solid rgba(236, 236, 236, 0.99); */
+    background-color: #333;
+    text-align: center;
 }
 
 li {
-    float: left;
+    display: inline-block;
 }
 
 li a {
     display: block;
-    color: #666;
+    color: white;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
 }
 
 li a:hover:not(.active) {
-    background-color: #ddd;
+    background-color: #111;
 }
 
-li.right {
-    float: right;
+li input[type="search"] {
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    font-size: 14px;
+    color: #111111;
+    width: 50vw;
+    max-width: 550px;
+}
+
+li input[type="search"]::placeholder {
+    color: #999;
 }

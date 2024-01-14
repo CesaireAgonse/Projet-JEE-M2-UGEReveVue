@@ -53,14 +53,14 @@ form .txt_field{
     left: 0;
     width: 0px;
     height: 2px;
-    background: #18800d;
+    background: #333;
     transition: .5s;
 }
 
 .txt_field input:focus ~ label,
 .txt_field input:valid ~ label{
     top: -5px;
-    color: #18800d;
+    color: #333;
 }
 
 .txt_field input:focus ~ span::before,
@@ -90,7 +90,7 @@ input[type="Submit"]{
 }
 
 input[type="Submit"]:hover{
-    background: #18800d;
+    background: #333;
     color: #e9f4fb;
     transition: .5s;
 }
@@ -103,7 +103,7 @@ input[type="Submit"]:hover{
 }
 
 .signup_link a{
-    color: #18800d;
+    color: #333;
     text-decoration: none;
 }
 
