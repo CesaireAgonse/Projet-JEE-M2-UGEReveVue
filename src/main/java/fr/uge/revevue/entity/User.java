@@ -1,19 +1,28 @@
 package fr.uge.revevue.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
-import java.util.Set;
+import javax.validation.constraints.NotBlank;
+import java.util.*;
 
 
 @Entity
 @Table(name = "Users")
-public class User{
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @Column(nullable = false, unique = true)
+    @NotBlank
+    @Column(unique = true)
     private String username;
+    @NotBlank
     private String password;
+    @ManyToMany
+    private Set<User> followers = new HashSet<>();
 
     public User(){}
 
@@ -34,8 +43,33 @@ public class User{
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
     public String getPassword() {

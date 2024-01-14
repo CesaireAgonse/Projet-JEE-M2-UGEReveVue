@@ -8,8 +8,11 @@
 <body>
     <ul>
         <li><a href="/">UGEReveVue</a></li>
-        <li class="right"><a th:href="'login'" role="button">Log in</a></li>
-        <li class="right"><a th:href="'signup'" role="button">Sign up</a></li>
+        <li th:if="${user == null}" class="right"><a th:href="'login'" role="button">Log in</a></li>
+        <li th:if="${user == null}" class="right"><a th:href="'signup'" role="button">Sign up</a></li>
+        <li th:if="${user != null}" class="right"><a th:href="'logout'" role="button">Log out</a></li>
     </ul>
+    <h2 th:if="${user != null}" th:text="'Bienvenue ' + ${user.username}"></h2>
+
 </body>
 </html>
