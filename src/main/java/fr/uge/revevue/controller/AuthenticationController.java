@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Controller
-@SessionAttributes("user")
 public class AuthenticationController {
     private final UserService userService;
     @Autowired
@@ -32,7 +31,7 @@ public class AuthenticationController {
             return "signup";
         }
         userService.signup(user);
-        return "redirect:/";
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
