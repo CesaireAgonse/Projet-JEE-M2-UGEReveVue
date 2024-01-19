@@ -22,8 +22,14 @@ public class UserRestController {
 
     @PostMapping("/signup")
     public ResponseEntity<User> signup(@RequestBody @Valid UserDTO userDTO){
-        User user = userService.signup(new User(userDTO.username(), userDTO.password()));
+        User user = userService.signup(userDTO.username(), userDTO.password());
         return (user != null) ? ResponseEntity.ok(user) : ResponseEntity.status(405).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody @Valid UserDTO userDTO){
+        User user = userService.login(userDTO.username(), userDTO.password());
+        return ResponseEntity.ok(user);
     }
 
 

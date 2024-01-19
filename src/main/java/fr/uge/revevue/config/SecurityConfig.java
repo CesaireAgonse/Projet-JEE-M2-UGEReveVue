@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("users/signup", "/css/**", "/").permitAll()
+        http.authorizeRequests().antMatchers("/signup", "/css/**", "/").permitAll()
                 .antMatchers("/api/v1/users/signup", "/api/v1/users/login").permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
                 .permitAll()

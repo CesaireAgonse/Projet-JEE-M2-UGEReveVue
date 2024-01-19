@@ -1,5 +1,6 @@
 package fr.uge.revevue.service;
 
+import com.sun.jdi.request.InvalidRequestStateException;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,13 @@ public class UserService implements UserDetailsService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public User signup(User user) {
-        var find = userRepository.findByUsername(user.getUsername());
+    public User signup(String username, String password) {
+        var find = userRepository.findByUsername(username);
         if (find.isPresent()){
             throw new IllegalArgumentException("username already used");
         }
-        var password = bCryptPasswordEncoder.encode(user.getPassword());
-        user.setPassword(password);
+        var passwordCrypt = bCryptPasswordEncoder.encode(password);
+        var user = new User(username, passwordCrypt);
         userRepository.save(user);
         return user;
     }
@@ -43,6 +44,19 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         return user.get();
+    }
+
+    public User login(String username, String password){
+        var user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
+            throw new InvalidRequestStateException("Invalid credentials");
+        }
+        var passwordCrypt = bCryptPasswordEncoder.encode(password);
+        if (!user.get().getPassword().equals(passwordCrypt)){
+            throw new InvalidRequestStateException("Invalid credentials");
+        }
+        return user.get();
+
     }
 
 }

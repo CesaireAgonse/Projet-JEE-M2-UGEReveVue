@@ -9,7 +9,7 @@
 <div th:replace="navbar :: navbar"></div>
 <div class="container">
     <div class="center">
-        <form th:action="@{/login}" th:object="${user}" method="post">
+        <form th:action="@{/login}" th:object="${loginForm}" method="post">
             <div class="txt_field">
                 <input id="l" type="text" name="username" placeholder="Username" th:field="*{username}">
                 <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
