@@ -23,6 +23,8 @@ public class User implements UserDetails {
     private String password;
     @ManyToMany
     private Set<User> followers = new HashSet<>();
+    @OneToMany
+    private List<Code> codes = new ArrayList<>();
 
     public User(){}
 

@@ -30,12 +30,13 @@ public class UserController {
     @PostMapping("/signup")
     public String signupPost(@ModelAttribute("signupForm") @Valid SignupForm signupForm,
                              BindingResult result){
-        System.out.println(signupForm.password());
-        if (result.hasErrors() || !signupForm.password().equals(signupForm.confirmPassword())){
+        System.out.println(signupForm.getPassword());
+        if (result.hasErrors() || !signupForm.getPassword().equals(signupForm.getConfirmPassword())){
             return "signup";
         }
-        userService.signup(signupForm.username(), signupForm.password());
-        return "redirect:/login";
+        userService.signup(signupForm.getUsername(), signupForm.getPassword());
+        userService.login(signupForm.getUsername(), signupForm.getPassword());
+        return "redirect:/";
     }
 
     @GetMapping("/login")
@@ -49,7 +50,7 @@ public class UserController {
         if (result.hasErrors()){
             return "login";
         }
-        userService.login(loginForm.username(), loginForm.password());
+        userService.login(loginForm.getUsername(), loginForm.getPassword());
         return "redirect:/";
     }
 }

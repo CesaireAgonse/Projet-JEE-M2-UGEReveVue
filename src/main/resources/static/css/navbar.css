@@ -1,9 +1,19 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: Roboto;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background: #e7e7e7;
+    height: 100vh;
+    overflow: hidden;
+}
+
 ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    /* border: 1px solid rgba(236, 236, 236, 0.99); */
     background-color: #333;
     text-align: center;
 }

@@ -1,0 +1,32 @@
+input[type="file"] {
+    display: inline-block;
+    padding: 10px 15px;
+    cursor: pointer;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+pre {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+input[type="submit"] {
+    background-color: #2ecc71;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.center {
+    margin: 20px;
+}

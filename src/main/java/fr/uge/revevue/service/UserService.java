@@ -49,11 +49,10 @@ public class UserService implements UserDetailsService {
     public User login(String username, String password){
         var user = userRepository.findByUsername(username);
         if (user.isEmpty()){
-            throw new InvalidRequestStateException("Invalid credentials");
+            throw new InvalidRequestStateException("Invalid username");
         }
-        var passwordCrypt = bCryptPasswordEncoder.encode(password);
-        if (!user.get().getPassword().equals(passwordCrypt)){
-            throw new InvalidRequestStateException("Invalid credentials");
+        if (!bCryptPasswordEncoder.matches(password, user.get().getPassword())){
+            throw new InvalidRequestStateException("Invalid password");
         }
         return user.get();
 
