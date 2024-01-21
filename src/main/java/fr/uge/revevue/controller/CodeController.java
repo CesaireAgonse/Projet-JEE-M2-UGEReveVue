@@ -30,8 +30,7 @@ public class CodeController {
 
     @PostMapping("/codes/create")
     public String codeForm(@RequestParam("javaFile") MultipartFile javaFile, @RequestParam("unitFile") MultipartFile unitFile) throws IOException {
-        var user = userService.currentUser();
-        codeService.create(user, new String(javaFile.getBytes(), StandardCharsets.UTF_8), new String(unitFile.getBytes(), StandardCharsets.UTF_8));
+        codeService.create(userService.currentUser(), new String(javaFile.getBytes(), StandardCharsets.UTF_8), new String(unitFile.getBytes(), StandardCharsets.UTF_8));
         return "redirect:/";
     }
 

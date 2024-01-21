@@ -1,7 +1,7 @@
 package fr.uge.revevue.controller;
 
-import fr.uge.revevue.entity.User;
 import fr.uge.revevue.form.LoginForm;
+import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.form.SignupForm;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -23,34 +25,47 @@ public class UserController {
     }
 
     @GetMapping("/signup")
-    public String signupGet(@ModelAttribute("signupForm") SignupForm signupForm){
-        return "signup";
+    public String signup(@ModelAttribute("signupForm") SignupForm signupForm){
+        return "users/signup";
     }
 
     @PostMapping("/signup")
-    public String signupPost(@ModelAttribute("signupForm") @Valid SignupForm signupForm,
+    public String signup(@ModelAttribute("signupForm") @Valid SignupForm signupForm,
                              BindingResult result){
-        System.out.println(signupForm.getPassword());
         if (result.hasErrors() || !signupForm.getPassword().equals(signupForm.getConfirmPassword())){
-            return "signup";
+            return "users/signup";
         }
         userService.signup(signupForm.getUsername(), signupForm.getPassword());
-        userService.login(signupForm.getUsername(), signupForm.getPassword());
         return "redirect:/";
     }
 
     @GetMapping("/login")
-    public String loginGet(@ModelAttribute("loginForm") LoginForm loginForm){
-        return "login";
+    public String login(@ModelAttribute("loginForm") LoginForm loginForm){
+        return "users/login";
     }
 
     @PostMapping("/login")
-    public String loginPost(@ModelAttribute("loginForm") @Valid LoginForm loginForm,
+    public String login(@ModelAttribute("loginForm") @Valid LoginForm loginForm,
                             BindingResult result){
         if (result.hasErrors()){
-            return "login";
+            return "users/login";
         }
-        userService.login(loginForm.getUsername(), loginForm.getPassword());
         return "redirect:/";
+    }
+
+    @GetMapping("/users/{username}")
+    public String informations(@PathVariable String username, Model model){
+        var user = userService.getInformations(username);
+        if (user == null){
+            return "redirect:/";
+        }
+        model.addAttribute("auth", userService.currentUser());
+        model.addAttribute("user", user);
+        return "users/information";
+    }
+
+    @GetMapping("/password")
+    public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm){
+        return "users/password";
     }
 }

@@ -1,6 +1,7 @@
 package fr.uge.revevue.controller.rest;
 
-import fr.uge.revevue.dto.UserDTO;
+import fr.uge.revevue.dto.UserAuthenticationDTO;
+import fr.uge.revevue.dto.UserAuthenticationDTO;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +22,9 @@ public class UserRestController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody @Valid UserDTO userDTO){
+    public ResponseEntity<User> signup(@RequestBody @Valid UserAuthenticationDTO userDTO){
         User user = userService.signup(userDTO.username(), userDTO.password());
         return (user != null) ? ResponseEntity.ok(user) : ResponseEntity.status(405).build();
     }
-
-    @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody @Valid UserDTO userDTO){
-        User user = userService.login(userDTO.username(), userDTO.password());
-        return ResponseEntity.ok(user);
-    }
-
 
 }

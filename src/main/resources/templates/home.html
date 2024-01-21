@@ -16,7 +16,7 @@
                     <a th:if="${auth != null}" th:href="'codes/create'" class="basic-button right">Post Code</a>
                 </div>
                 <div th:each="code : ${codes}" th:href="@{/}" class="row">
-                    <p th:text="${code.getUser().getUsername()}"></p>
+                    <a th:href="'users/' + ${code.getUser().getUsername()}" th:text="${code.getUser().getUsername()}"></a>
                     <pre><code class="language-java" th:text="${code.getJavaContent()}"></code></pre>
                 </div>
             </div>

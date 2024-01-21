@@ -1,6 +1,7 @@
 package fr.uge.revevue.service;
 
 import com.sun.jdi.request.InvalidRequestStateException;
+import fr.uge.revevue.dto.UserInformationDTO;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,17 +48,6 @@ public class UserService implements UserDetailsService {
         return user.get();
     }
 
-    public User login(String username, String password){
-        var user = userRepository.findByUsername(username);
-        if (user.isEmpty()){
-            throw new InvalidRequestStateException("Invalid username");
-        }
-        if (!bCryptPasswordEncoder.matches(password, user.get().getPassword())){
-            throw new InvalidRequestStateException("Invalid password");
-        }
-        return user.get();
-
-    }
     public User currentUser(){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null){
@@ -69,6 +59,11 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-
-
+    public UserInformationDTO getInformations(String username){
+        var user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
+            return null;
+        }
+        return new UserInformationDTO(user.get().getUsername());
+    }
 }

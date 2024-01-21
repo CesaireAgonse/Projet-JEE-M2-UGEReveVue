@@ -21,6 +21,8 @@ public class User implements UserDetails {
     private String username;
     @NotBlank
     private String password;
+
+
     @ManyToMany
     private Set<User> followers = new HashSet<>();
     @OneToMany
