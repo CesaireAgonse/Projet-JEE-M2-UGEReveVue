@@ -5,6 +5,7 @@ import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -57,5 +58,17 @@ public class UserService implements UserDetailsService {
         return user.get();
 
     }
+    public User currentUser(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null){
+            var principal = authentication.getPrincipal();
+            if (principal instanceof User){
+                return (User) principal;
+            }
+        }
+        return null;
+    }
+
+
 
 }

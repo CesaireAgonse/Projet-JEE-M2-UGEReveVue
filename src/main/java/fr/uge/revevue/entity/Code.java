@@ -1,6 +1,7 @@
 package fr.uge.revevue.entity;
 
 import javax.persistence.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +16,17 @@ public class Code {
     @ManyToOne
     private User user;
 
-    private String content;
+    @Column(columnDefinition = "VARCHAR(MAX)")
+    private String javaContent;
 
-    private String test;
+    @Column(columnDefinition = "VARCHAR(MAX)")
+    private String unitContent;
 
     public Code(){}
 
-    public Code(User user, String content){
+    public Code(User user, String javaContent){
         this.user = user;
-        this.content = content;
+        this.javaContent = javaContent;
     }
 
     public long getId() {
@@ -42,19 +45,19 @@ public class Code {
         this.user = user;
     }
 
-    public String getContent() {
-        return content;
+    public String getJavaContent() {
+        return javaContent;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setJavaContent(String javaContent) {
+        this.javaContent = javaContent;
     }
 
-    public String getTest() {
-        return test;
+    public String getUnitContent() {
+        return unitContent;
     }
 
-    public void setTest(String test) {
-        this.test = test;
+    public void setUnitContent(String unitContent) {
+        this.unitContent = unitContent;
     }
 }

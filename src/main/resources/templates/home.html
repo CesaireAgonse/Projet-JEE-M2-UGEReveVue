@@ -2,10 +2,26 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
     <title>Home</title>
-    <link rel="stylesheet" href="/css/auth.css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/home.css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
     <div th:replace="navbar :: navbar"></div>
+    <div class="container">
+        <div class="column">
+        </div>
+            <div class="column middle">
+                <div class="first-row">
+                    <a th:if="${auth != null}" th:href="'codes/create'" class="basic-button right">Post Code</a>
+                </div>
+                <div th:each="code : ${codes}" th:href="@{/}" class="row">
+                    <p th:text="${code.getUser().getUsername()}"></p>
+                    <pre><code class="language-java" th:text="${code.getJavaContent()}"></code></pre>
+                </div>
+            </div>
+            <div class="column">
+        </div>
+    </div>
 </body>
 </html>

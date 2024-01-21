@@ -6,6 +6,8 @@ import fr.uge.revevue.repository.CodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CodeService {
     private CodeRepository codeRepository;
@@ -17,15 +19,16 @@ public class CodeService {
         this.codeRepository = codeRepository;
     }
 
-    public Code create(String content, String test){
-        var code = new Code(new User(), content);
-        if (!test.isBlank()){
-            code.setTest(test);
+    public Code create(User user, String javaContent, String unitContent){
+        var code = new Code(user, javaContent);
+        if (!unitContent.isBlank()){
+            code.setUnitContent(unitContent);
         }
-        //codeRepository.save(code);
+        codeRepository.save(code);
         return code;
     }
 
-
-
+    public List<Code> findAll(){
+        return codeRepository.findAll();
+    }
 }

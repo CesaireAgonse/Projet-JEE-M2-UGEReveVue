@@ -1,6 +1,9 @@
 package fr.uge.revevue.controller;
 
 import fr.uge.revevue.entity.User;
+import fr.uge.revevue.service.CodeService;
+import fr.uge.revevue.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -13,13 +16,20 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class HomeController {
+    UserService userService;
+    CodeService codeService;
+
+    @Autowired
+    public HomeController(CodeService codeService, UserService userService){
+        this.userService = userService;
+        this.codeService = codeService;
+    }
 
     @GetMapping("/")
     public String homePage(Model model) {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated() && authentication.getPrincipal() instanceof User) {
-            model.addAttribute("auth", authentication.getPrincipal());
-        }
+        model.addAttribute("auth", userService.currentUser());
+        var codes = codeService.findAll();
+        model.addAttribute("codes", codes);
         return "home";
     }
 }

@@ -1,6 +1,8 @@
 package fr.uge.revevue.controller;
 
+import fr.uge.revevue.entity.User;
 import fr.uge.revevue.service.CodeService;
+import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +15,11 @@ import java.nio.charset.StandardCharsets;
 
 @Controller
 public class CodeController {
+    private final UserService userService;
     private final CodeService codeService;
     @Autowired
-    public CodeController(CodeService codeService){
+    public CodeController(CodeService codeService, UserService userService){
+        this.userService = userService;
         this.codeService = codeService;
     }
 
@@ -26,11 +30,8 @@ public class CodeController {
 
     @PostMapping("/codes/create")
     public String codeForm(@RequestParam("javaFile") MultipartFile javaFile, @RequestParam("unitFile") MultipartFile unitFile) throws IOException {
-        var javaFileContent = new String(javaFile.getBytes(), StandardCharsets.UTF_8);
-        var unitFileContent = new String(unitFile.getBytes(), StandardCharsets.UTF_8);
-        System.out.println(javaFileContent);
-        System.out.println(unitFileContent);
-        codeService.create(javaFileContent, unitFileContent);
+        var user = userService.currentUser();
+        codeService.create(user, new String(javaFile.getBytes(), StandardCharsets.UTF_8), new String(unitFile.getBytes(), StandardCharsets.UTF_8));
         return "redirect:/";
     }
 
