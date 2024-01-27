@@ -28,7 +28,7 @@ public class UserService implements UserDetailsService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public User signup(String username, String password) {
+    public UserInformationDTO signup(String username, String password) {
         var find = userRepository.findByUsername(username);
         if (find.isPresent()){
             throw new IllegalArgumentException("username already used");
@@ -36,7 +36,7 @@ public class UserService implements UserDetailsService {
         var passwordCrypt = bCryptPasswordEncoder.encode(password);
         var user = new User(username, passwordCrypt);
         userRepository.save(user);
-        return user;
+        return new UserInformationDTO(username);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package fr.uge.revevue.controller;
 
+import fr.uge.revevue.dto.UserInformationDTO;
 import fr.uge.revevue.form.LoginForm;
 import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.form.SignupForm;
@@ -8,11 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.UUID;
 
@@ -36,7 +35,7 @@ public class UserController {
             return "users/signup";
         }
         userService.signup(signupForm.getUsername(), signupForm.getPassword());
-        return "redirect:/";
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
@@ -46,7 +45,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@ModelAttribute("loginForm") @Valid LoginForm loginForm,
-                            BindingResult result){
+                        BindingResult result){
         if (result.hasErrors()){
             return "users/login";
         }
@@ -55,12 +54,12 @@ public class UserController {
 
     @GetMapping("/users/{username}")
     public String informations(@PathVariable String username, Model model){
-        var user = userService.getInformations(username);
-        if (user == null){
+        var userInformationDTO = userService.getInformations(username);
+        if (userInformationDTO == null){
             return "redirect:/";
         }
         model.addAttribute("auth", userService.currentUser());
-        model.addAttribute("user", user);
+        model.addAttribute("user", userInformationDTO);
         return "users/information";
     }
 
