@@ -1,0 +1,51 @@
+<div th:fragment="codeFragment(code)" class="code-container">
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/code.css" />
+    <link rel="stylesheet" href="/prism/prism.css">
+
+    <div>
+        <h2 class ="title" th:text="${code.getTitle()}"></h2>
+        <div class ="author">
+            <p>from </p>
+            <a th:href="'users/' + ${code.getUser().getUsername()}" th:text="${code.getUser().getUsername()}"></a>
+        </div>
+    </div>
+    <div class ="post">
+        <div class ="votes"> <!-- pour plus tard -->
+            <button>up</button>
+            <p>69</p>
+            <button>down</button>
+        </div>
+        <div class ="content"> <!-- content -->
+            <p th:text="${code.getDescription()}"></p>
+            <pre><code class="language-java" th:text="${code.getJavaContent()}"></code></pre>
+            <pre th:if="${code.getUnitContent() != null}"><code class="language-java" th:text="${code.getUnitContent()}"></code></pre>
+
+        </div>
+    </div>
+
+</div>
+<!--
+<script src="/prism/prism.js"></script>
+<script>
+
+    function setupFileInput(fileInputId, codeElementId) {
+        document.getElementById(fileInputId).addEventListener('change', function (e) {
+            var file = e.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var codeElement = document.getElementById(codeElementId);
+                    codeElement.textContent = e.target.result;
+                    Prism.highlightElement(codeElement);
+                };
+                reader.readAsText(file);
+            }
+        });
+    }
+    setupFileInput('java-file-input', 'java-code');
+    setupFileInput('unit-file-input', 'unit-code');
+
+
+</script>
+-->

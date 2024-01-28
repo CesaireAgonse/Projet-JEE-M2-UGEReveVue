@@ -1,15 +1,20 @@
 package fr.uge.revevue.controller;
 
+import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -29,8 +34,16 @@ public class CodeController {
     }
 
     @PostMapping("/codes/create")
-    public String codeForm(@RequestParam("javaFile") MultipartFile javaFile, @RequestParam("unitFile") MultipartFile unitFile) throws IOException {
-        codeService.create(userService.currentUser(), new String(javaFile.getBytes(), StandardCharsets.UTF_8), new String(unitFile.getBytes(), StandardCharsets.UTF_8));
+    public String codeForm(@ModelAttribute("code") @Valid Code param,
+                           BindingResult result,
+                           @RequestParam("javaFile") MultipartFile javaFile,
+                           @RequestParam("unitFile") MultipartFile unitFile) throws IOException {
+        codeService.create(userService.currentUser(),
+                "Ceci est un titre",
+                "avec une très très très looooooooooooooooooooooooooooooooooooooooongue description",
+                new String(javaFile.getBytes(),StandardCharsets.UTF_8),
+                new String(unitFile.getBytes(), StandardCharsets.UTF_8));
+        //codeService.create(userService.currentUser(), param.getTitle(), param.getDescription(), new String(javaFile.getBytes(), StandardCharsets.UTF_8), new String(unitFile.getBytes(), StandardCharsets.UTF_8));
         return "redirect:/";
     }
 

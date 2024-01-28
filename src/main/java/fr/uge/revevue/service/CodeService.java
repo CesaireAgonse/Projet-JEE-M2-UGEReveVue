@@ -19,8 +19,8 @@ public class CodeService {
         this.codeRepository = codeRepository;
     }
 
-    public Code create(User user, String javaContent, String unitContent){
-        var code = new Code(user, javaContent);
+    public Code create(User user,String title, String description, String javaContent, String unitContent){
+        var code = new Code(user, title, description, javaContent);
         if (!unitContent.isBlank()){
             code.setUnitContent(unitContent);
         }

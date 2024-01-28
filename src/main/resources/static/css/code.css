@@ -30,3 +30,42 @@ input[type="submit"] {
 .center {
     margin: 20px;
 }
+
+.code-container {
+    background-color: #f5f5f5; /* Couleur légèrement différente pour differencier le contenaire avec le reste */
+    padding: 10px;
+ }
+
+ .title {
+    color: #333; /* Couleur du titre */
+ }
+
+ .author {
+    padding : 5px;
+    display: flex;
+ }
+.author p {
+    margin : 0px;
+    padding-right : 5px;
+ }
+
+ .author a {
+    color: inherit; /* Utilise la couleur par défaut pour les liens */
+    text-decoration: none; /* Supprime le soulignement des liens */
+    font-weight: bold;
+    font-size:125%;
+ }
+
+ .post {
+    display: flex;
+    border-top: 1px solid #ccc;
+ }
+
+ .votes {
+    display: block;
+    padding-top: 5px;
+ }
+
+ .content {
+    clear: both; /* S'assurer que le contenu ne chevauche pas les éléments flottants */
+ }
