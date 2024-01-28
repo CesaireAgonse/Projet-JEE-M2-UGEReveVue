@@ -12,9 +12,9 @@
     </div>
     <div class ="post">
         <div class ="votes"> <!-- pour plus tard -->
-            <button>up</button>
-            <p>69</p>
-            <button>down</button>
+            <button class="vote-btn upvote-btn" th:onclick="">▲</button>
+            <p th:text="${code.getScoreVote()}"></p>
+            <button class="vote-btn upvote-btn" th:onclick="">▼</button>
         </div>
         <div class ="content"> <!-- content -->
             <p th:text="${code.getDescription()}"></p>

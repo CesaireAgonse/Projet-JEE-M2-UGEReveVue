@@ -75,4 +75,9 @@ public class Code {
     public void setUnitContent(String unitContent) {
         this.unitContent = unitContent;
     }
+
+    public int getScoreVote(){
+        // retournera son score en comptant tout les up/downVotes avec son id
+        return 69;
+    }
 }

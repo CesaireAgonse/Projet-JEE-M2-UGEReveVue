@@ -43,6 +43,7 @@ input[type="submit"] {
  .author {
     padding : 5px;
     display: flex;
+    text-align: center;
  }
 .author p {
     margin : 0px;
@@ -64,6 +65,23 @@ input[type="submit"] {
  .votes {
     display: block;
     padding-top: 5px;
+    text-align: center;
+    padding-right: 5px;
+ }
+
+ .vote-btn {
+     width: 30px;
+     height: 30px;
+     border-radius: 50%; /* Crée un bouton de forme circulaire */
+     background-color: #fff;
+     border: 1px solid #ddd;
+     cursor: pointer;
+     font-size: 16px;
+     transition: background-color 0.3s ease; /* Animation de transition de couleur */
+ }
+
+ .vote-btn:hover {
+     background-color: #cccccc; /* Couleur au survol */
  }
 
  .content {
