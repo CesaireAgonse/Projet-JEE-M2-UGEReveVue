@@ -29,21 +29,25 @@ public class CodeController {
     }
 
     @GetMapping("/codes/create")
-    public String codeForm(){
+    public String codeForm(Model model){
+        model.addAttribute("code", new Code());
         return "codes/create";
     }
 
     @PostMapping("/codes/create")
-    public String codeForm(@ModelAttribute("code") @Valid Code param,
+    public String codeForm(@ModelAttribute @Valid Code code,
                            BindingResult result,
                            @RequestParam("javaFile") MultipartFile javaFile,
                            @RequestParam("unitFile") MultipartFile unitFile) throws IOException {
+
+        if (result.hasErrors()){
+            return "codes/create";
+        }
         codeService.create(userService.currentUser(),
-                "Ceci est un titre",
-                "avec une très très très looooooooooooooooooooooooooooooooooooooooongue description",
+                code.getTitle(),
+                code.getDescription(),
                 new String(javaFile.getBytes(),StandardCharsets.UTF_8),
                 new String(unitFile.getBytes(), StandardCharsets.UTF_8));
-        //codeService.create(userService.currentUser(), param.getTitle(), param.getDescription(), new String(javaFile.getBytes(), StandardCharsets.UTF_8), new String(unitFile.getBytes(), StandardCharsets.UTF_8));
         return "redirect:/";
     }
 
