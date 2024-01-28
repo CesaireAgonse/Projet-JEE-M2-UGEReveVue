@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -66,4 +67,24 @@ public class UserService implements UserDetailsService {
         }
         return new UserInformationDTO(user.get().getUsername());
     }
+
+    @Transactional
+    public void modifPassword(String username,String newPassword,String currentPassword){
+        var find = userRepository.findByUsername(username);
+        if (find.isEmpty()){
+            throw new IllegalStateException("User not found");
+        }
+        if(!bCryptPasswordEncoder.matches(currentPassword,find.get().getPassword())){
+            throw new IllegalArgumentException("Current PassWord are not the same");
+        }
+        else {
+            var passwordCrypt = bCryptPasswordEncoder.encode(newPassword);
+            userRepository.update(username,passwordCrypt);
+
+        }
+
+
+    }
+
+
 }

@@ -58,7 +58,7 @@ public class UserController {
         if (userInformationDTO == null){
             return "redirect:/";
         }
-        model.addAttribute("auth", userService.currentUser());
+        model.addAttribute("auth",userService.getInformations(userService.currentUser().getUsername()));
         model.addAttribute("user", userInformationDTO);
         return "users/information";
     }
@@ -66,5 +66,17 @@ public class UserController {
     @GetMapping("/password")
     public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm){
         return "users/password";
+    }
+
+    @PostMapping("/password")
+    public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm,BindingResult result){
+        if (result.hasErrors() || !passwordForm.getNewPassword().equals(passwordForm.getConfirmPassword())){
+            return "/password";
+        }
+        if(passwordForm.getNewPassword().equals(passwordForm.getCurrentPassword())){
+            return "/password";
+        }
+        userService.modifPassword(userService.currentUser().getUsername(),passwordForm.getNewPassword(), passwordForm.getCurrentPassword());
+        return "redirect:/users/" + userService.currentUser().getUsername();
     }
 }
