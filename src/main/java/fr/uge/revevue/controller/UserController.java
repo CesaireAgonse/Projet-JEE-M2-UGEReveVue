@@ -1,6 +1,5 @@
 package fr.uge.revevue.controller;
 
-import fr.uge.revevue.dto.UserInformationDTO;
 import fr.uge.revevue.form.LoginForm;
 import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.form.SignupForm;
@@ -11,9 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -52,17 +49,6 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/users/{username}")
-    public String informations(@PathVariable String username, Model model){
-        var userInformationDTO = userService.getInformations(username);
-        if (userInformationDTO == null){
-            return "redirect:/";
-        }
-        model.addAttribute("auth",userService.getInformations(userService.currentUser().getUsername()));
-        model.addAttribute("user", userInformationDTO);
-        return "users/information";
-    }
-
     @GetMapping("/password")
     public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm){
         return "users/password";
@@ -71,12 +57,35 @@ public class UserController {
     @PostMapping("/password")
     public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm,BindingResult result){
         if (result.hasErrors() || !passwordForm.getNewPassword().equals(passwordForm.getConfirmPassword())){
-            return "/password";
+            return "redirect:/password";
         }
         if(passwordForm.getNewPassword().equals(passwordForm.getCurrentPassword())){
-            return "/password";
+            return "redirect:/password";
         }
         userService.modifPassword(userService.currentUser().getUsername(),passwordForm.getNewPassword(), passwordForm.getCurrentPassword());
         return "redirect:/users/" + userService.currentUser().getUsername();
     }
+
+    @GetMapping("/users/{username}")
+    public String informations(@PathVariable String username, Model model){
+        var userInformationDTO = userService.getInformations(username);
+        if (userInformationDTO == null){
+            return "redirect:/";
+        }
+        model.addAttribute("auth",userService.getInformations(userService.currentUser().getUsername()));
+        model.addAttribute("user", userInformationDTO);
+        return "users/profile";
+    }
+
+    @PostMapping("/follow/{username}")
+    public String follow(@PathVariable String username){
+        var userInformationDTO = userService.getInformations(username);
+        if (userInformationDTO == null){
+            return "redirect:/";
+        }
+        var user = userService.currentUser();
+        userService.follow(user.getUsername(), username);
+        return "redirect:/users/" + username;
+    }
+
 }

@@ -10,6 +10,16 @@
 <div class="container">
     <p th:text="${user.getUsername()}"></p>
     <a th:if="${auth != null && user.getUsername().equals(auth.getUsername())}" th:href="'/password'" class="basic-button right">Update Password</a>
+
+    <form th:if="${auth != null && !user.getUsername().equals(auth.getUsername()) && !auth.getFollowed().contains(user.getUsername())}" th:action="@{/follow/{username}(username=${user.getUsername()})}" th:method="post">
+        <button type="submit" class="basic-button right">Follow</button>
+    </form>
+    <p th:text="${user.getFollowed().size()}"></p>
+    <ul th:each="followed : ${user.getFollowed()}">
+        <li>
+            <p th:text="${followed}"></p>
+        </li>
+    </ul>
 </div>
 </body>
 </html>

@@ -3,6 +3,7 @@ package fr.uge.revevue.form;
 import javax.validation.constraints.NotBlank;
 
 public class PasswordForm {
+
     @NotBlank
     private String currentPassword;
 

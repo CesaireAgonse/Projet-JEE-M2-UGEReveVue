@@ -6,6 +6,7 @@ import fr.uge.revevue.dto.UserInformationDTO;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -24,20 +25,9 @@ public class UserRestController {
         this.userService = userService;
 
     }
-
     @PostMapping("/signup")
-    public ResponseEntity<UserInformationDTO> signup(@RequestBody @Valid UserAuthenticationDTO userDTO){
-        var user = userService.signup(userDTO.getUsername(), userDTO.getPassword());
-        return ResponseEntity.ok(new UserInformationDTO(userDTO.getUsername()));
+    public ResponseEntity.BodyBuilder signup(@RequestBody @Valid UserAuthenticationDTO userDTO){
+        userService.signup(userDTO.getUsername(), userDTO.getPassword());
+        return ResponseEntity.ok();
     }
-
-    @PostMapping("/login")
-    public ResponseEntity<UserInformationDTO> login(@RequestBody @Valid UserAuthenticationDTO userDTO){
-
-        return (userDTO != null) ? ResponseEntity.ok(new UserInformationDTO(userDTO.getUsername())) : ResponseEntity.status(405).build();
-    }
-
-
-
-
 }
