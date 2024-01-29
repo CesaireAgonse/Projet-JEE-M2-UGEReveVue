@@ -27,6 +27,8 @@ public class Vote {
 
     private VoteType voteType;
 
+    public Vote(){}
+
     public Vote(User user, Code code, VoteType voteType) {
         this.user = user;
         this.code = code;

@@ -2,6 +2,7 @@ package fr.uge.revevue.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,6 +29,7 @@ public class Code {
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String unitContent;
 
+    @ManyToMany(mappedBy="code")
     private Set<Vote> votes;
 
     public Code(){}
@@ -37,6 +39,7 @@ public class Code {
         this.title = title;
         this.description = description;
         this.javaContent = javaContent;
+        this.votes = new HashSet<>();
     }
 
     public long getId() {

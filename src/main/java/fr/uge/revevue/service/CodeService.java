@@ -2,6 +2,7 @@ package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.User;
+import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.repository.CodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,5 +31,12 @@ public class CodeService {
 
     public List<Code> findAll(){
         return codeRepository.findAll();
+    }
+
+    public Vote createVote(User user, Code code, Vote.VoteType voteType){
+        var vote = new Vote(user, code, voteType);
+        code.addVote(vote);
+        codeRepository.save(code);
+        return vote;
     }
 }
