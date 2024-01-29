@@ -14,6 +14,10 @@
     <form th:if="${auth != null && !user.getUsername().equals(auth.getUsername()) && !auth.getFollowed().contains(user.getUsername())}" th:action="@{/follow/{username}(username=${user.getUsername()})}" th:method="post">
         <button type="submit" class="basic-button right">Follow</button>
     </form>
+    <form th:if="${auth != null && !user.getUsername().equals(auth.getUsername()) && auth.getFollowed().contains(user.getUsername())}" th:action="@{/unfollow/{username}(username=${user.getUsername()})}" th:method="post">
+        <button type="submit" class="basic-button right">Unfollow</button>
+    </form>
+
     <p th:text="${user.getFollowed().size()}"></p>
     <ul th:each="followed : ${user.getFollowed()}">
         <li>

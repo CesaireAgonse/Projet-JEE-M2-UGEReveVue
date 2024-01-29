@@ -109,4 +109,23 @@ public class UserService implements UserDetailsService {
         followerUser.getFollowed().add(followedUser);
         em.persist(followerUser);
     }
+
+    @Transactional
+    public void unfollow(String followerUsername, String followedUsername){
+        var optionalFollowedUser = userRepository.findByUsername(followedUsername);
+        if (optionalFollowedUser.isEmpty()){
+            throw new IllegalStateException("User follower not found");
+        }
+        var optionalFollowerUser = userRepository.findByUsername(followerUsername);
+        if (optionalFollowerUser.isEmpty()){
+            throw new IllegalStateException("User followed not found");
+        }
+        var followedUser = optionalFollowedUser.get();
+        var followerUser = optionalFollowerUser.get();
+        followerUser.getFollowed().remove(followedUser);
+        em.persist(followerUser);
+    }
+
 }
+
+

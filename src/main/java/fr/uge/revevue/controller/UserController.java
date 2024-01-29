@@ -88,4 +88,15 @@ public class UserController {
         return "redirect:/users/" + username;
     }
 
+    @PostMapping("/unfollow/{username}")
+    public String unfollow(@PathVariable String username){
+        var userInformationDTO = userService.getInformations(username);
+        if (userInformationDTO == null){
+            return "redirect:/";
+        }
+        var user = userService.currentUser();
+        userService.unfollow(user.getUsername(), username);
+        return "redirect:/users/" + username;
+    }
+
 }
