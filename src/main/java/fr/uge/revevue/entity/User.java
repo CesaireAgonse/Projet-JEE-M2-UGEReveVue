@@ -16,15 +16,22 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
     @NotBlank
     @Column(unique = true)
     private String username;
+
     @NotBlank
     private String password;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_followed",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_id")
+    )
+    private Set<User> followed = new HashSet<>();
 
-    @ManyToMany
-    private Set<User> followers = new HashSet<>();
     @OneToMany
     private List<Code> codes = new ArrayList<>();
 
@@ -82,6 +89,14 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<User> getFollowed() {
+        return followed;
+    }
+
+    public void setFollowed(Set<User> followed) {
+        this.followed = followed;
     }
 
     @Override

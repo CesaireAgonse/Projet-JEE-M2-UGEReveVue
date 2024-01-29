@@ -21,34 +21,28 @@
         </div>
         <div class ="content"> <!-- content -->
             <p th:text="${code.getDescription()}"></p>
-            <pre><code class="language-java" th:text="${code.getJavaContent()}"></code></pre>
+            <pre><code class="language-java" id="java-code" th:data-code="${code.getJavaContent()}"></code></pre>
             <pre th:if="${code.getUnitContent() != null}"><code class="language-java" th:text="${code.getUnitContent()}"></code></pre>
 
         </div>
     </div>
+    <script src="/prism/prism.js"></script>
 
-</div>
-<!--
-<script src="/prism/prism.js"></script>
-<script>
+    <script th:inline="javascript">
 
-    function setupFileInput(fileInputId, codeElementId) {
-        document.getElementById(fileInputId).addEventListener('change', function (e) {
-            var file = e.target.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    var codeElement = document.getElementById(codeElementId);
-                    codeElement.textContent = e.target.result;
-                    Prism.highlightElement(codeElement);
-                };
-                reader.readAsText(file);
-            }
-        });
-    }
-    setupFileInput('java-file-input', 'java-code');
-    setupFileInput('unit-file-input', 'unit-code');
+   function displayCode(codeElementId, codeDataAttribute) {
+            var codeElement = document.getElementById(codeElementId);
+            var codeContent = codeElement.getAttribute(codeDataAttribute);
+            codeElement.textContent = codeContent;
+            Prism.highlightElement(codeElement);
+        }
 
+        // Appel à la fonction avec les informations de l'objet code
+        displayCode('java-code', 'data-code');
 
 </script>
--->
+</div>
+
+
+
+

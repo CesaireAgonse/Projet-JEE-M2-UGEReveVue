@@ -13,9 +13,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    //@Autowired
-    //private UserService userService;
-
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/signup", "/css/**", "/prism/**", "/").permitAll()
