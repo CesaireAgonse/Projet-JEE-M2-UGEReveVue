@@ -50,7 +50,8 @@ public class UserController {
     }
 
     @GetMapping("/password")
-    public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm){
+    public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm, Model model){
+        model.addAttribute("auth", userService.getInformations(userService.currentUser().getUsername()));
         return "users/password";
     }
 

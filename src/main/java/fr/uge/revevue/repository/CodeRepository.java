@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CodeRepository  extends CrudRepository<Code, Integer> {
+public interface CodeRepository  extends CrudRepository<Code, Long> {
 
     List<Code> findAll();
 }

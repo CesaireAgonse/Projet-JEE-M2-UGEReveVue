@@ -29,7 +29,7 @@ public class Code {
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String unitContent;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "code")
     private Set<Vote> votes;
 
     public Code(){}
@@ -78,8 +78,6 @@ public class Code {
 
     public void setVotes(Set<Vote> votes) {this.votes = votes;}
 
-    public void addVote(Vote vote){this.votes.add(vote);}
-
     public int getScoreVote(){
         var score = 0;
         for (var vote : votes) {
@@ -88,4 +86,16 @@ public class Code {
         return score;
     }
 
+    @Override
+    public String toString() {
+        return "Code{" +
+                "id=" + id +
+                ", user=" + user +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", javaContent='" + javaContent + '\'' +
+                ", unitContent='" + unitContent + '\'' +
+                ", votes=" + votes +
+                '}';
+    }
 }

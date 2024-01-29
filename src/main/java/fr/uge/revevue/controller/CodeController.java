@@ -1,11 +1,10 @@
 package fr.uge.revevue.controller;
 
 import fr.uge.revevue.entity.Code;
-import fr.uge.revevue.entity.User;
 import fr.uge.revevue.entity.Vote;
-import fr.uge.revevue.form.VoteForm;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
+import fr.uge.revevue.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,14 +20,17 @@ import java.nio.charset.StandardCharsets;
 public class CodeController {
     private final UserService userService;
     private final CodeService codeService;
+    private final VoteService voteService;
     @Autowired
-    public CodeController(CodeService codeService, UserService userService){
+    public CodeController(CodeService codeService, UserService userService, VoteService voteService){
         this.userService = userService;
         this.codeService = codeService;
+        this.voteService = voteService;
     }
 
     @GetMapping("/codes/create")
     public String codeForm(Model model){
+        model.addAttribute("auth", userService.getInformations(userService.currentUser().getUsername()));
         model.addAttribute("code", new Code());
         return "codes/create";
     }
@@ -51,14 +53,12 @@ public class CodeController {
     }
 
 
-    @PostMapping("/codes/vote")
-    public String codeVoted(@ModelAttribute("voteForm") @Valid VoteForm voteForm, Model model){
-        if (voteForm == null){
-            return "redirect:/";
-        }
-        System.out.println("vote : " + voteForm.getVoteType());
-        //codeService.createVote();
+    @PostMapping("/codes/vote/{codeId}")
+    public String codeVoted(@PathVariable("codeId") @Valid long codeId,
+                            @RequestParam("voteType") Vote.VoteType voteType){
+        voteService.codeVoted(userService.currentUser().getId(), codeId, voteType);
         return "redirect:/";
     }
+
 
 }

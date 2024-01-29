@@ -30,4 +30,6 @@ public class UserRestController {
         userService.signup(userDTO.getUsername(), userDTO.getPassword());
         return ResponseEntity.ok();
     }
+
+
 }

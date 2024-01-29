@@ -32,6 +32,9 @@ public class User implements UserDetails {
     )
     private Set<User> followed = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<Vote> votes;
+
     @OneToMany
     private List<Code> codes = new ArrayList<>();
 
@@ -97,6 +100,22 @@ public class User implements UserDetails {
 
     public void setFollowed(Set<User> followed) {
         this.followed = followed;
+    }
+
+    public Set<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(Set<Vote> votes) {
+        this.votes = votes;
+    }
+
+    public List<Code> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(List<Code> codes) {
+        this.codes = codes;
     }
 
     @Override

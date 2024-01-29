@@ -32,11 +32,4 @@ public class CodeService {
     public List<Code> findAll(){
         return codeRepository.findAll();
     }
-
-    public Vote createVote(User user, Code code, Vote.VoteType voteType){
-        var vote = new Vote(user, code, voteType);
-        code.addVote(vote);
-        codeRepository.save(code);
-        return vote;
-    }
 }

@@ -12,11 +12,19 @@
     </div>
     <div class ="post">
         <div class ="votes"> <!-- pour plus tard -->
-            <form th:action="@{/codes/vote}" method="post" th:object="${voteForm}">
-                <button class="vote-btn upvote-btn" type="submit" name="action" value="UpVote" >▲</button>
+            <form th:action="@{/codes/vote/{codeId}(codeId=${code.getId()})}" name="vote" id="vote" th:method="post">
+                <button class="vote-btn upvote-btn" type="submit" name="voteType" value="UpVote" >▲</button>
                 <p th:text="${code.getScoreVote()}"></p>
-                <button class="vote-btn downvote-btn" type="submit" name="action" value="DownVote">▼</button>
+                <button class="vote-btn downvote-btn" type="submit" name="voteType" value="DownVote">▼</button>
             </form>
+
+            <!--
+            <form name="vote" id="vote" th:data-code-id="${code.getId()}">
+                <button class="vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
+                <p class="vote-score" th:text="${code.getScoreVote()}"></p>
+                <button class="vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+            </form>
+            -->
 
         </div>
         <div class ="content"> <!-- content -->
@@ -30,19 +38,32 @@
 
     <script th:inline="javascript">
 
-   function displayCode(codeElementId, codeDataAttribute) {
+        function displayCode(codeElementId, codeDataAttribute) {
             var codeElement = document.getElementById(codeElementId);
             var codeContent = codeElement.getAttribute(codeDataAttribute);
             codeElement.textContent = codeContent;
             Prism.highlightElement(codeElement);
         }
-
-        // Appel à la fonction avec les informations de l'objet code
         displayCode('java-code', 'data-code');
 
-</script>
+        document.querySelectorAll('.vote-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form');
+                const codeId = form.getAttribute('data-code-id');
+                const voteType = this.value;
+
+                fetch('api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
+                    method: 'POST'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Mettre à jour la valeur du score de vote
+                        const scoreElement = form.querySelector('.vote-score');
+                        scoreElement.textContent = data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+    </script>
 </div>
-
-
-
-
