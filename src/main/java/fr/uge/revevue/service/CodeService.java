@@ -35,7 +35,7 @@ public class CodeService {
 
     public Vote createVote(User user, Code code, Vote.VoteType voteType){
         var vote = new Vote(user, code, voteType);
-        code.addVote(vote);
+        //code.addVote(vote);
         codeRepository.save(code);
         return vote;
     }
