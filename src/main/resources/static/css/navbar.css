@@ -1,4 +1,4 @@
-ul {
+.navbar ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -7,11 +7,11 @@ ul {
     text-align: center;
 }
 
-li {
+.navbar li {
     display: inline-block;
 }
 
-li a {
+.navbar li a {
     display: block;
     color: white;
     text-align: center;
@@ -19,11 +19,11 @@ li a {
     text-decoration: none;
 }
 
-li a:hover:not(.active) {
+.navbar li a:hover:not(.active) {
     background-color: #111;
 }
 
-li input[type="search"] {
+.navbar li input[type="search"] {
     padding: 5px;
     margin: 5px;
     border: 1px solid #ccc;
@@ -35,6 +35,6 @@ li input[type="search"] {
     max-width: 550px;
 }
 
-li input[type="search"]::placeholder {
+.navbar li input[type="search"]::placeholder {
     color: #999;
 }

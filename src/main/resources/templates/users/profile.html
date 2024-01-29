@@ -1,29 +1,38 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
-    <title>Home</title>
+    <title>Profile</title>
     <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/profile.css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
-<div class="container">
-    <p th:text="${user.getUsername()}"></p>
-    <a th:if="${auth != null && user.getUsername().equals(auth.getUsername())}" th:href="'/password'" class="basic-button right">Update Password</a>
+<div class="container" th:if="${auth != null}">
 
-    <form th:if="${auth != null && !user.getUsername().equals(auth.getUsername()) && !auth.getFollowed().contains(user.getUsername())}" th:action="@{/follow/{username}(username=${user.getUsername()})}" th:method="post">
-        <button type="submit" class="basic-button right">Follow</button>
-    </form>
-    <form th:if="${auth != null && !user.getUsername().equals(auth.getUsername()) && auth.getFollowed().contains(user.getUsername())}" th:action="@{/unfollow/{username}(username=${user.getUsername()})}" th:method="post">
-        <button type="submit" class="basic-button right">Unfollow</button>
-    </form>
+    <div class="profile-header">
+        <h1 class="username" th:text="${user.getUsername()}"></h1>
+        <p th:text="${user.getFollowed().size()} + ' followed'"></p>
+    </div>
 
-    <p th:text="${user.getFollowed().size()}"></p>
-    <ul th:each="followed : ${user.getFollowed()}">
-        <li>
-            <p th:text="${followed}"></p>
-        </li>
-    </ul>
+    <div class="profile-actions">
+        <a th:if="${user.getUsername().equals(auth.getUsername())}" href="/password" class="basic-button">Password Update</a>
+        <form th:if="${!user.getUsername().equals(auth.getUsername()) && !auth.getFollowed().contains(user.getUsername())}" th:action="@{/follow/{username}(username=${user.getUsername()})}" th:method="post">
+            <button type="submit" class="basic-button">Follow</button>
+        </form>
+        <form th:if="${!user.getUsername().equals(auth.getUsername()) && auth.getFollowed().contains(user.getUsername())}" th:action="@{/unfollow/{username}(username=${user.getUsername()})}" th:method="post">
+            <button type="submit" class="basic-button">Unfollow</button>
+        </form>
+    </div>
+
+    <div class="profile-followers">
+        <h2 class="followers-title">Followed:</h2>
+        <ul th:each="followed : ${user.getFollowed()}" class="followers-list">
+            <li>
+                <a th:href="${followed}" th:text="${followed}"/>
+            </li>
+        </ul>
+    </div>
 </div>
 </body>
 </html>
