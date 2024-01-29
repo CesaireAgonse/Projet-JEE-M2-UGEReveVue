@@ -3,6 +3,7 @@ package fr.uge.revevue.controller;
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.entity.Vote;
+import fr.uge.revevue.form.VoteForm;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +51,13 @@ public class CodeController {
     }
 
 
-    @PostMapping("/codes/vote/{id}")
-    public String codeVoted(@PathVariable Vote vote, Model model){
-        if (vote == null){
+    @PostMapping("/codes/vote")
+    public String codeVoted(@ModelAttribute("voteForm") @Valid VoteForm voteForm, Model model){
+        if (voteForm == null){
             return "redirect:/";
         }
-        //codeService.create();
+        System.out.println("vote : " + voteForm.getVoteType());
+        //codeService.createVote();
         return "redirect:/";
     }
 

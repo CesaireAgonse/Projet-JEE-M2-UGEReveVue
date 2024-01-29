@@ -29,8 +29,8 @@ public class Code {
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String unitContent;
 
-    //@ManyToMany(mappedBy="code")
-    //private Set<Vote> votes;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Vote> votes;
 
     public Code(){}
 
@@ -39,7 +39,7 @@ public class Code {
         this.title = title;
         this.description = description;
         this.javaContent = javaContent;
-        //this.votes = new HashSet<>();
+        this.votes = new HashSet<>();
     }
 
     public long getId() {
@@ -74,22 +74,18 @@ public class Code {
 
     public void setUnitContent(String unitContent) {this.unitContent = unitContent;}
 
-    /*
     public Set<Vote> getVotes() {return votes;}
 
-
     public void setVotes(Set<Vote> votes) {this.votes = votes;}
-
 
     public void addVote(Vote vote){this.votes.add(vote);}
 
     public int getScoreVote(){
         var score = 0;
-        for (var vote : votes){
+        for (var vote : votes) {
             score += vote.getScore();
         }
         return score;
     }
-    */
 
 }

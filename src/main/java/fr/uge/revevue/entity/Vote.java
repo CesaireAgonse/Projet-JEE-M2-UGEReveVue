@@ -1,13 +1,12 @@
 package fr.uge.revevue.entity;
 
-import org.hibernate.annotations.Entity;
-import org.springframework.data.annotation.Id;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-import javax.persistence.FetchType;
-import javax.persistence.IdClass;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "Votes")
 @IdClass(VoteId.class)
 public class Vote {
 

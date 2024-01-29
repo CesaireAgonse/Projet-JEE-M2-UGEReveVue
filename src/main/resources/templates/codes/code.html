@@ -12,9 +12,12 @@
     </div>
     <div class ="post">
         <div class ="votes"> <!-- pour plus tard -->
-            <button class="vote-btn upvote-btn" th:onclick="">▲</button>
-            <p th:text="69"></p>
-            <button class="vote-btn upvote-btn" th:onclick="">▼</button>
+            <form th:action="@{/codes/vote}" method="post" th:object="${voteForm}">
+                <button class="vote-btn upvote-btn" type="submit" name="action" value="UpVote" >▲</button>
+                <p th:text="${code.getScoreVote()}"></p>
+                <button class="vote-btn downvote-btn" type="submit" name="action" value="DownVote">▼</button>
+            </form>
+
         </div>
         <div class ="content"> <!-- content -->
             <p th:text="${code.getDescription()}"></p>
