@@ -2,6 +2,7 @@ package fr.uge.revevue.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @Table(name = "Codes")
@@ -26,6 +27,8 @@ public class Code {
 
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String unitContent;
+
+    private Set<Vote> votes;
 
     public Code(){}
 
@@ -60,24 +63,25 @@ public class Code {
 
     public void setDescription(String description) {this.description = description;}
 
-    public String getJavaContent() {
-        return javaContent;
-    }
+    public String getJavaContent() {return javaContent;}
 
-    public void setJavaContent(String javaContent) {
-        this.javaContent = javaContent;
-    }
+    public void setJavaContent(String javaContent) {this.javaContent = javaContent;}
 
-    public String getUnitContent() {
-        return unitContent;
-    }
+    public String getUnitContent() {return unitContent;}
 
-    public void setUnitContent(String unitContent) {
-        this.unitContent = unitContent;
-    }
+    public void setUnitContent(String unitContent) {this.unitContent = unitContent;}
+
+    public Set<Vote> getVotes() {return votes;}
+
+    public void setVotes(Set<Vote> votes) {this.votes = votes;}
+
+    public void addVote(Vote vote){this.votes.add(vote);}
 
     public int getScoreVote(){
-        // retournera son score en comptant tout les up/downVotes avec son id
-        return 69;
+        var score = 0;
+        for (var vote : votes){
+            score += vote.getScore();
+        }
+        return score;
     }
 }
