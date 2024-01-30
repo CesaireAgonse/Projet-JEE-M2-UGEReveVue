@@ -15,5 +15,5 @@ public interface CodeRepository  extends CrudRepository<Code, Integer> {
 
     List<Code> findAll(Pageable pageable);
     
-    List<Code> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String titleKeyword, String titleDescription);
+    List<Code> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
 }
