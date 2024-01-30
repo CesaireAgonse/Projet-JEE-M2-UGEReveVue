@@ -37,7 +37,7 @@ public class CodeService {
     }
     
     public List<Code> findByTitleContaining(String keyword) {
-        return codeRepository.findByTitleContaining(keyword);
+        return codeRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword);
     }
 
     public Vote createVote(User user, Code code, Vote.VoteType voteType){

@@ -21,7 +21,7 @@ import java.util.List;
 
 @Controller
 public class HomeController {
-    private final static int LIMIT = 2;
+    private final static int LIMIT = 20;
     UserService userService;
     CodeService codeService;
 
@@ -35,7 +35,8 @@ public class HomeController {
     public String homePage(@RequestParam(value = "q", required = false)String query, Model model) {
         model.addAttribute("auth", userService.currentUser());
         List<Code> codes = List.of();
-        if(query == null || query.isBlank()) {
+        System.out.println(query);
+        if(query == null) {
             codes = codeService.findAll(0, LIMIT);
         }
         else {
