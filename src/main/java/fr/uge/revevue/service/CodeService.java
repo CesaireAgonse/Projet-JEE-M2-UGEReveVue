@@ -5,6 +5,8 @@ import fr.uge.revevue.entity.User;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.repository.CodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,8 +31,13 @@ public class CodeService {
         return code;
     }
 
-    public List<Code> findAll(){
-        return codeRepository.findAll();
+    public List<Code> findAll(int offset, int limit){
+        Pageable page = PageRequest.of(offset, limit);
+        return codeRepository.findAll(page);
+    }
+    
+    public List<Code> findByTitleContaining(String keyword) {
+        return codeRepository.findByTitleContaining(keyword);
     }
 
     public Vote createVote(User user, Code code, Vote.VoteType voteType){
