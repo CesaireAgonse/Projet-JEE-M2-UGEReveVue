@@ -1,6 +1,7 @@
 .container {
     display: flex;
     height: 100%;
+    overflow-y: auto;
 }
 
 .column {
@@ -12,7 +13,6 @@
     flex: 2;
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
-    overflow-y: auto;
 }
 
 .first-row {
@@ -36,4 +36,24 @@ pre {
     overflow-x: auto;
     overflow-y: auto;
     max-height: 300px;
+}
+
+.item1 { grid-area: header; }
+.item2 { grid-area: left; }
+.item3 { grid-area: main; }
+.item4 { grid-area: right; }
+.item5 { grid-area: footer; }
+
+.grid-container {
+  display: grid;
+  height: 100%;
+  overflow-y: auto;
+  grid-template-areas:
+    'header header header header header header'
+    'left left main main right right'
+    'left left footer footer right right';
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
 }
