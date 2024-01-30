@@ -56,7 +56,6 @@ public class VoteService {
         var code = findCode.get();
         var vote = voteRepository.findByCodeAndUser(user, code);
         if (vote == null){
-            System.out.println("NEW");
             var newVote = new Vote(user, code, voteType);
             code.getVotes().add(newVote);
             voteRepository.save(newVote);

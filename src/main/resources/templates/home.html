@@ -11,8 +11,8 @@
         <div class="item1"><div th:replace="navbar :: navbar"></div></div>
         <div class="item2"></div>
         <div class="item3">
-            <div class="first-row">
-                <a th:if="${auth != null}" th:href="'codes/create'" class="basic-button right">Post Code</a>
+            <div th:if="${auth != null}" class="row first" >
+                <a th:href="'codes/create'" class="basic-button right">Post Code</a>
             </div>
             <div th:each="code : ${codes}" class="row">
                 <div th:replace="codes/code :: codeFragment(code=${code})"></div>
