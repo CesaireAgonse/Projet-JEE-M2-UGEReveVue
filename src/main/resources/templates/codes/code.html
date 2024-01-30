@@ -12,57 +12,23 @@
     </div>
     <div class ="post">
         <div class ="votes"> <!-- pour plus tard -->
+            <!--
             <form th:action="@{/codes/vote/{codeId}(codeId=${code.getId()})}" name="vote" id="vote" th:method="post">
                 <button class="vote-btn upvote-btn" type="submit" name="voteType" value="UpVote" >▲</button>
                 <p class="vote-score" th:text="${code.getScoreVote()}"></p>
                 <button class="vote-btn downvote-btn" type="submit" name="voteType" value="DownVote">▼</button>
             </form>
-
-            <!--
+            -->
             <form name="vote" id="vote" th:data-code-id="${code.getId()}">
                 <button class="vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
                 <p class="vote-score" th:text="${code.getScoreVote()}"></p>
                 <button class="vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
             </form>
-            -->
-
         </div>
         <div class ="content"> <!-- content -->
             <p th:text="${code.getDescription()}"></p>
             <pre><code class="language-java java-code" th:data-code="${code.getJavaContent()}"></code></pre>
             <pre th:if="${code.getUnitContent() != null}"><code class="language-java" th:text="${code.getUnitContent()}"></code></pre>
-
         </div>
     </div>
-    <script src="/prism/prism.js"></script>
-
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            var codeElements = document.querySelectorAll('.java-code');
-            codeElements.forEach(function(codeElement) {
-                var codeContent = codeElement.getAttribute('data-code');
-                codeElement.textContent = codeContent;
-                Prism.highlightElement(codeElement);
-            });
-
-            var voteForms = document.querySelectorAll('.vote-form');
-            voteForms.forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    var codeId = this.getAttribute('data-code-id');
-                    var voteType = event.submitter.value;
-
-                    fetch('api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
-                        method: 'POST'
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        var scoreElement = form.querySelector('.vote-score');
-                        scoreElement.textContent = data;
-                    })
-                    .catch(error => console.error('Error:', error));
-                });
-            });
-        });
-    </script>
 </div>

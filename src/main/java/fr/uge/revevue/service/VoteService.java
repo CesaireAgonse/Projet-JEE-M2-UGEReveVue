@@ -7,8 +7,14 @@ import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.repository.CodeRepository;
 import fr.uge.revevue.repository.UserRepository;
 import fr.uge.revevue.repository.VoteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
 
 @Service
@@ -17,10 +23,23 @@ public class VoteService {
     private CodeRepository codeRepository;
     private UserRepository userRepository;
 
-    public VoteService(VoteRepository voteRepository, CodeRepository codeRepository, UserRepository userRepository){
+    @PersistenceUnit
+    private final EntityManagerFactory emf;
+
+    @PersistenceContext
+    private final EntityManager em;
+
+
+    public VoteService(VoteRepository voteRepository,
+                       CodeRepository codeRepository,
+                       UserRepository userRepository,
+                       EntityManagerFactory emf,
+                       EntityManager em){
         this.voteRepository = voteRepository;
         this.codeRepository = codeRepository;
         this.userRepository = userRepository;
+        this.emf = emf;
+        this.em = em;
     }
 
     @Transactional
@@ -37,6 +56,7 @@ public class VoteService {
         var code = findCode.get();
         var vote = voteRepository.findByCodeAndUser(user, code);
         if (vote == null){
+            System.out.println("NEW");
             var newVote = new Vote(user, code, voteType);
             code.getVotes().add(newVote);
             voteRepository.save(newVote);
@@ -44,10 +64,11 @@ public class VoteService {
         }
         else if (vote.getVoteType() != voteType){
             vote.setVoteType(voteType);
+            em.persist(vote);
+            return code.getScoreVote();
         }
-        else {
-            voteRepository.delete(vote);
-        }
+        code.getVotes().remove(vote);
+        voteRepository.delete(vote);
         return code.getScoreVote();
     }
 

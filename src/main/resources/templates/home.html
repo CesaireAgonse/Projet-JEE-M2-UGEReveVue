@@ -14,12 +14,6 @@
             <div class="first-row">
                 <a th:if="${auth != null}" th:href="'codes/create'" class="basic-button right">Post Code</a>
             </div>
-            <!--
-                <div th:each="code : ${codes}" th:href="@{/}" class="row">
-                    <a th:href="'users/' + ${code.getUser().getUsername()}" th:text="${code.getUser().getUsername()}"></a>
-                    <pre><code class="language-java" th:text="${code.getJavaContent()}"></code></pre>
-                </div>
-                -->
             <div th:each="code : ${codes}" class="row">
                 <div th:replace="codes/code :: codeFragment(code=${code})"></div>
             </div>
@@ -27,30 +21,32 @@
         <div class="item4"></div>
         <div class="item5"><div th:replace="footer :: footer"></div></div>
     </div>
+    <script src="/prism/prism.js"></script>
 
-    <!--
-    <div class="container">
-        <div class="first-row">
-            <div th:replace="navbar :: navbar"></div>
-        </div>
-        <div class="row">
-            <div class="column"></div>
-            <div class="column middle">
-                <div class="first-row">
-                    <a th:if="${auth != null}" th:href="'codes/create'" class="basic-button right">Post Code</a>
-                </div>
-                <div th:each="code : ${codes}" th:href="@{/}" class="row">
-                    <a th:href="'users/' + ${code.getUser().getUsername()}" th:text="${code.getUser().getUsername()}"></a>
-                    <pre><code class="language-java" th:text="${code.getJavaContent()}"></code></pre>
-                </div>
-                <div th:each="code : ${codes}" class="row">
-                    <div th:replace="codes/code :: codeFragment(code=${code})"></div>
-                </div>
-                <div th:replace="footer :: footer"></div>
-            </div>
-            <div class="column"></div>
-        </div>
-    </div>
-                -->
+    <script>
+        document.querySelectorAll('.code-container').forEach(codeContainer => {
+            const codeElement = codeContainer.querySelector('.language-java');
+            const codeContent = codeElement.getAttribute('data-code');
+            codeElement.textContent = codeContent;
+        });
+
+        document.querySelectorAll('.vote-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form');
+                const codeId = form.getAttribute('data-code-id');
+                const voteType = this.value;
+                fetch('api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
+                    method: 'POST'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const scoreElement = form.querySelector('.vote-score');
+                        scoreElement.textContent = data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
 </body>
 </html>
+
