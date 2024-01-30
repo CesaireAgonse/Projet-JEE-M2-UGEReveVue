@@ -1,0 +1,8 @@
+
+<div th:fragment="footer" class="footer">
+  <link rel="stylesheet" href="/css/style.css"/>
+  <form th:action="@{/}" method="get">
+    <button class="left" th:if="${pageNumber} > 0" type="submit" th:name="pageNumber" th:value="${pageNumber-1}">Previous Page</button>
+    <button class="right" type="submit" th:name="pageNumber" th:value="${pageNumber+1}">Next Page</button>
+  </form>
+</div>

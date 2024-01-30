@@ -21,7 +21,7 @@ import java.util.List;
 
 @Controller
 public class HomeController {
-    private final static int LIMIT = 20;
+    private final static int LIMIT = 3;
     UserService userService;
     CodeService codeService;
 
@@ -32,17 +32,22 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String homePage(@RequestParam(value = "q", required = false)String query, Model model) {
+    public String homePage(@RequestParam(value = "q", required = false)String query,
+                           @RequestParam(value = "pageNumber", required = false)Integer pageNumber,
+                           Model model) {
         model.addAttribute("auth", userService.currentUser());
         List<Code> codes = List.of();
-        System.out.println(query);
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
         if(query == null) {
-            codes = codeService.findAll(0, LIMIT);
+            codes = codeService.findAll(pageNumber, LIMIT);
         }
         else {
-            codes = codeService.findByTitleContaining(query);
+            codes = codeService.findByTitleContaining(query, pageNumber, LIMIT);
         }
         model.addAttribute("codes", codes);
+        model.addAttribute("pageNumber", pageNumber);
         return "home";
     }
 }

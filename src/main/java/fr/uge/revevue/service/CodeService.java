@@ -36,9 +36,10 @@ public class CodeService {
         return codeRepository.findAll(page);
     }
     
-    public List<Code> findByTitleContaining(String keyword) {
+    public List<Code> findByTitleContaining(String keyword, int offset, int limit) {
+        Pageable page = PageRequest.of(offset, limit);
         return codeRepository
-          .findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(keyword, keyword, keyword);
+          .findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(page, keyword, keyword, keyword);
     }
 
     public Vote createVote(User user, Code code, Vote.VoteType voteType){
