@@ -27,22 +27,6 @@ body {
     margin-bottom: 20px;
 }
 
-.basic-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-right: 10px;
-}
-
-.basic-button:hover {
-    background-color: #0056b3;
-}
-
 .followers-title {
     color: #000000;
 }

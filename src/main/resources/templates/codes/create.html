@@ -1,56 +1,67 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" lang="">
-<head>
-    <title>Codes Post</title>
-    <link rel="stylesheet" href="/css/style.css" />
-    <link rel="stylesheet" href="/css/code.css" />
-    <link rel="stylesheet" href="/prism/prism.css">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-<div th:replace="navbar :: navbar"></div>
-<div class="container">    <div class="center">
-        <form th:action="@{/codes/create}" th:object="${code}" method="post"  enctype="multipart/form-data">
-            <div><label for="title-input">Your title :</label>
-                <input type="text" id="title-input" name="title" th:field="*{title}">
-                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+    <head>
+        <title>Codes Post</title>
+        <link rel="stylesheet" href="/css/style.css" />
+        <link rel="stylesheet" href="/css/codes/create.css" />
+        <link rel="stylesheet" href="/prism/prism.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <div class="grid-container">
+            <div class="item1" th:replace="navbar :: navbar"></div>
+            <div class="item2">
+                <form th:action="@{/codes/create}" th:object="${code}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="title-input">Title:</label>
+                        <input type="text" id="title-input" name="title" th:field="*{title}" class="form-control" placeholder="Enter your title">
+                        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="description-input">Description:</label>
+                        <textarea id="description-input" name="description" th:field="*{description}" class="form-control" placeholder="Enter your description"></textarea>
+                        <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="java-file-input">Upload Java File:</label>
+                        <input type="file" id="java-file-input" name="javaFile" accept=".java" class="form-control-file">
+                        <pre><code id="java-code" name="java" class="language-java"></code></pre>
+                    </div>
+                    <div class="form-group">
+                        <label for="unit-file-input">Upload Unit File:</label>
+                        <input type="file" id="unit-file-input" name="unitFile" accept=".java" class="form-control-file">
+                        <pre><code id="unit-code" name="unit" class="language-java"></code></pre>
+                    </div>
+                    <button type="submit" class="basic-button">Post</button>
+                </form>
             </div>
-            <div><label for="description-input">Your description :</label>
-                <input type="text" id="description-input" name="description" th:field="*{description}">
-                <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
             </div>
-            <input type="file" id="java-file-input" name="javaFile" accept=".java"/>
-            <pre><code id="java-code" name="java" class="language-java"></code></pre>
-            <input type="file" id="unit-file-input" name="unitFile" accept=".java"/>
-            <pre><code id="unit-code" name="unit" class="language-java"></code></pre>
-            <button type="submit">Submit</button>
-        </form>
+        </div>
+        <script src="/prism/prism.js"></script>
+        <script>
+        function setupFileInput(fileInputId, codeElementId) {
+            document.getElementById(fileInputId).addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const codeElement = document.getElementById(codeElementId);
+                        codeElement.textContent = e.target.result;
+                        Prism.highlightElement(codeElement);
+                        const preElement = codeElement.parentElement;
+                        if (e.target.result.trim().length > 0) {
+                            preElement.style.display = 'block';
+                        } else {
+                            preElement.style.display = 'none';
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            });
+        }
+        setupFileInput('java-file-input', 'java-code');
+        setupFileInput('unit-file-input', 'unit-code');
 
-
-    </div>
-</div>
-<script src="/prism/prism.js"></script>
-<script>
-
-    function setupFileInput(fileInputId, codeElementId) {
-        document.getElementById(fileInputId).addEventListener('change', function (e) {
-            var file = e.target.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    var codeElement = document.getElementById(codeElementId);
-                    codeElement.textContent = e.target.result;
-                    Prism.highlightElement(codeElement);
-                };
-                reader.readAsText(file);
-            }
-        });
-    }
-    setupFileInput('java-file-input', 'java-code');
-    setupFileInput('unit-file-input', 'unit-code');
-
-
-</script>
-
-</body>
+        </script>
+    </body>
 </html>
