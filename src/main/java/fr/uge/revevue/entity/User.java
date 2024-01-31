@@ -24,7 +24,7 @@ public class User implements UserDetails {
     @NotBlank
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_followed",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private Set<Vote> votes;
 
     @OneToMany
-    private List<Code> codes = new ArrayList<>();
+    private Set<Code> codes = new HashSet<>();
 
     public User(){}
 
@@ -110,11 +110,11 @@ public class User implements UserDetails {
         this.votes = votes;
     }
 
-    public List<Code> getCodes() {
+    public Set<Code> getCodes() {
         return codes;
     }
 
-    public void setCodes(List<Code> codes) {
+    public void setCodes(Set<Code> codes) {
         this.codes = codes;
     }
 

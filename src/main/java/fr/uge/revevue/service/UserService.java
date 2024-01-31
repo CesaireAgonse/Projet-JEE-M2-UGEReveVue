@@ -1,6 +1,6 @@
 package fr.uge.revevue.service;
 
-import fr.uge.revevue.dto.UserInformationDTO;
+import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -48,6 +47,7 @@ public class UserService implements UserDetailsService {
         var passwordCrypt = bCryptPasswordEncoder.encode(password);
         var user = new User(username, passwordCrypt);
         userRepository.save(user);
+        UserInformation.from(user);
     }
 
     @Override
@@ -67,22 +67,17 @@ public class UserService implements UserDetailsService {
                 return (User) principal;
             }
         }
-        return null;
+        throw new IllegalStateException("You are not logged");
     }
 
     @Transactional
-    public UserInformationDTO getInformations(String username){
+    public UserInformation getInformation(String username){
         var optionalUser = userRepository.findByUsername(username);
-        if (optionalUser.isEmpty()){
-            return null;
-        }
-        var followedUser = optionalUser.get();
-        var followed = followedUser.getFollowed().stream().map(User::getUsername).toList();
-        return new UserInformationDTO(followedUser.getId(), followedUser.getUsername(), followed);
+        return optionalUser.map(UserInformation::from).orElse(null);
     }
 
     @Transactional
-    public void modifPassword(String username,String newPassword,String currentPassword){
+    public void modifyPassword(String username, String newPassword, String currentPassword){
         var find = userRepository.findByUsername(username);
         if (find.isEmpty()){
             throw new IllegalStateException("User not found");

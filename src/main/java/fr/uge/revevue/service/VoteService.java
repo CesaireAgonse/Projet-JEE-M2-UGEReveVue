@@ -29,7 +29,7 @@ public class VoteService {
     @PersistenceContext
     private final EntityManager em;
 
-
+    @Autowired
     public VoteService(VoteRepository voteRepository,
                        CodeRepository codeRepository,
                        UserRepository userRepository,
@@ -70,6 +70,4 @@ public class VoteService {
         voteRepository.delete(vote);
         return code.getScoreVote();
     }
-
-
 }

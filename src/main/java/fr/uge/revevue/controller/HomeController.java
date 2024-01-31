@@ -32,20 +32,14 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String homePage(@RequestParam(value = "q", required = false)String query,
+    public String homePage(@RequestParam(value = "q", required = false, defaultValue = "")String query,
                            @RequestParam(value = "pageNumber", required = false)Integer pageNumber,
                            Model model) {
         model.addAttribute("auth", userService.currentUser());
-        List<Code> codes = List.of();
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;
         }
-        if(query == null) {
-            codes = codeService.findAll(pageNumber, LIMIT);
-        }
-        else {
-            codes = codeService.findByTitleContaining(query, pageNumber, LIMIT);
-        }
+        var codes = codeService.findWithKeyword(query, pageNumber, LIMIT);
         model.addAttribute("codes", codes);
         model.addAttribute("pageNumber", pageNumber);
         return "home";

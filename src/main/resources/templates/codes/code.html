@@ -4,24 +4,25 @@
     <link rel="stylesheet" href="/prism/prism.css">
 
     <div>
-        <h2 class ="title" th:text="${code.getTitle()}"></h2>
+        <h2 class ="title" th:text="${code.title()}"></h2>
         <div class ="author">
             <p>from: </p>
-            <a th:href="'users/' + ${code.getUser().getUsername()}" th:text="${code.getUser().getUsername()}"></a>
+            <a th:href="'users/' + ${code.userInformation().username()}" th:text="${code.userInformation().username()}"></a>
         </div>
     </div>
     <div class ="post">
         <div class ="votes">
-            <form name="vote" id="vote" th:data-code-id="${code.getId()}">
+            <form name="vote" id="vote" th:data-code-id="${code.id()}">
                 <button class="vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
-                <p class="vote-score" th:text="${code.getScoreVote()}"></p>
+                <p class="vote-score" th:text="${code.scoreVote}"></p>
                 <button class="vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
             </form>
         </div>
         <div class ="content">
-            <p class="description" th:text="${code.getDescription()}"></p>
-            <pre><code class="language-java java-code" th:data-code="${code.getJavaContent()}"></code></pre>
-            <pre th:if="${code.getUnitContent() != null}"><code class="language-java" th:text="${code.getUnitContent()}"></code></pre>
+            <p class="description" th:text="${code.description()}"></p>
+            <pre><code class="language-java java-code" th:data-code="${code.javaContent()}"></code></pre>
+            <pre th:if="${code.unitContent() != null}"><code class="language-java" th:text="${code.unitContent()}"></code></pre>
         </div>
     </div>
+
 </div>

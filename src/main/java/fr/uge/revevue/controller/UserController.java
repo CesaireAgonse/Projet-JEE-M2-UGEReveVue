@@ -14,6 +14,7 @@ import javax.validation.Valid;
 
 @Controller
 public class UserController {
+
     private final UserService userService;
     @Autowired
     public UserController(UserService userService){
@@ -51,7 +52,7 @@ public class UserController {
 
     @GetMapping("/password")
     public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm, Model model){
-        model.addAttribute("auth", userService.getInformations(userService.currentUser().getUsername()));
+        model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
         return "users/password";
     }
 
@@ -63,25 +64,25 @@ public class UserController {
         if(passwordForm.getNewPassword().equals(passwordForm.getCurrentPassword())){
             return "redirect:/password";
         }
-        userService.modifPassword(userService.currentUser().getUsername(),passwordForm.getNewPassword(), passwordForm.getCurrentPassword());
+        userService.modifyPassword(userService.currentUser().getUsername(), passwordForm.getNewPassword(), passwordForm.getCurrentPassword());
         return "redirect:/users/" + userService.currentUser().getUsername();
     }
 
     @GetMapping("/users/{username}")
-    public String informations(@PathVariable String username, Model model){
-        var userInformationDTO = userService.getInformations(username);
+    public String information(@PathVariable String username, Model model){
+        var userInformationDTO = userService.getInformation(username);
         if (userInformationDTO == null){
             return "redirect:/";
         }
-        model.addAttribute("auth",userService.getInformations(userService.currentUser().getUsername()));
+        model.addAttribute("auth",userService.getInformation(userService.currentUser().getUsername()));
         model.addAttribute("user", userInformationDTO);
         return "users/profile";
     }
 
     @PostMapping("/follow/{username}")
     public String follow(@PathVariable String username){
-        var userInformationDTO = userService.getInformations(username);
-        if (userInformationDTO == null){
+        var userInformation= userService.getInformation(username);
+        if (userInformation == null){
             return "redirect:/";
         }
         var user = userService.currentUser();
@@ -91,7 +92,7 @@ public class UserController {
 
     @PostMapping("/unfollow/{username}")
     public String unfollow(@PathVariable String username){
-        var userInformationDTO = userService.getInformations(username);
+        var userInformationDTO = userService.getInformation(username);
         if (userInformationDTO == null){
             return "redirect:/";
         }

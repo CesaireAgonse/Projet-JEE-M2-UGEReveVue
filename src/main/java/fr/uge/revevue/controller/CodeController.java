@@ -2,6 +2,7 @@ package fr.uge.revevue.controller;
 
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Vote;
+import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
 import fr.uge.revevue.service.VoteService;
@@ -30,7 +31,7 @@ public class CodeController {
 
     @GetMapping("/codes/create")
     public String codeForm(Model model){
-        model.addAttribute("auth", userService.getInformations(userService.currentUser().getUsername()));
+        model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
         model.addAttribute("code", new Code());
         return "codes/create";
     }
@@ -40,7 +41,6 @@ public class CodeController {
                            BindingResult result,
                            @RequestParam("javaFile") MultipartFile javaFile,
                            @RequestParam("unitFile") MultipartFile unitFile) throws IOException {
-
         if (result.hasErrors()){
             return "codes/create";
         }
@@ -51,6 +51,17 @@ public class CodeController {
                 new String(unitFile.getBytes(), StandardCharsets.UTF_8));
         return "redirect:/";
     }
+
+
+    @GetMapping("/codes/{codeId}")
+    public String code(@PathVariable("codeId") @Valid long codeId, Model model){
+        model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
+        var code = codeService.getInformation(codeId);
+        model.addAttribute("code", code);
+        return "codes/codeReview";
+    }
+
+
 
 
     @PostMapping("/codes/vote/{codeId}")

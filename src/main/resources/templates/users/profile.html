@@ -11,25 +11,25 @@
 <div class="container" th:if="${auth != null}">
 
     <div class="profile-header">
-        <h1 class="username" th:text="${user.getUsername()}"></h1>
-        <p th:text="${user.getFollowed().size()} + ' followed'"></p>
+        <h1 class="username" th:text="${user.username()}"></h1>
+        <p th:text="${user.followed().size()} + ' followed'"></p>
     </div>
 
     <div class="profile-actions">
-        <a th:if="${user.getUsername().equals(auth.getUsername())}" href="/password" class="basic-button">Password Update</a>
-        <form th:if="${!user.getUsername().equals(auth.getUsername()) && !auth.getFollowed().contains(user.getUsername())}" th:action="@{/follow/{username}(username=${user.getUsername()})}" th:method="post">
+        <a th:if="${user.username().equals(auth.username())}" href="/password" class="basic-button">Password Update</a>
+        <form th:if="${!user.username().equals(auth.username()) && !auth.username().contains(user.username())}" th:action="@{/follow/{username}(username=${user.username()})}" th:method="post">
             <button type="submit" class="basic-button">Follow</button>
         </form>
-        <form th:if="${!user.getUsername().equals(auth.getUsername()) && auth.getFollowed().contains(user.getUsername())}" th:action="@{/unfollow/{username}(username=${user.getUsername()})}" th:method="post">
+        <form th:if="${!user.username().equals(auth.username()) && auth.followed().contains(user.username())}" th:action="@{/unfollow/{username}(username=${user.username()})}" th:method="post">
             <button type="submit" class="basic-button">Unfollow</button>
         </form>
     </div>
 
     <div class="profile-followers">
         <h2 class="followers-title">Followed:</h2>
-        <ul th:each="followed : ${user.getFollowed()}" class="followers-list">
+        <ul th:each="followed : ${user.followed()}" class="followers-list">
             <li>
-                <a th:href="${followed}" th:text="${followed}"/>
+                <a th:href="${followed.username()}" th:text="${followed.username()}"/>
             </li>
         </ul>
     </div>

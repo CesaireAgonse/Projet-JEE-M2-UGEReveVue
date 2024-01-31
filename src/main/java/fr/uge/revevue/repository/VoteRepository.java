@@ -10,8 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VoteRepository extends CrudRepository<Vote, Long> {
 
-
     @Query("SELECT v FROM Vote v WHERE v.user = :user AND v.code = :code")
     Vote findByCodeAndUser(User user, Code code);
-
 }
