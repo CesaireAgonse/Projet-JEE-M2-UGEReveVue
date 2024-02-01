@@ -71,16 +71,6 @@ pre {
     clear: both; /* S'assurer que le contenu ne chevauche pas les éléments flottants */
 }
 
-
-.container {
-    max-width: 65%;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
 .item1 { grid-area: header; }
 .item2 {
     grid-area: main;
@@ -89,7 +79,6 @@ pre {
 .grid-container {
     display: grid;
     height: 100%;
-    overflow-y: auto;
     grid-template-areas:
     'header'
     'main';

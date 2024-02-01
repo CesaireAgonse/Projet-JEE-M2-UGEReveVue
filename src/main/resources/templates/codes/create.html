@@ -10,7 +10,7 @@
     <body>
         <div class="grid-container">
             <div class="item1" th:replace="navbar :: navbar"></div>
-            <div class="item2">
+            <div class="item2 container">
                 <form th:action="@{/codes/create}" th:object="${code}" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="title-input">Title:</label>

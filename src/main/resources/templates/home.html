@@ -7,14 +7,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
+    <div th:replace="navbar :: navbar"></div>
         <div class="grid-container">
-            <div class="item1"><div th:replace="navbar :: navbar"></div></div>
             <div class="item2"></div>
             <div class="item3">
-                <div th:if="${auth != null}" class="row first" >
+                <div th:if="${auth != null}" class="container option" >
                     <a th:href="'codes/create'" class="basic-button right">Post Code</a>
                 </div>
-                <div th:each="code : ${codes}" class="row">
+                <div th:each="code : ${codes}" class="code-container">
                     <div th:replace="codes/code :: codeFragment(code=${code})"></div>
                 </div>
             </div>

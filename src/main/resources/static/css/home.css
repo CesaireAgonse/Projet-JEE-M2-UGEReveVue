@@ -1,19 +1,11 @@
-.row {
-    border-bottom: 1px solid #ccc;
-    border-top: 1px solid #ccc;
-}
-
-.row.first {
-    height: 50px;
-    padding: 20px;
+.container.option {
+    height: 40px;
 }
 
 .item1 { grid-area: header; }
 .item2 { grid-area: left; }
 .item3 {
     grid-area: main;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
 }
 .item4 { grid-area: right; }
 .item5 { grid-area: footer; }
@@ -21,14 +13,9 @@
 .grid-container {
   display: grid;
   height: 100%;
-  overflow-y: auto;
   grid-template-columns: repeat(2, 1fr) repeat(2, 2fr) repeat(2, 1fr);
   grid-template-areas:
     'header header header header header header'
     'left left main main right right'
     'left left footer footer right right';
-}
-
-.grid-container > div {
-  background-color: rgba(255, 255, 255, 0.8);
 }

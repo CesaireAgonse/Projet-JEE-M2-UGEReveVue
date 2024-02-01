@@ -8,27 +8,25 @@
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
-<div class="container">
-    <div class="center">
-        <form th:action="@{/signup}" th:object="${signupForm}" method="post">
-            <div class="txt_field">
-                <input id="l" type="text" name="username" placeholder="Username" th:field="*{username}">
-                <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
-            </div>
-            <div class="txt_field">
-                <input type="password" id="p" name="password" placeholder="Password" th:field="*{password}">
-                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
-            </div>
-            <div class="txt_field">
-                <input type="password" id="c" name="confirmPassword" placeholder="Confirm Password" th:field="*{confirmPassword}">
-                <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">
-            </div>
-            <input name="submit" type="Submit" value="Sign Up">
-            <div class="signup_link">
-                Already have an account ? <a href="/login">Login Here</a>
-            </div>
-        </form>
-    </div>
+<div class="container limit">
+    <form th:action="@{/signup}" th:object="${signupForm}" method="post">
+        <div class="txt_field">
+            <input id="l" type="text" name="username" placeholder="Username" th:field="*{username}">
+            <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger">
+        </div>
+        <div class="txt_field">
+            <input type="password" id="p" name="password" placeholder="Password" th:field="*{password}">
+            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger">
+        </div>
+        <div class="txt_field">
+            <input type="password" id="c" name="confirmPassword" placeholder="Confirm Password" th:field="*{confirmPassword}">
+            <p th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="text-danger">
+        </div>
+        <input class="basic-button auth" name="submit" type="Submit" value="Sign Up">
+        <div class="link">
+            Already have an account ? <a href="/login">Login Here</a>
+        </div>
+    </form>
 </div>
 </body>
 </html>
