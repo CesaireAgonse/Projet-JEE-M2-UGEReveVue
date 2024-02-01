@@ -12,6 +12,7 @@
             <div class="item2"></div>
             <div class="item3">
                 <div th:if="${auth != null}" class="container option" >
+                    <p class="left" th:text="${codes.size() + ' codes'}"></p>
                     <a th:href="'codes/create'" class="basic-button right">Post Code</a>
                 </div>
                 <div th:each="code : ${codes}" class="code-container">

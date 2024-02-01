@@ -18,10 +18,10 @@
 
         <div class="profile-actions">
             <a th:if="${user.username().equals(auth.username())}" href="/password" class="basic-button">Password Update</a>
-            <form th:if="${!user.username().equals(auth.username()) && !auth.username().contains(user.username())}" th:action="@{/follow/{username}(username=${user.username()})}" th:method="post">
+            <form th:if="${!user.username().equals(auth.username()) && !auth.allFollowedName().contains(user.username())}" th:action="@{/follow/{username}(username=${user.username()})}" th:method="post">
                 <button type="submit" class="basic-button">Follow</button>
             </form>
-            <form th:if="${!user.username().equals(auth.username()) && auth.followed().contains(user.username())}" th:action="@{/unfollow/{username}(username=${user.username()})}" th:method="post">
+            <form th:if="${!user.username().equals(auth.username()) && auth.allFollowedName().contains(user.username())}" th:action="@{/unfollow/{username}(username=${user.username()})}" th:method="post">
                 <button type="submit" class="basic-button">Unfollow</button>
             </form>
         </div>

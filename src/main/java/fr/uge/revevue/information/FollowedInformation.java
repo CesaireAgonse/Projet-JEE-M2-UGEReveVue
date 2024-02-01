@@ -12,4 +12,5 @@ public record FollowedInformation(long id, String username){
                 user.getUsername()
         );
     }
+
 }

@@ -15,4 +15,8 @@ public record UserInformation (long id, String username, Set<FollowedInformation
                 user.getFollowed().stream().map(FollowedInformation::from).collect(Collectors.toSet())
         );
     }
+
+    public Set<String> allFollowedName(){
+        return followed.stream().map(FollowedInformation::username).collect(Collectors.toSet());
+    }
 }

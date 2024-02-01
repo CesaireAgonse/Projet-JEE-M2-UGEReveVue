@@ -10,7 +10,7 @@
             <a th:href="'users/' + ${code.userInformation().username()}" th:text="${code.userInformation().username()}"></a>
         </div>
     </div>
-    <div class ="post">
+    <div class ="post code-container">
         <div class ="votes">
             <form name="vote" id="vote" th:data-code-id="${code.id()}">
                 <button class="vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
@@ -26,5 +26,11 @@
             <pre th:if="${code.unitContent() != null}"><code class="language-java" th:text="${code.unitContent()}"></code></pre>
         </div>
     </div>
+    <script src="/prism/prism.js"></script>
+    <script>
+        const codeElement = document.querySelector('.language-java')
+        const codeContent = codeElement.getAttribute('data-code');
+        codeElement.textContent = codeContent;
+    </script>
 
 </div>

@@ -1,12 +1,9 @@
+
 pre {
     background-color: #f5f5f5;
     border: 1px solid #ccc;
     border-radius: 5px;
     max-height: 1000px;
-}
-
-.code-container {
-
 }
 
 .title {
@@ -31,10 +28,6 @@ pre {
     text-decoration: none; /* Supprime le soulignement des liens */
     font-weight: bold;
     /* font-size:125%; */
-}
-
-.description {
-
 }
 
 .post {
@@ -69,17 +62,4 @@ pre {
 .content {
     width: 100%;
     clear: both; /* S'assurer que le contenu ne chevauche pas les éléments flottants */
-}
-
-.item1 { grid-area: header; }
-.item2 {
-    grid-area: main;
-}
-
-.grid-container {
-    display: grid;
-    height: 100%;
-    grid-template-areas:
-    'header'
-    'main';
 }
