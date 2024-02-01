@@ -20,7 +20,9 @@
         </div>
         <div class ="content">
             <p class="description" th:text="${code.description()}"></p>
-            <pre><code class="language-java java-code" th:data-code="${code.javaContent()}"></code></pre>
+            <a th:href="'codes/' + ${code.id()}">
+                <pre><code class="language-java java-code" th:data-code="${code.javaContent()}"></code></pre>
+            </a>
             <pre th:if="${code.unitContent() != null}"><code class="language-java" th:text="${code.unitContent()}"></code></pre>
         </div>
     </div>

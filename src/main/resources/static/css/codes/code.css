@@ -34,6 +34,10 @@ pre {
     /* font-size:125%; */
 }
 
+a {
+    text-decoration: none;
+}
+
 .description {
 
 }

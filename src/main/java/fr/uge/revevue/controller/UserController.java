@@ -70,12 +70,12 @@ public class UserController {
 
     @GetMapping("/users/{username}")
     public String information(@PathVariable String username, Model model){
-        var userInformationDTO = userService.getInformation(username);
-        if (userInformationDTO == null){
+        var userInformation = userService.getInformation(username);
+        if (userInformation == null){
             return "redirect:/";
         }
-        model.addAttribute("auth",userService.getInformation(userService.currentUser().getUsername()));
-        model.addAttribute("user", userInformationDTO);
+        model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
+        model.addAttribute("user", userInformation);
         return "users/profile";
     }
 
@@ -92,8 +92,8 @@ public class UserController {
 
     @PostMapping("/unfollow/{username}")
     public String unfollow(@PathVariable String username){
-        var userInformationDTO = userService.getInformation(username);
-        if (userInformationDTO == null){
+        var userInformation = userService.getInformation(username);
+        if (userInformation == null){
             return "redirect:/";
         }
         var user = userService.currentUser();

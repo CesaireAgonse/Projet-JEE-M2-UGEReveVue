@@ -67,7 +67,7 @@ public class UserService implements UserDetailsService {
                 return (User) principal;
             }
         }
-        throw new IllegalStateException("You are not logged");
+       return null;
     }
 
     @Transactional

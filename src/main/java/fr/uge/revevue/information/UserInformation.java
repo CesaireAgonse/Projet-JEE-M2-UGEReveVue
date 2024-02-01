@@ -6,13 +6,13 @@ import java.util.stream.Collectors;
 
 import fr.uge.revevue.entity.User;
 
-public record UserInformation (long id, String username, Set<UserInformation> followed){
+public record UserInformation (long id, String username, Set<FollowedInformation> followed){
     public static UserInformation from(User user){
         Objects.requireNonNull(user, "[UserInformation] user is null");
         return new UserInformation(
                 user.getId(),
                 user.getUsername(),
-                user.getFollowed().stream().map(UserInformation::from).collect(Collectors.toSet())
+                user.getFollowed().stream().map(FollowedInformation::from).collect(Collectors.toSet())
         );
     }
 }

@@ -1,0 +1,96 @@
+pre {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-height: 1000px;
+}
+
+.code-container {
+
+}
+
+.title {
+    padding-left: 10px;
+    color: #333;
+}
+
+.author {
+    padding-left: 10px;
+    padding-bottom: 5px;
+    display: flex;
+    text-align: center;
+}
+.author p {
+    margin : 0px;
+    padding-right : 5px;
+}
+
+.author a {
+    margin : 0px;
+    color: inherit; /* Utilise la couleur par défaut pour les liens */
+    text-decoration: none; /* Supprime le soulignement des liens */
+    font-weight: bold;
+    /* font-size:125%; */
+}
+
+.description {
+
+}
+
+.post {
+    display: flex;
+    border-top: 1px solid #ccc;
+}
+
+.votes {
+    display: flex;
+    text-align: center;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    align-items: center;
+}
+
+.vote-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; /* Crée un bouton de forme circulaire */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* Animation de transition de couleur */
+}
+
+.vote-btn:hover {
+    background-color: #cccccc; /* Couleur au survol */
+}
+
+.content {
+    width: 100%;
+    clear: both; /* S'assurer que le contenu ne chevauche pas les éléments flottants */
+}
+
+
+.container {
+    max-width: 65%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.item1 { grid-area: header; }
+.item2 {
+    grid-area: main;
+}
+
+.grid-container {
+    display: grid;
+    height: 100%;
+    overflow-y: auto;
+    grid-template-areas:
+    'header'
+    'main';
+}
