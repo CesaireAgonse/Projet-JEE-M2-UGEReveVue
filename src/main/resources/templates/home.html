@@ -7,21 +7,25 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-    <div th:replace="navbar :: navbar"></div>
-        <div class="grid-container">
-            <div class="item2"></div>
-            <div class="item3">
-                <div th:if="${auth != null}" class="container option" >
-                    <p class="left" th:text="${codes.size() + ' codes'}"></p>
-                    <a th:href="'codes/create'" class="basic-button right">Post Code</a>
+        <div th:replace="navbar :: navbar"></div>
+        <div class="main">
+            <div class="container limit option">
+                <div>
+                    <p class="text-title left">All Codes</p>
+                    <a th:if="${auth != null}" th:href="'codes/create'" class="button basic right">Post Code</a>
                 </div>
-                <div th:each="code : ${codes}" class="code-container">
-                    <div th:replace="codes/code :: codeFragment(code=${code})"></div>
+                <div>
+                    <p class="result left" th:text="${codes.size() == 1 ? '1 result' : codes.size() + ' results'}"></p>
+                    <button class="right button other order">Relevance</button>
+                    <button class="right button other order">Newest</button>
                 </div>
             </div>
-            <div class="item4"></div>
-            <div class="item5"><div th:replace="footer :: footer"></div></div>
+            <div th:each="code : ${codes}" class="container limit code-container">
+                <div th:replace="codes/code :: codeFragment(code=${code})"></div>
+            </div>
+            <div th:replace="footer :: footer"></div>
         </div>
+
         <script src="/prism/prism.js"></script>
         <script>
             document.querySelectorAll('.code-container').forEach(codeContainer => {
@@ -46,6 +50,7 @@
                 });
             });
         </script>
+
     </body>
 </html>
 

@@ -19,7 +19,7 @@ form .txt_field{
     padding-left: 10px;
 }
 
-.basic-button.auth{
+.button.basic.auth{
     width: 100%;
     height: 50px;
     font-size: 18px;
@@ -39,4 +39,8 @@ form .txt_field{
 
 .link a:hover{
     text-decoration: underline;
+}
+
+.container.auth-limit {
+    max-width: 30%;
 }

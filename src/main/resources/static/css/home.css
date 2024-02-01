@@ -1,21 +1,25 @@
 .container.option {
-    height: 40px;
+    height: 90px;
+    margin-bottom: 10px;
 }
 
-.item1 { grid-area: header; }
-.item2 { grid-area: left; }
-.item3 {
-    grid-area: main;
+.button.other.order{
+    margin-top: 20px;
 }
-.item4 { grid-area: right; }
-.item5 { grid-area: footer; }
 
-.grid-container {
-  display: grid;
-  height: 100%;
-  grid-template-columns: repeat(2, 1fr) repeat(2, 2fr) repeat(2, 1fr);
-  grid-template-areas:
-    'header header header header header header'
-    'left left main main right right'
-    'left left footer footer right right';
+.text-title{
+    margin: 0;
+    font-size: 160%;
+}
+
+.result{
+    clear: both;
+    margin-top: 30px;
+    font-weight: bold;
+}
+
+.footer{
+    margin: 10px auto;
+    padding-bottom: 10px;
+    width: 50%;
 }
