@@ -1,9 +1,12 @@
 package fr.uge.revevue.service;
 
+import fr.uge.revevue.entity.Role;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.entity.User;
+import fr.uge.revevue.repository.RoleRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,11 +19,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
+    private RoleRepository roleRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @PersistenceUnit
     private final EntityManagerFactory emf;
@@ -30,10 +35,12 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     public UserService(UserRepository userRepository,
+                       RoleRepository roleRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
                        EntityManagerFactory emf,
                        EntityManager em){
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.emf = emf;
         this.em = em;
@@ -46,6 +53,7 @@ public class UserService implements UserDetailsService {
         }
         var passwordCrypt = bCryptPasswordEncoder.encode(password);
         var user = new User(username, passwordCrypt);
+        user = setRoletoToUser(user, "USER"); //par défaut un user est du role "USER"
         userRepository.save(user);
         UserInformation.from(user);
     }
@@ -119,6 +127,38 @@ public class UserService implements UserDetailsService {
         var followerUser = optionalFollowerUser.get();
         followerUser.getFollowed().remove(followedUser);
         em.persist(followerUser);
+    }
+
+
+    @Bean
+    void initDefaultAdminUser() {
+        var adminUser = userRepository.findByUsername("admin");
+        if (adminUser.isEmpty()) {
+            System.out.println("Adding admin ...");
+            signup("admin", "uge");
+            adminUser = userRepository.findByUsername("admin");
+            if (adminUser.isEmpty()){
+                throw new IllegalStateException("admin not found");
+            }
+            var a = adminUser.get();
+            a = setRoletoToUser(a, "ADMIN");
+            System.out.println("update de l'admin");
+            userRepository.save(a);
+            System.out.println("Finish");
+        } else {
+            System.out.println("admin is already here");
+        }
+    }
+
+    public User setRoletoToUser(User user, String role){
+        var userRole = roleRepository.findByName(role);
+        if (userRole.isEmpty()){
+            throw new IllegalStateException(role + " role not found");
+        }
+        var roles = user.getRoles();
+        roles.add(userRole.get());
+        user.setRoles(roles);
+        return user;
     }
 
 }

@@ -25,6 +25,9 @@ public class User implements UserDetails {
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> roles = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_followed",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -118,12 +121,32 @@ public class User implements UserDetails {
         this.codes = codes;
     }
 
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public boolean isAdmin(){
+        if (roles!= null){
+            for (var r : roles){
+                if (r.getName().equals("ADMIN")){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", roles'=" + roles + '\''+
                 '}';
     }
 }

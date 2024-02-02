@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <title>Admin</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/users/profile.css"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+<div th:if="${auth != null}" class="main">
+    <p> ici c'est la page de l'admin</p>
+</div>
+</body>
+</html>
