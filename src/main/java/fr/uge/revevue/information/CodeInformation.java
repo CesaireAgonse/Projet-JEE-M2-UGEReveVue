@@ -4,6 +4,7 @@ import fr.uge.revevue.entity.Code;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public record CodeInformation(
@@ -14,7 +15,8 @@ public record CodeInformation(
         String javaContent,
         String unitContent,
         int scoreVote,
-        Date date
+        Date date,
+        Set<CommentInformation> comments
 ) {
     public static CodeInformation from(Code code){
         Objects.requireNonNull(code, "[CodeInformation] code is null");
@@ -26,7 +28,8 @@ public record CodeInformation(
                 code.getJavaContent(),
                 code.getUnitContent(),
                 code.getScoreVote(),
-                code.getDate()
+                code.getDate(),
+                code.getComments().stream().map(CommentInformation::from).collect(Collectors.toSet())
         );
     }
 }

@@ -4,6 +4,7 @@ import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.entity.Vote;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,15 +13,20 @@ public abstract class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     protected Set<Vote> votes = new HashSet<>();
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     protected Set<Comment> comments = new HashSet<>();
 
     @ManyToOne
     private User user;
+
+    private Date date;
     public Post(User user) {
         this.user = user;
+        this.date = new Date();
     }
 
     public Post() {
@@ -51,12 +57,18 @@ public abstract class Post {
         this.user = user;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public int getScoreVote(){
-        var score = 0;
-        for (var vote : votes) {
-            score += vote.getScore();
-        }
-        return score;
+        return votes.stream()
+                .mapToInt(Vote::getScore)
+                .sum();
     }
 
     public Set<Comment> getComments() {

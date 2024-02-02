@@ -1,25 +1,22 @@
 package fr.uge.revevue.entity;
 
-import fr.uge.revevue.entityId.CommentId;
-import fr.uge.revevue.entityId.VoteId;
-
 import javax.persistence.*;
 
 @Entity
 @Table(name = "Comments")
-@IdClass(CommentId.class)
 public class Comment {
-
-    private String content;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
-    public Comment() {
-    }
+
+    private String content;
+    public Comment() {}
 
     public Comment(String content, User user,Post post) {
         this.content = content;

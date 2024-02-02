@@ -11,10 +11,12 @@
             <div class="container limit">
                 <div th:replace="codes/code :: codeFragment(code=${code})"></div>
             </div>
-            <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
-                <textarea id="content" name="content" th:field="*{content}"></textarea>
-                <button type="submit">Post Comment</button>
-            </form>
+            <div class="container limit">
+                <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
+                    <textarea id="content" name="content" th:field="*{content}"></textarea>
+                    <button type="submit" class="button basic">Comment</button>
+                </form>
+            </div>
         </div>
 
     </body>

@@ -6,7 +6,6 @@ body{
     background: #f3efef no-repeat;
 }
 
-
 .button{
     display: inline-block;
     padding: 8px 16px;
@@ -39,8 +38,6 @@ body{
 .button.other:hover{
     background-color: #e5e5e5;
 }
-
-
 
 .container{
     padding: 20px;

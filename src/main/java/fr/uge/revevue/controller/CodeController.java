@@ -26,7 +26,6 @@ public class CodeController {
     private final UserService userService;
     private final CodeService codeService;
     private final VoteService voteService;
-
     private final CommentService commentService;
     @Autowired
     public CodeController(CodeService codeService, UserService userService, VoteService voteService,CommentService commentService){
@@ -54,33 +53,25 @@ public class CodeController {
         return "redirect:/";
     }
 
-
     @GetMapping("/codes/{codeId}")
     public String code(@PathVariable("codeId") @Valid long codeId,@ModelAttribute("commentForm") @Valid CommentForm commentForm, Model model){
         model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
         var code = codeService.getInformation(codeId);
         model.addAttribute("code", code);
-
         return "codes/codeReview";
     }
-
-
-
 
     @PostMapping("/codes/vote/{codeId}")
     public String codeVoted(@PathVariable("codeId") @Valid long codeId,
                             @RequestParam("voteType") Vote.VoteType voteType){
-        voteService.codeVoted(userService.currentUser().getId(), codeId, voteType);
+        voteService.postVoted(userService.currentUser().getId(), codeId, voteType);
         return "redirect:/";
     }
 
     @PostMapping("/codes/comment/{codeId}")
     public String codeCommented(@PathVariable("codeId") @Valid long codeId,
                                 @ModelAttribute("commentForm") CommentForm commentForm){
-        System.out.println("CommentForm " + commentForm.getContent());
-        commentService.codeCommented(userService.currentUser().getId(),codeId,commentForm.getContent());
+        commentService.postCommented(userService.currentUser().getId(),codeId,commentForm.getContent());
         return "redirect:/codes/" + codeId;
     }
-
-
 }
