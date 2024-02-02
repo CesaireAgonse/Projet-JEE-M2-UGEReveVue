@@ -5,6 +5,7 @@ import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.repository.CodeRepository;
+import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.UserRepository;
 import fr.uge.revevue.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import javax.transaction.Transactional;
 @Service
 public class VoteService {
     private VoteRepository voteRepository;
-    private CodeRepository codeRepository;
+    private PostRepository postRepository;
     private UserRepository userRepository;
 
     @PersistenceUnit
@@ -31,12 +32,12 @@ public class VoteService {
 
     @Autowired
     public VoteService(VoteRepository voteRepository,
-                       CodeRepository codeRepository,
+                       PostRepository postRepository,
                        UserRepository userRepository,
                        EntityManagerFactory emf,
                        EntityManager em){
         this.voteRepository = voteRepository;
-        this.codeRepository = codeRepository;
+        this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.emf = emf;
         this.em = em;
@@ -48,26 +49,26 @@ public class VoteService {
         if (findUser.isEmpty()){
             throw new IllegalStateException("User not found");
         }
-        var findCode = codeRepository.findById(codeId);
+        var findCode = postRepository.findById(codeId);
         if (findCode.isEmpty()){
             throw new IllegalStateException("Code not found");
         }
         var user = findUser.get();
-        var code = findCode.get();
-        var vote = voteRepository.findByCodeAndUser(user, code);
+        var post = findCode.get();
+        var vote = voteRepository.findByPostAndUser(user, post);
         if (vote == null){
-            var newVote = new Vote(user, code, voteType);
-            code.getVotes().add(newVote);
+            var newVote = new Vote(user, post, voteType);
+            post.getVotes().add(newVote);
             voteRepository.save(newVote);
-            return code.getScoreVote();
+            return post.getScoreVote();
         }
         else if (vote.getVoteType() != voteType){
             vote.setVoteType(voteType);
             em.persist(vote);
-            return code.getScoreVote();
+            return post.getScoreVote();
         }
-        code.getVotes().remove(vote);
+        post.getVotes().remove(vote);
         voteRepository.delete(vote);
-        return code.getScoreVote();
+        return post.getScoreVote();
     }
 }

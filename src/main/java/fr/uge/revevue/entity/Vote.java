@@ -18,7 +18,7 @@ public class Vote {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    private Code code;
+    private Post post;
 
     public enum VoteType{
         DownVote,
@@ -30,19 +30,27 @@ public class Vote {
 
     public Vote(){}
 
-    public Vote(User user, Code code, VoteType voteType) {
-        this.user = user;
-        this.code = code;
-        this.voteType = voteType;
+    public User getUser() {
+        return user;
     }
 
-    public User getUser() {return user;}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public void setUser(User user) {this.user = user;}
+    public Post getPost() {
+        return post;
+    }
 
-    public Code getCode() {return code;}
+    public void setPost(Post post) {
+        this.post = post;
+    }
 
-    public void setCode(Code code) {this.code = code;}
+    public Vote(User user, Post post, VoteType voteType) {
+        this.user = user;
+        this.post = post;
+        this.voteType = voteType;
+    }
 
     public VoteType getVoteType() {return voteType;}
 

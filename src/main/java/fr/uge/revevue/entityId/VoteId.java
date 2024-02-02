@@ -6,13 +6,13 @@ import java.util.Objects;
 public class VoteId implements Serializable {
 
     private Long user;
-    private Long code;
+    private Long post;
 
     public VoteId() {}
 
-    public VoteId(Long user, Long code) {
+    public VoteId(Long user, Long post) {
         this.user = user;
-        this.code = code;
+        this.post = post;
     }
 
     public Long getUser() {
@@ -23,11 +23,11 @@ public class VoteId implements Serializable {
         this.user = user;
     }
 
-    public Long getCode() {
-        return code;
+    public Long getPost() {
+        return post;
     }
 
-    public void setCode(Long code) {
-        this.code = code;
+    public void setPost(Long post) {
+        this.post = post;
     }
 }

@@ -9,14 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Codes")
-public class Code {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
-    @ManyToOne
-    private User user;
+public class Code extends Post {
 
     @NotBlank
     private String title;
@@ -34,35 +27,20 @@ public class Code {
 
     private Date date;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "code")
-    private Set<Vote> votes;
+
 
     public Code(){}
 
-    public Code(User user, String title, String description, String javaContent){
-        this.user = user;
+    public Code(User user, String title, String description, String javaContent) {
+        super(user);
         this.title = title;
         this.description = description;
         this.javaContent = javaContent;
-        this.votes = new HashSet<>();
         this.date = new Date();
     }
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public String getTitle() {return title;}
 
@@ -103,12 +81,11 @@ public class Code {
     @Override
     public String toString() {
         return "Code{" +
-                "id=" + id +
-                ", user=" + user +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", javaContent='" + javaContent + '\'' +
                 ", unitContent='" + unitContent + '\'' +
+                ", date=" + date +
                 ", votes=" + votes +
                 '}';
     }

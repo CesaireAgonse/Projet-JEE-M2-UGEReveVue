@@ -13,6 +13,7 @@ public class Comment {
     @Id
     private String content;
     @Id
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     public Comment() {

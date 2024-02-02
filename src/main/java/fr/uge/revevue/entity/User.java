@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private Set<Vote> votes;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    private Set<Code> codes = new HashSet<>();
+    private Set<Post> posts = new HashSet<>();
 
     public User(){}
 
@@ -110,12 +110,12 @@ public class User implements UserDetails {
         this.votes = votes;
     }
 
-    public Set<Code> getCodes() {
-        return codes;
+    public Set<Post> getPosts() {
+        return posts;
     }
 
-    public void setCodes(Set<Code> codes) {
-        this.codes = codes;
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
     }
 
     @Override
