@@ -1,6 +1,7 @@
 package fr.uge.revevue.controller.rest;
 
 import fr.uge.revevue.information.AuthenticationInformation;
+import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,14 @@ public class UserRestController {
 
     }
     @PostMapping("/signup")
-    public ResponseEntity.BodyBuilder signup(@RequestBody @Valid AuthenticationInformation authenticationInformation){
+    public ResponseEntity<UserInformation> signup(@RequestBody @Valid AuthenticationInformation authenticationInformation){
         userService.signup(authenticationInformation.username(), authenticationInformation.password());
-        return ResponseEntity.ok();
+        return ResponseEntity.ok(userService.getInformation(authenticationInformation.username()));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserInformation> login(@RequestBody @Valid AuthenticationInformation authenticationInformation){
+        return ResponseEntity.ok(userService.getInformation(authenticationInformation.username()));
     }
 
 
