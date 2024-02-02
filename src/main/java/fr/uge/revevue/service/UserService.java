@@ -23,7 +23,7 @@ import javax.transaction.Transactional;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     @PersistenceUnit
     private final EntityManagerFactory emf;
@@ -33,10 +33,12 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     public UserService(UserRepository userRepository,
+                       RoleRepository roleRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
                        EntityManagerFactory emf,
                        EntityManager em){
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.emf = emf;
         this.em = em;
