@@ -28,11 +28,18 @@ public class UserController {
 
     @PostMapping("/signup")
     public String signup(@ModelAttribute("signupForm") @Valid SignupForm signupForm,
-                             BindingResult result){
+                         BindingResult result,
+                         Model model){
         if (result.hasErrors() || !signupForm.getPassword().equals(signupForm.getConfirmPassword())){
             return "users/signup";
         }
-        userService.signup(signupForm.getUsername(), signupForm.getPassword());
+        try {
+            userService.signup(signupForm.getUsername(), signupForm.getPassword());
+        } catch (IllegalArgumentException e){
+            result.rejectValue("username", "error.signupForm", "This user name is already taken.");
+            return "users/signup";
+        }
+
         return "redirect:/login";
     }
 
