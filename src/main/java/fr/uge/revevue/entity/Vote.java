@@ -1,5 +1,7 @@
 package fr.uge.revevue.entity;
 
+import fr.uge.revevue.entityId.VoteId;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 

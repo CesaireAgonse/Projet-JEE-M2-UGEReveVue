@@ -1,4 +1,4 @@
-package fr.uge.revevue.entity;
+package fr.uge.revevue.entityId;
 
 import java.io.Serializable;
 import java.util.Objects;
