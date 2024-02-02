@@ -11,13 +11,19 @@
         </div>
     </div>
     <div class ="post code-container">
-        <div class ="votes">
-            <form name="vote" id="vote" th:data-code-id="${code.id()}">
-                <button class="vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
-                <p class="vote-score" th:text="${code.scoreVote()}"></p>
-                <button class="vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+        <div class ="buttons">
+            <div class ="votes">
+                <form name="vote" id="vote" th:data-code-id="${code.id()}">
+                    <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
+                    <p class="vote-score" th:text="${code.scoreVote()}"></p>
+                    <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+                </form>
+            </div>
+            <form th:if="${auth.isAdmin()}" name="delete" id="delete" th:data-code-id="${code.id()}">
+                <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
             </form>
         </div>
+
         <div class ="content">
             <p class="description" th:text="${code.description()}"></p>
             <a th:href="'/codes/' + ${code.id()}">
@@ -56,6 +62,63 @@
                     .catch(error => console.error('Error:', error));
             });
         });
+
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form');
+                const codeId = form.getAttribute('data-code-id');
+                const voteType = this.value;
+                console.log("delete id " + codeId);
+                fetch('../api/v1/codes/delete/' + codeId , {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to delete code');
+                        }
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            return response.json();
+                        } else {
+                            return null;
+                        }
+                    })
+                    .then(data => {
+                        if (data !== null) {
+                            console.log('Code deleted successfully:', data);
+                        } else {
+                            console.log('Code deleted successfully, no JSON data returned');
+                        }
+                        showNotification('Code supprimé avec succès');
+                        window.location.href = '/';
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        function showNotification(message, type = 'success') {
+            if (!('Notification' in window)) {
+                console.error('This browser does not support notifications.');
+                return;
+            }
+
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        displayNotification();
+                    }
+                });
+            } else {
+                displayNotification();
+            }
+
+            function displayNotification() {
+                const notification = new Notification('Notification', {
+                    body: message,
+                    icon: ''
+                });
+            }
+        }
 
     </script>
 

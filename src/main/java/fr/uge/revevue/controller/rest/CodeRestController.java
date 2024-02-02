@@ -1,5 +1,6 @@
 package fr.uge.revevue.controller.rest;
 
+import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
@@ -28,6 +29,12 @@ public class CodeRestController {
     public ResponseEntity<Integer> codeVoted(@PathVariable("codeId") @Valid long codeId,
                                              @RequestParam("voteType") Vote.VoteType voteType) {
         return ResponseEntity.ok(voteService.codeVoted(userService.currentUser().getId(), codeId, voteType));
+    }
+
+    @DeleteMapping("/delete/{codeId}")
+    public ResponseEntity<Void> codeDeleted(@PathVariable("codeId") @Valid long codeId) {
+        codeService.delete(codeId);
+        return ResponseEntity.noContent().build();
     }
 
 }

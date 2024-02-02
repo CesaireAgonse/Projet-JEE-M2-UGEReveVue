@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,4 +54,16 @@ public class CodeService {
                 .findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(page, keyword, keyword, keyword);
         return codes.stream().map(CodeInformation::from).collect(Collectors.toSet());
     }
+
+    @Transactional
+    public Code delete (long codeId){
+        var code = codeRepository.findById(codeId);
+        if(code.isEmpty()){
+            throw new IllegalArgumentException("Code not found");
+        }
+        codeRepository.delete(code.get());
+        return code.get();
+    }
+
+
 }

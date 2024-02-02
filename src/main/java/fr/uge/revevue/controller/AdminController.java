@@ -5,6 +5,7 @@ import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.form.SignupForm;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +25,7 @@ public class AdminController {
         this.userService = userService;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public String signup(){
         return "/admin";
