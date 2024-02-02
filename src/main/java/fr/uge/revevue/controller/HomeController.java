@@ -36,7 +36,10 @@ public class HomeController {
     public String homePage(@RequestParam(value = "q", required = false, defaultValue = "")String query,
                            @RequestParam(value = "pageNumber", required = false)Integer pageNumber,
                            Model model) {
-        model.addAttribute("auth", UserInformation.from(userService.currentUser()));
+        var user = userService.currentUser();
+        if (user != null){
+            model.addAttribute("auth", UserInformation.from(user));
+        }
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;
         }
