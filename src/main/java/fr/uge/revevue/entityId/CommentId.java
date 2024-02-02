@@ -6,15 +6,16 @@ public class CommentId implements Serializable {
 
 
     private Long user;
-    private Long content;
+    private Long post;
 
     public CommentId() {
     }
 
-    public CommentId(Long user, Long content) {
+    public CommentId(Long user, Long post) {
         this.user = user;
-        this.content = content;
+        this.post = post;
     }
+
     public Long getUser() {
         return user;
     }
@@ -23,13 +24,11 @@ public class CommentId implements Serializable {
         this.user = user;
     }
 
-    public Long getContent() {
-        return content;
+    public Long getPost() {
+        return post;
     }
 
-    public void setContent(Long content) {
-        this.content = content;
+    public void setPost(Long post) {
+        this.post = post;
     }
-
-
 }

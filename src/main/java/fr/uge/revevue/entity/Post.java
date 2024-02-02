@@ -14,8 +14,8 @@ public abstract class Post {
     private long id;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
     protected Set<Vote> votes = new HashSet<>();
-    /*@OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
-    protected Set<Comment> comments = new HashSet<>();*/
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
+    protected Set<Comment> comments = new HashSet<>();
 
     @ManyToOne
     private User user;
@@ -59,11 +59,11 @@ public abstract class Post {
         return score;
     }
 
-    /*public Set<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
-    }*/
+    }
 }

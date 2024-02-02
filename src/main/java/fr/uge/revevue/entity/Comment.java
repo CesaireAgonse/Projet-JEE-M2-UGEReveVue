@@ -10,12 +10,14 @@ import javax.persistence.*;
 @IdClass(CommentId.class)
 public class Comment {
 
-    @Id
     private String content;
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Post post;
     public Comment() {
     }
 
