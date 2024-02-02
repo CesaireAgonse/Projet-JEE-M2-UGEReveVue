@@ -12,9 +12,9 @@ public abstract class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     protected Set<Vote> votes = new HashSet<>();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     protected Set<Comment> comments = new HashSet<>();
 
     @ManyToOne
