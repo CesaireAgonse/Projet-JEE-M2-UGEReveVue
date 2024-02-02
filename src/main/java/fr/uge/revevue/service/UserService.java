@@ -5,6 +5,7 @@ import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.RoleRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -48,6 +49,7 @@ public class UserService implements UserDetailsService {
         }
         var passwordCrypt = bCryptPasswordEncoder.encode(password);
         var user = new User(username, passwordCrypt);
+        user = setRoleToUser(user, "USER"); //par défaut un user est du role "USER"
         userRepository.save(user);
         UserInformation.from(user);
     }
@@ -121,6 +123,37 @@ public class UserService implements UserDetailsService {
         var followerUser = optionalFollowerUser.get();
         followerUser.getFollowed().remove(followedUser);
         em.persist(followerUser);
+    }
+
+    @Bean
+    void initDefaultAdminUser() {
+        var adminUser = userRepository.findByUsername("admin");
+        if (adminUser.isEmpty()) {
+            System.out.println("Adding admin ...");
+            signup("admin", "uge");
+            adminUser = userRepository.findByUsername("admin");
+            if (adminUser.isEmpty()){
+                throw new IllegalStateException("admin not found");
+            }
+            var a = adminUser.get();
+            a = setRoleToUser(a, "ADMIN");
+            System.out.println("update de l'admin");
+            userRepository.save(a);
+            System.out.println("Finish");
+        } else {
+            System.out.println("admin is already here");
+        }
+    }
+
+    public User setRoleToUser(User user, String role){
+        var userRole = roleRepository.findByName(role);
+        if (userRole.isEmpty()){
+            throw new IllegalStateException(role + " role not found");
+        }
+        var roles = user.getRoles();
+        roles.add(userRole.get());
+        user.setRoles(roles);
+        return user;
     }
 
 }
