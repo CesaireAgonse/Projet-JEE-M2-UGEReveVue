@@ -21,37 +21,25 @@
                     <button class="right button other order">Newest</button>
                 </div>
             </div>
-            <div th:each="code : ${codes}" class="container limit code-container">
-                <div th:replace="codes/code :: codeFragment(code=${code})"></div>
+            <div th:each="code : ${codes}">
+                 <div class="container limit home">
+                     <div class="">
+                         <p class="stats left" th:text="'score: ' + ${code.scoreVote()}"></p>
+                         <p class="stats left" th:text="'reviews: ' + '0' "></p>
+                         <p class="stats left" th:text="'comments: ' + '0' "></p>
+                         <div class ="author right">
+                             <a th:href="'/users/' + ${code.userInformation().username()}" th:text="${code.userInformation().username()}"></a>
+                         </div>
+                     </div>
+                     <div>
+                         <a th:href="'/codes/' + ${code.id()}"><h2 class ="title" th:text="${code.title()}"></h2></a>
+                         <p class ="description" th:text="${code.description()}"></p>
+                         <p class="date right"th:text="${code.date()}"></p>
+                     </div>
+                 </div>
             </div>
             <div th:replace="footer :: footer"></div>
         </div>
-
-        <script src="/prism/prism.js"></script>
-        <script>
-            document.querySelectorAll('.code-container').forEach(codeContainer => {
-                const codeElement = codeContainer.querySelector('.language-java');
-                const codeContent = codeElement.getAttribute('data-code');
-                codeElement.textContent = codeContent;
-            });
-            document.querySelectorAll('.vote-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const form = this.closest('form');
-                    const codeId = form.getAttribute('data-code-id');
-                    const voteType = this.value;
-                    fetch('api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
-                        method: 'POST'
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            const scoreElement = form.querySelector('.vote-score');
-                            scoreElement.textContent = data;
-                        })
-                        .catch(error => console.error('Error:', error));
-                });
-            });
-        </script>
-
     </body>
 </html>
 

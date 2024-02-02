@@ -7,7 +7,7 @@
         <h2 class ="title" th:text="${code.title()}"></h2>
         <div class ="author">
             <p>from: </p>
-            <a th:href="'users/' + ${code.userInformation().username()}" th:text="${code.userInformation().username()}"></a>
+            <a th:href="'/users/' + ${code.userInformation().username()}" th:text="${code.userInformation().username()}"></a>
         </div>
     </div>
     <div class ="post code-container">
@@ -20,17 +20,43 @@
         </div>
         <div class ="content">
             <p class="description" th:text="${code.description()}"></p>
-            <a th:href="'codes/' + ${code.id()}">
+            <a th:href="'/codes/' + ${code.id()}">
                 <pre><code class="language-java java-code" th:data-code="${code.javaContent()}"></code></pre>
             </a>
             <pre th:if="${code.unitContent() != null}"><code class="language-java" th:text="${code.unitContent()}"></code></pre>
+            <p class="date right" th:text="${code.date()}"></p>
         </div>
     </div>
     <script src="/prism/prism.js"></script>
     <script>
+        /*
+        document.querySelectorAll('.code-container').forEach(codeContainer => {
+            const codeElement = codeContainer.querySelector('.language-java');
+            const codeContent = codeElement.getAttribute('data-code');
+            codeElement.textContent = codeContent;
+        });
+        */
         const codeElement = document.querySelector('.language-java')
         const codeContent = codeElement.getAttribute('data-code');
         codeElement.textContent = codeContent;
+
+        document.querySelectorAll('.vote-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form');
+                const codeId = form.getAttribute('data-code-id');
+                const voteType = this.value;
+                fetch('../api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
+                    method: 'POST'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const scoreElement = form.querySelector('.vote-score');
+                        scoreElement.textContent = data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
     </script>
 
 </div>

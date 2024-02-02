@@ -57,12 +57,12 @@ public class UserController {
     }
 
     @PostMapping("/password")
-    public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm,BindingResult result){
+    public String password(@ModelAttribute("passwordForm") @Valid PasswordForm passwordForm, BindingResult result){
         if (result.hasErrors() || !passwordForm.getNewPassword().equals(passwordForm.getConfirmPassword())){
-            return "redirect:/password";
+            return "users/password";
         }
         if(passwordForm.getNewPassword().equals(passwordForm.getCurrentPassword())){
-            return "redirect:/password";
+            return "users/password";
         }
         userService.modifyPassword(userService.currentUser().getUsername(), passwordForm.getNewPassword(), passwordForm.getCurrentPassword());
         return "redirect:/users/" + userService.currentUser().getUsername();

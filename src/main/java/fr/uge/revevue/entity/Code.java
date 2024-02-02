@@ -1,62 +1,46 @@
 package fr.uge.revevue.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "Codes")
-public class Code {
+public class Code extends Post {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
-    @ManyToOne
-    private User user;
-
-    @NotNull
+    @NotBlank
     private String title;
 
-    @NotNull
+    @NotBlank
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String description;
 
+    @NotNull
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String javaContent;
 
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String unitContent;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "code")
-    private Set<Vote> votes;
+    private Date date;
+
+
 
     public Code(){}
 
-    public Code(User user, String title, String description, String javaContent){
-        this.user = user;
+    public Code(User user, String title, String description, String javaContent) {
+        super(user);
         this.title = title;
         this.description = description;
         this.javaContent = javaContent;
-        this.votes = new HashSet<>();
+        this.date = new Date();
     }
 
-    public long getId() {
-        return id;
-    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public String getTitle() {return title;}
 
@@ -74,6 +58,14 @@ public class Code {
 
     public void setUnitContent(String unitContent) {this.unitContent = unitContent;}
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public Set<Vote> getVotes() {return votes;}
 
     public void setVotes(Set<Vote> votes) {this.votes = votes;}
@@ -89,12 +81,11 @@ public class Code {
     @Override
     public String toString() {
         return "Code{" +
-                "id=" + id +
-                ", user=" + user +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", javaContent='" + javaContent + '\'' +
                 ", unitContent='" + unitContent + '\'' +
+                ", date=" + date +
                 ", votes=" + votes +
                 '}';
     }
