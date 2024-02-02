@@ -1,7 +1,14 @@
 package fr.uge.revevue.form;
 
 public class CommentForm {
-    String content;
+    private String content;
+
+    public CommentForm(String content) {
+        this.content = content;
+    }
+
+    public CommentForm() {
+    }
 
     public String getContent() {
         return content;

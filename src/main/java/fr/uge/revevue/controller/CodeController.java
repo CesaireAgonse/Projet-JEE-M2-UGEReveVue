@@ -3,9 +3,11 @@ package fr.uge.revevue.controller;
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CodeForm;
+import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.LoginForm;
 import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.service.CodeService;
+import fr.uge.revevue.service.CommentService;
 import fr.uge.revevue.service.UserService;
 import fr.uge.revevue.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +26,14 @@ public class CodeController {
     private final UserService userService;
     private final CodeService codeService;
     private final VoteService voteService;
+
+    private final CommentService commentService;
     @Autowired
-    public CodeController(CodeService codeService, UserService userService, VoteService voteService){
+    public CodeController(CodeService codeService, UserService userService, VoteService voteService,CommentService commentService){
         this.userService = userService;
         this.codeService = codeService;
         this.voteService = voteService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/codes/create")
@@ -51,10 +56,11 @@ public class CodeController {
 
 
     @GetMapping("/codes/{codeId}")
-    public String code(@PathVariable("codeId") @Valid long codeId, Model model){
+    public String code(@PathVariable("codeId") @Valid long codeId,@ModelAttribute("commentForm") @Valid CommentForm commentForm, Model model){
         model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
         var code = codeService.getInformation(codeId);
         model.addAttribute("code", code);
+
         return "codes/codeReview";
     }
 
@@ -66,6 +72,14 @@ public class CodeController {
                             @RequestParam("voteType") Vote.VoteType voteType){
         voteService.codeVoted(userService.currentUser().getId(), codeId, voteType);
         return "redirect:/";
+    }
+
+    @PostMapping("/codes/comment/{codeId}")
+    public String codeCommented(@PathVariable("codeId") @Valid long codeId,
+                                @ModelAttribute("commentForm") CommentForm commentForm){
+        System.out.println("CommentForm " + commentForm.getContent());
+        commentService.codeCommented(userService.currentUser().getId(),codeId,commentForm.getContent());
+        return "redirect:/codes/" + codeId;
     }
 
 
