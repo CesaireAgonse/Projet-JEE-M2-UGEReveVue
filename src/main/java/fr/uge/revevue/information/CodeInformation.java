@@ -2,6 +2,7 @@ package fr.uge.revevue.information;
 
 import fr.uge.revevue.entity.Code;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,8 @@ public record CodeInformation(
         String description,
         String javaContent,
         String unitContent,
-        int scoreVote
+        int scoreVote,
+        Date date
 ) {
     public static CodeInformation from(Code code){
         Objects.requireNonNull(code, "[CodeInformation] code is null");
@@ -23,7 +25,8 @@ public record CodeInformation(
                 code.getDescription(),
                 code.getJavaContent(),
                 code.getUnitContent(),
-                code.getScoreVote()
+                code.getScoreVote(),
+                code.getDate()
         );
     }
 }

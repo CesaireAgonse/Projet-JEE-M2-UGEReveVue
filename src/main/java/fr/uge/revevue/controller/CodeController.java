@@ -2,6 +2,8 @@ package fr.uge.revevue.controller;
 
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Vote;
+import fr.uge.revevue.form.CodeForm;
+import fr.uge.revevue.form.LoginForm;
 import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
@@ -30,25 +32,20 @@ public class CodeController {
     }
 
     @GetMapping("/codes/create")
-    public String codeForm(Model model){
-        model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
-        model.addAttribute("code", new Code());
+    public String post(@ModelAttribute("codeForm") CodeForm codeForm){
         return "codes/create";
     }
 
     @PostMapping("/codes/create")
-    public String codeForm(@ModelAttribute @Valid Code code,
-                           BindingResult result,
-                           @RequestParam("javaFile") MultipartFile javaFile,
-                           @RequestParam("unitFile") MultipartFile unitFile) throws IOException {
+    public String post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result)  throws IOException {
         if (result.hasErrors()){
             return "codes/create";
         }
         codeService.create(userService.currentUser(),
-                code.getTitle(),
-                code.getDescription(),
-                new String(javaFile.getBytes(),StandardCharsets.UTF_8),
-                new String(unitFile.getBytes(), StandardCharsets.UTF_8));
+                codeForm.getTitle(),
+                codeForm.getDescription(),
+                new String(codeForm.getJavaFile().getBytes(),StandardCharsets.UTF_8),
+                new String(codeForm.getUnitFile().getBytes(), StandardCharsets.UTF_8));
         return "redirect:/";
     }
 

@@ -35,7 +35,7 @@ public class User implements UserDetails {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<Vote> votes;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<Code> codes = new HashSet<>();
 
     public User(){}

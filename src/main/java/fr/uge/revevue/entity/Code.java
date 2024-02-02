@@ -1,7 +1,9 @@
 package fr.uge.revevue.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,18 +18,21 @@ public class Code {
     @ManyToOne
     private User user;
 
-    @NotNull
+    @NotBlank
     private String title;
 
-    @NotNull
+    @NotBlank
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String description;
 
+    @NotNull
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String javaContent;
 
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String unitContent;
+
+    private Date date;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "code")
     private Set<Vote> votes;
@@ -40,6 +45,7 @@ public class Code {
         this.description = description;
         this.javaContent = javaContent;
         this.votes = new HashSet<>();
+        this.date = new Date();
     }
 
     public long getId() {
@@ -73,6 +79,14 @@ public class Code {
     public String getUnitContent() {return unitContent;}
 
     public void setUnitContent(String unitContent) {this.unitContent = unitContent;}
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public Set<Vote> getVotes() {return votes;}
 

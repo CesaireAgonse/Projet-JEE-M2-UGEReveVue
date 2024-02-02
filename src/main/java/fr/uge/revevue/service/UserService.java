@@ -20,8 +20,8 @@ import javax.transaction.Transactional;
 @Service
 public class UserService implements UserDetailsService {
 
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     @PersistenceUnit
     private final EntityManagerFactory emf;
 
