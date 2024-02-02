@@ -76,7 +76,7 @@ public class CodeController {
 
     @PostMapping("/codes/comment/{codeId}")
     public String codeCommented(@PathVariable("codeId") @Valid long codeId,
-                                @RequestParam("commentForm") CommentForm commentForm){
+                                @ModelAttribute("commentForm") CommentForm commentForm){
         System.out.println("CommentForm " + commentForm.getContent());
         commentService.codeCommented(userService.currentUser().getId(),codeId,commentForm.getContent());
         return "redirect:/codes/" + codeId;
