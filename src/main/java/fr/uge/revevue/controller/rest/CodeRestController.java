@@ -28,7 +28,7 @@ public class CodeRestController {
     @PostMapping("/vote/{codeId}")
     public ResponseEntity<Integer> codeVoted(@PathVariable("codeId") @Valid long codeId,
                                              @RequestParam("voteType") Vote.VoteType voteType) {
-        return ResponseEntity.ok(voteService.codeVoted(userService.currentUser().getId(), codeId, voteType));
+        return ResponseEntity.ok(voteService.postVoted(userService.currentUser().getId(), codeId, voteType));
     }
 
     @DeleteMapping("/delete/{codeId}")

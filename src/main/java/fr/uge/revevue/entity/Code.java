@@ -25,10 +25,6 @@ public class Code extends Post {
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String unitContent;
 
-    private Date date;
-
-
-
     public Code(){}
 
     public Code(User user, String title, String description, String javaContent) {
@@ -36,11 +32,7 @@ public class Code extends Post {
         this.title = title;
         this.description = description;
         this.javaContent = javaContent;
-        this.date = new Date();
     }
-
-
-
 
     public String getTitle() {return title;}
 
@@ -58,35 +50,5 @@ public class Code extends Post {
 
     public void setUnitContent(String unitContent) {this.unitContent = unitContent;}
 
-    public Date getDate() {
-        return date;
-    }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public Set<Vote> getVotes() {return votes;}
-
-    public void setVotes(Set<Vote> votes) {this.votes = votes;}
-
-    public int getScoreVote(){
-        var score = 0;
-        for (var vote : votes) {
-            score += vote.getScore();
-        }
-        return score;
-    }
-
-    @Override
-    public String toString() {
-        return "Code{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", javaContent='" + javaContent + '\'' +
-                ", unitContent='" + unitContent + '\'' +
-                ", date=" + date +
-                ", votes=" + votes +
-                '}';
-    }
 }

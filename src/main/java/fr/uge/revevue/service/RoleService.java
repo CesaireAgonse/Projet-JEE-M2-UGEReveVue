@@ -20,7 +20,7 @@ import javax.transaction.Transactional;
 
 @Service
 public class RoleService {
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @PersistenceUnit
     private final EntityManagerFactory emf;

@@ -44,17 +44,17 @@ public class VoteService {
     }
 
     @Transactional
-    public int codeVoted(long userId, long codeId, Vote.VoteType voteType){
+    public int postVoted(long userId, long postId, Vote.VoteType voteType){
         var findUser = userRepository.findById(userId);
         if (findUser.isEmpty()){
             throw new IllegalStateException("User not found");
         }
-        var findCode = postRepository.findById(codeId);
-        if (findCode.isEmpty()){
-            throw new IllegalStateException("Code not found");
+        var findPost = postRepository.findById(postId);
+        if (findPost.isEmpty()){
+            throw new IllegalStateException("Post not found");
         }
         var user = findUser.get();
-        var post = findCode.get();
+        var post = findPost.get();
         var vote = voteRepository.findByPostAndUser(user, post);
         if (vote == null){
             var newVote = new Vote(user, post, voteType);

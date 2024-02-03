@@ -2,6 +2,7 @@ package fr.uge.revevue.controller;
 
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.User;
+import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,10 @@ public class HomeController {
     public String homePage(@RequestParam(value = "q", required = false, defaultValue = "")String query,
                            @RequestParam(value = "pageNumber", required = false)Integer pageNumber,
                            Model model) {
-        model.addAttribute("auth", userService.currentUser());
+        var user = userService.currentUser();
+        if (user != null){
+            model.addAttribute("auth", UserInformation.from(user));
+        }
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;
         }
