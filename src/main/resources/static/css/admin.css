@@ -1,0 +1,92 @@
+.container.option {
+    height: 90px;
+    margin-bottom: 10px;
+}
+
+.button.other.order{
+    margin-top: 20px;
+}
+
+.text-title{
+    margin: 0;
+    font-size: 160%;
+}
+
+.result{
+    clear: both;
+    margin-top: 30px;
+    font-weight: bold;
+}
+
+.footer{
+    margin: 10px auto;
+    padding-bottom: 10px;
+    width: 50%;
+}
+
+.date {
+    margin : 0;
+    color: #999;
+    font-size: 80%;
+}
+
+.title {
+    padding-top: 5px;
+    padding-left: 10px;
+    color: #333;
+}
+
+.title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.author {
+    font-size: 90%;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    display: flex;
+    text-align: center;
+    font-weight: bold;
+}
+
+.author a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.stats {
+    padding-right: 15px;
+    padding-left: 10px;
+    margin : 0;
+    color: #999;
+    font-size: 90%;
+}
+
+.description{
+    padding-left: 10px;
+    margin-top: -10px;
+    margin-bottom: 0;
+}
+
+.btn {
+     width: 30px;
+     height: 30px;
+     border-radius: 50%;
+     background-color: #fff;
+     border: 1px solid #ddd;
+     cursor: pointer;
+     font-size: 16px;
+     transition: background-color 0.3s ease;
+     margin-left : 10px;
+}
+
+.btn:hover {
+     background-color: #cccccc;
+}
+
+.main-info {
+    display: flex;
+    text-align: center;
+    align-items: center;
+}
