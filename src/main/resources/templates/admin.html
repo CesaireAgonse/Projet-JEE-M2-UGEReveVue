@@ -7,9 +7,86 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<div th:replace="navbar :: navbar"></div>
-<div th:if="${auth != null}" class="main">
-    <p> ici c'est la page de l'admin</p>
-</div>
+    <div th:replace="navbar :: navbar"></div>
+    <div class="main">
+        <div class="container limit option">
+            <div>
+                <p class="text-title left">Administration page</p>
+            </div>
+        </div>
+        <div th:each="user : ${users}">
+            <div class="container limit home">
+                <div>
+                    <h2 class ="title">
+                        <a th:href="'/users/' + ${user.username()}" th:text="${user.username()}"></a>
+                    </h2>
+                    <form th:if="${auth.isAdmin()}" name="delete" id="delete" th:data-user-id="${user.id()}">
+                        <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
+                    </form>
+                    <p>la liste de tout ses post plus tard ...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
+<script src="/prism/prism.js"></script>
+<script>
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('form');
+            const userId = form.getAttribute('data-user-id');
+            const voteType = this.value;
+            console.log("delete id " + userId);
+            fetch('../api/v1/users/delete/' + userId , {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete user');
+                    }
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json();
+                    } else {
+                        return null;
+                    }
+                })
+                .then(data => {
+                    if (data !== null) {
+                        console.log('User deleted successfully:', data);
+                    } else {
+                        console.log('User deleted successfully, no JSON data returned');
+                    }
+                    showNotification('User deleted.');
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+
+    function showNotification(message, type = 'success') {
+        if (!('Notification' in window)) {
+            console.error('This browser does not support notifications.');
+            return;
+        }
+
+        if (Notification.permission !== 'granted') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    displayNotification();
+                }
+            });
+        } else {
+            displayNotification();
+        }
+
+        function displayNotification() {
+            const notification = new Notification('Notification', {
+                body: message,
+                icon: ''
+            });
+        }
+    }
+
+</script>

@@ -31,5 +31,11 @@ public class UserRestController {
         return ResponseEntity.ok(userService.getInformation(authenticationInformation.username()));
     }
 
+    @DeleteMapping("/delete/{codeId}")
+    public ResponseEntity<Void> userDeleted(@PathVariable("codeId") @Valid long codeId) {
+        userService.delete(codeId);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package fr.uge.revevue.service;
 
+import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.RoleRepository;
@@ -18,6 +19,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -156,6 +159,22 @@ public class UserService implements UserDetailsService {
         roles.add(userRole.get());
         user.setRoles(roles);
         return user;
+    }
+
+    public List<UserInformation> getAllUser(){
+        List<UserInformation> list = new ArrayList<>();
+        userRepository.findAll().forEach( user -> { list.add( getInformation(user.getUsername()));});
+        return list;
+    }
+
+    @Transactional
+    public User delete(long codeId){
+        var user = userRepository.findById(codeId);
+        if(user.isEmpty()){
+            throw new IllegalArgumentException("User not found");
+        }
+        userRepository.delete(user.get());
+        return user.get();
     }
 
 }
