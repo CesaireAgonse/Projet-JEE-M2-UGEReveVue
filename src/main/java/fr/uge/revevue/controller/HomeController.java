@@ -2,6 +2,7 @@ package fr.uge.revevue.controller;
 
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.User;
+import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
@@ -33,7 +34,8 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String homePage(@RequestParam(value = "q", required = false, defaultValue = "")String query,
+    public String homePage(@RequestParam(value = "sortBy", required = false)String sortBy,
+                           @RequestParam(value = "q", required = false, defaultValue = "")String query,
                            @RequestParam(value = "pageNumber", required = false)Integer pageNumber,
                            Model model) {
         var user = userService.currentUser();
@@ -43,8 +45,22 @@ public class HomeController {
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;
         }
-        var codes = codeService.findWithKeyword(query, pageNumber, LIMIT);
+        
+        List<CodeInformation> codes;
+        if(sortBy == null) {
+            codes = codeService.findWithKeyword(query, pageNumber, LIMIT);
+        }
+        else {
+            switch(sortBy) {
+                case "newest": codes = codeService.findWithKeywordByNewest(query, pageNumber, LIMIT); break;
+                case "relevance": codes = codeService.findWithKeywordByScore(query, pageNumber, LIMIT); break;
+                default: codes = codeService.findWithKeyword(query, pageNumber, LIMIT); break;
+            }
+        }
+        
         model.addAttribute("codes", codes);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("q", query);
         model.addAttribute("pageNumber", pageNumber);
         return "home";
     }
