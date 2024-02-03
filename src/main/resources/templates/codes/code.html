@@ -1,6 +1,6 @@
 <div th:fragment="codeFragment(code)">
     <link rel="stylesheet" href="/css/style.css"/>
-    <link rel="stylesheet" href="/css/codes/code.css" />
+    <link rel="stylesheet" href="/css/posts/post.css" />
     <link rel="stylesheet" href="/prism/prism.css">
 
     <div>
@@ -9,13 +9,14 @@
             <p>from: </p>
             <a th:href="'/users/' + ${code.userInformation().username()}" th:text="${code.userInformation().username()}"></a>
         </div>
+        <p class="date right post-date" th:text="${code.date()}"></p>
     </div>
     <div class ="post code-container">
         <div class ="buttons">
             <div class ="votes">
                 <form name="vote" id="vote" th:data-code-id="${code.id()}">
                     <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
-                    <p class="vote-score" th:text="${code.scoreVote()}"></p>
+                    <p class="vote-score" th:text="${code.score()}"></p>
                     <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
                 </form>
             </div>
@@ -26,11 +27,8 @@
 
         <div class ="content">
             <p class="description" th:text="${code.description()}"></p>
-            <a th:href="'/codes/' + ${code.id()}">
-                <pre><code class="language-java java-code" th:data-code="${code.javaContent()}"></code></pre>
-            </a>
+            <pre><code id="codeBlock" class="language-java java-code" th:data-code="${code.javaContent()}"></code></pre>
             <pre th:if="${code.unitContent() != null}"><code class="language-java" th:text="${code.unitContent()}"></code></pre>
-            <p class="date right" th:text="${code.date()}"></p>
         </div>
     </div>
     <script src="/prism/prism.js"></script>
@@ -45,23 +43,6 @@
         const codeElement = document.querySelector('.language-java')
         const codeContent = codeElement.getAttribute('data-code');
         codeElement.textContent = codeContent;
-
-        document.querySelectorAll('.vote-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const form = this.closest('form');
-                const codeId = form.getAttribute('data-code-id');
-                const voteType = this.value;
-                fetch('../api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
-                    method: 'POST'
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        const scoreElement = form.querySelector('.vote-score');
-                        scoreElement.textContent = data;
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-        });
 
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', function() {

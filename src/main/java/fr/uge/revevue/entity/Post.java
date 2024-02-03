@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Entity
 public abstract class Post {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -20,17 +21,20 @@ public abstract class Post {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     protected Set<Comment> comments = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
+    protected Set<Review> reviews = new HashSet<>();
+
     @ManyToOne
     private User user;
 
     private Date date;
+
     public Post(User user) {
         this.user = user;
         this.date = new Date();
     }
 
-    public Post() {
-    }
+    public Post() {}
 
     public long getId() {
         return id;
@@ -39,7 +43,6 @@ public abstract class Post {
     public void setId(long id) {
         this.id = id;
     }
-
 
     public Set<Vote> getVotes() {
         return votes;
@@ -77,5 +80,13 @@ public abstract class Post {
 
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
     }
 }

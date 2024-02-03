@@ -28,6 +28,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @PersistenceUnit
     private final EntityManagerFactory emf;
 
@@ -161,6 +162,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    @Transactional
     public List<UserInformation> getAllUser(){
         List<UserInformation> list = new ArrayList<>();
         userRepository.findAll().forEach( user -> { list.add( getInformation(user.getUsername()));});
@@ -176,7 +178,6 @@ public class UserService implements UserDetailsService {
         userRepository.delete(user.get());
         return user.get();
     }
-
 }
 
 

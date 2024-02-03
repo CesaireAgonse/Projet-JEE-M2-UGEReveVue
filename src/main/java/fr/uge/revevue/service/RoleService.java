@@ -20,6 +20,7 @@ import javax.transaction.Transactional;
 
 @Service
 public class RoleService {
+
     private final RoleRepository roleRepository;
 
     @PersistenceUnit
@@ -41,7 +42,6 @@ public class RoleService {
     public void initRole(){
         var adminRole = Role.admin();
         var userRole = Role.user();
-
         roleRepository.save(adminRole);
         roleRepository.save(userRole);
     }
@@ -61,5 +61,4 @@ public class RoleService {
         }
         return adminRole.get();
     }
-
 }

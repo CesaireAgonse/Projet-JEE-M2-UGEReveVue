@@ -1,19 +1,15 @@
 package fr.uge.revevue.controller;
 
-import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
-import fr.uge.revevue.form.LoginForm;
 import fr.uge.revevue.form.ReviewForm;
-import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -37,7 +33,8 @@ public class CodeController {
     }
 
     @GetMapping("/codes/create")
-    public String post(@ModelAttribute("codeForm") CodeForm codeForm){
+    public String post(@ModelAttribute("codeForm") CodeForm codeForm, Model model){
+        model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
         return "codes/create";
     }
 

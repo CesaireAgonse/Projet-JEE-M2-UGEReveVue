@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReviewService {
+
     private final ReviewRepository reviewRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+
     public ReviewService(ReviewRepository reviewRepository, PostRepository postRepository,UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
         this.postRepository = postRepository;

@@ -20,9 +20,10 @@ import javax.transaction.Transactional;
 
 @Service
 public class VoteService {
-    private VoteRepository voteRepository;
-    private PostRepository postRepository;
-    private UserRepository userRepository;
+
+    private final VoteRepository voteRepository;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     @PersistenceUnit
     private final EntityManagerFactory emf;

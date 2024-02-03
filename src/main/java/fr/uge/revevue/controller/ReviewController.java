@@ -37,7 +37,7 @@ public class ReviewController {
         model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
         var review = reviewService.getInformation(reviewId);
         model.addAttribute("review", review);
-        return "reviews/review";
+        return "reviews/reviewReview";
     }
     @PostMapping("/reviews/vote/{reviewId}")
     public String reviewVoted(@PathVariable("reviewId") @Valid Long reviewId, @RequestParam("voteType")Vote.VoteType voteType){

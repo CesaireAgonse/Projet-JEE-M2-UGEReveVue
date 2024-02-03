@@ -10,58 +10,55 @@
         <div class="main">
             <div class="container limit">
                 <div th:replace="codes/code :: codeFragment(code=${code})"></div>
-            </div>
-            <div th:each="comment:${code.comments()}">
-                <div class="container limit">
-                    <p th:text="${comment.content()}"></p>
-                    <p th:text="${comment.userInformation().username()}"></p>
+                <div th:each="comment:${code.comments()}">
+                    <div class="container comment">
+                        <div th:replace="comments/comment :: commentFragment(comment=${comment})"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="container limit">
-                <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
-                    <textarea id="content" name="content" th:field="*{content}"></textarea>
-                    <button type="submit" class="button basic">Comment</button>
-                </form>
-            </div>
-            <div th:each="review:${code.reviews()}">
-                <a th:href="'/reviews/'+${review.id()}">
-                <div class="container limit">
-                    <p th:text="${review.content()}"></p>
-                    <p th:text="${review.userInformation().username()}"></p>
-                    <form name="vote" id="vote" th:data-code-id="${code.id()}">
-                        <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
-                        <p class="vote-score" th:text="${code.scoreVote()}"></p>
-                        <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+                <div class="edit-zone">
+                    <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
+                        <textarea id="content" name="content" th:field="*{content}"></textarea>
+                        <button type="submit" class="button basic">Comment</button>
                     </form>
                 </div>
-                </a>
             </div>
             <div class="container limit">
-                <form th:action="@{/codes/review/{codeId}(codeId=${code.id()})}" th:object="${reviewForm}" method="post">
-                    <textarea id="contentReview" name="contentReview" th:field="*{content}"></textarea>
-                    <button type="submit" class="button basic">PostReview</button>
-                </form>
+                <h2 th:text="${code.reviews().size() == 1 ? '1 Review' : code.reviews().size() + ' Reviews'}"></h2>
+                <div th:each="review:${code.reviews()}">
+                    <div class="container review-post">
+                        <div>
+                            <p class="stats left" th:text="'reviews: '+ ${review.reviews().size()}"></p>
+                            <p class="stats left" th:text="'comments: ' + ${review.comments().size()} "></p>
+                        </div>
+                        <div th:replace="reviews/review :: reviewFragment(review=${review})"></div>
+                    </div>
+                </div>
+                <div class="edit-zone">
+                    <form th:action="@{/codes/review/{codeId}(codeId=${code.id()})}" th:object="${reviewForm}" method="post">
+                        <textarea class="review" id="contentReview" name="contentReview" th:field="*{content}"></textarea>
+                        <button type="submit" class="button basic">Review</button>
+                    </form>
+                </div>
             </div>
         </div>
+
         <script>
-        document.querySelectorAll('.vote-btn').forEach(button => {
-        button.addEventListener('click', function() {
-        const form = this.closest('form');
-        const codeId = form.getAttribute('data-code-id');
-        const voteType = this.value;
-        fetch('../api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
-        method: 'POST'
-        })
-        .then(response => response.json())
-        .then(data => {
-        const scoreElement = form.querySelector('.vote-score');
-        scoreElement.textContent = data;
-        })
-        .catch(error => console.error('Error:', error));
-        });
-        });
-
-    </script>
-
+            document.querySelectorAll('.vote-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const form = this.closest('form');
+                    const codeId = form.getAttribute('data-code-id');
+                    const voteType = this.value;
+                    fetch('../api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
+                        method: 'POST'
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            const scoreElement = form.querySelector('.vote-score');
+                            scoreElement.textContent = data;
+                        })
+                        .catch(error => console.error('Error:', error));
+                });
+            });
+        </script>
     </body>
 </html>

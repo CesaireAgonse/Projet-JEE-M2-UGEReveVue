@@ -1,73 +1,29 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="">
-<head>
-  <title th:text="titre"></title>
-  <link rel="stylesheet" href="/css/style.css"/>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-<div th:replace="navbar :: navbar"></div>
-<div class="main">
-  <div class="container limit">
-    <p th:text="${review.content()}"></p>
-    <p th:text="${review.userInformation().username()}"></p>
-    <form name="vote" id="vote2" th:data-code-id="${review.id()}">
-      <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
-      <p class="vote-score" th:text="${review.votes()}"></p>
-      <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
-    </form>
-  </div>
-<div th:each="comment:${review.comments()}">
-    <div class="container limit">
-      <p th:text="${comment.content()}"></p>
-      <p th:text="${comment.userInformation().username()}"></p>
+<div th:fragment="reviewFragment(review)">
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/posts/post.css" />
+    <link rel="stylesheet" href="/prism/prism.css">
+
+
+    <div class ="author pre-review">
+        <p>from: </p>
+        <a th:href="'/users/' + ${review.userInformation().username()}" th:text="${review.userInformation().username()}"></a>
     </div>
-  </div>
- <div class="container limit">
-    <form th:action="@{/reviews/comment/{reviewId}(reviewId=${review.id()})}" th:object="${commentForm}" method="post">
-      <textarea id="content" name="content" th:field="*{content}"></textarea>
-      <button type="submit" class="button basic">Comment</button>
-    </form>
+    <p class="date right post-date" th:text="${review.date()}"></p>
+    <div class ="post">
+        <div class ="buttons">
+            <div class ="votes">
+                <form name="vote" id="vote" th:data-code-id="${review.id()}">
+                    <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
+                    <p class="vote-score" th:text="${review.score()}"></p>
+                    <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+                </form>
+            </div>
+        </div>
+        <a th:href="'/reviews/'+${review.id()}">
+            <div class ="content">
+                <p class="description" th:text="${review.content()}"></p>
+            </div>
+        </a>
+    </div>
+    <script src="/prism/prism.js"></script>
 </div>
-   <div th:each="review:${review.reviews()}">
-       <a th:href="'/reviews/'+${review.id()}">
-   <div class="container limit">
-     <p th:text="${review.content()}"></p>
-     <p th:text="${review.userInformation().username()}"></p>
-     <form name="vote" id="vote" th:data-code-id="${review.id()}">
-       <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
-       <p class="vote-score" th:text="${review.votes()}"></p>
-       <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
-     </form>
-   </div>
-       </a>
- </div>
-    <div class="container limit">
-   <form th:action="@{/reviews/review/{reviewId}(reviewId=${review.id()})}" th:object="${reviewForm}" method="post">
-     <textarea id="contentReview" name="contentReview" th:field="*{content}"></textarea>
-     <button type="submit" class="button basic">PostReview</button>
-   </form>
- </div>
-</div>
-<script>
-        document.querySelectorAll('.vote-btn').forEach(button => {
-        button.addEventListener('click', function() {
-        const form = this.closest('form');
-        const codeId = form.getAttribute('data-code-id');
-        const voteType = this.value;
-        fetch('../api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
-        method: 'POST'
-        })
-        .then(response => response.json())
-        .then(data => {
-        const scoreElement = form.querySelector('.vote-score');
-        scoreElement.textContent = data;
-        })
-        .catch(error => console.error('Error:', error));
-        });
-        });
-
-    </script>
-
-</body>
-</html>

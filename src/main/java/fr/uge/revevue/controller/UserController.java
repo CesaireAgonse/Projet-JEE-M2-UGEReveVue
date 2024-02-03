@@ -97,7 +97,6 @@ public class UserController {
         if (userInformation == null){
             return "redirect:/";
         }
-        System.out.println("TEST");
         var user = userService.currentUser();
         userService.follow(user.getUsername(), username);
         return "redirect:/users/" + username;

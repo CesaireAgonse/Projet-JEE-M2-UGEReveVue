@@ -1,0 +1,13 @@
+<div th:fragment="commentFragment(comment)">
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/posts/post.css" />
+    <link rel="stylesheet" href="/prism/prism.css">
+    <div>
+        <div class ="author">
+            <a th:href="'/users/' + ${comment.userInformation().username()}" th:text="${comment.userInformation().username()}"></a>
+        </div>
+        <p class="message" th:text="${comment.content()}"></p>
+        <p class="date right" th:text="${comment.date()}"></p>
+    </div>
+
+</div>

@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 @Entity
 @Table(name = "Roles")
 public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;

@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <title th:text="Review"></title>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+<div class="main">
+    <div class="container limit">
+        <div th:replace="reviews/review :: reviewFragment(review=${review})"></div>
+        <div th:each="comment:${review.comments()}">
+            <div class="container comment">
+                <div th:replace="comments/comment :: commentFragment(comment=${comment})"></div>
+            </div>
+        </div>
+        <div class="edit-zone">
+            <form th:action="@{/reviews/comment/{reviewId}(reviewId=${review.id()})}" th:object="${commentForm}" method="post">
+                <textarea id="content" name="content" th:field="*{content}"></textarea>
+                <button type="submit" class="button basic">Comment</button>
+            </form>
+        </div>
+    </div>
+    <div class="container limit">
+        <h2 th:text="${review.reviews().size() == 1 ? '1 Review' : review.reviews().size() + ' Reviews'}"></h2>
+        <div th:each="review:${review.reviews()}">
+            <div class="container review-post">
+                <div>
+                    <p class="stats left" th:text="'reviews: '+ ${review.reviews().size()}"></p>
+                    <p class="stats left" th:text="'comments: ' + ${review.comments().size()} "></p>
+                </div>
+                <div th:replace="reviews/review :: reviewFragment(review=${review})"></div>
+            </div>
+        </div>
+        <div class="edit-zone">
+            <form th:action="@{/reviews/review/{reviewId}(reviewId=${review.id()})}" th:object="${reviewForm}" method="post">
+                <textarea class="review" id="contentReview" name="contentReview" th:field="*{content}"></textarea>
+                <button type="submit" class="button basic">Review</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.vote-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const form = this.closest('form');
+            const reviewId = form.getAttribute('data-code-id');
+            const voteType = this.value;
+            fetch('../api/v1/codes/vote/' + reviewId + '?voteType=' + voteType, {
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const scoreElement = form.querySelector('.vote-score');
+                    scoreElement.textContent = data;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+</body>
+</html>

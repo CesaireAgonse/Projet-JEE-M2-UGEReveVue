@@ -23,9 +23,9 @@
             </div>
             <div th:each="code : ${codes}">
                  <div class="container limit home">
-                     <div class="">
-                         <p class="stats left" th:text="'score: ' + ${code.scoreVote()}"></p>
-                         <p class="stats left" th:text="'reviews: '+ '0'"></p>
+                     <div>
+                         <p class="stats left" th:text="'score: ' + ${code.score()}"></p>
+                         <p class="stats left" th:text="'reviews: '+ ${code.reviews().size()}"></p>
                          <p class="stats left" th:text="'comments: ' + ${code.comments().size()} "></p>
                          <div class ="author right">
                              <a th:href="'/users/' + ${code.userInformation().username()}" th:text="${code.userInformation().username()}"></a>

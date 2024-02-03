@@ -68,3 +68,17 @@ body{
 .container.limit {
     max-width: 50%;
 }
+
+.stats {
+    padding-right: 15px;
+    padding-left: 10px;
+    margin : 0;
+    color: #999;
+    font-size: 90%;
+}
+
+.date {
+    margin : 0;
+    color: #999;
+    font-size: 80%;
+}

@@ -1,10 +1,14 @@
 package fr.uge.revevue.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 @Table(name = "Comments")
 public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -15,13 +19,27 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
+    @NotBlank
+    @Column(columnDefinition = "VARCHAR(MAX)")
     private String content;
+
+    private Date date;
+
     public Comment() {}
 
     public Comment(String content, User user,Post post) {
         this.content = content;
         this.user = user;
         this.post = post;
+        this.date = new Date();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getContent() {
@@ -38,5 +56,21 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

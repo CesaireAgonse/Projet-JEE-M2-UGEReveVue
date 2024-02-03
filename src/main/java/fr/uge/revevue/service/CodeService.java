@@ -56,14 +56,12 @@ public class CodeService {
     }
 
     @Transactional
-    public Code delete (long codeId){
+    public CodeInformation delete (long codeId){
         var code = codeRepository.findById(codeId);
         if(code.isEmpty()){
             throw new IllegalArgumentException("Code not found");
         }
         codeRepository.delete(code.get());
-        return code.get();
+        return CodeInformation.from(code.get());
     }
-
-
 }

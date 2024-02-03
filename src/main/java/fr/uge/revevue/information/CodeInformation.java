@@ -14,11 +14,12 @@ public record CodeInformation(
         String description,
         String javaContent,
         String unitContent,
-        int scoreVote,
+        int score,
         Date date,
         Set<CommentInformation> comments,
         Set<ReviewInformation> reviews
 ) {
+
     public static CodeInformation from(Code code){
         Objects.requireNonNull(code, "[CodeInformation] code is null");
         return new CodeInformation(

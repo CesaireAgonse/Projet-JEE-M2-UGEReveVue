@@ -57,7 +57,6 @@ public class Vote {
     public void setVoteType(VoteType voteType) {this.voteType = voteType;}
 
     public int getScore(){
-        // retournera -1 ou 1 car l'enum de vote commence à partir de 0
         return this.getVoteType().ordinal() - 1;
     }
 }
