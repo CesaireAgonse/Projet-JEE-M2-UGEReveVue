@@ -23,7 +23,45 @@
                     <button type="submit" class="button basic">Comment</button>
                 </form>
             </div>
+            <div th:each="review:${code.reviews()}">
+                <a th:href="'/reviews/'+${review.id()}">
+                <div class="container limit">
+                    <p th:text="${review.content()}"></p>
+                    <p th:text="${review.userInformation().username()}"></p>
+                    <form name="vote" id="vote" th:data-code-id="${code.id()}">
+                        <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
+                        <p class="vote-score" th:text="${code.scoreVote()}"></p>
+                        <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+                    </form>
+                </div>
+                </a>
+            </div>
+            <div class="container limit">
+                <form th:action="@{/codes/review/{codeId}(codeId=${code.id()})}" th:object="${reviewForm}" method="post">
+                    <textarea id="contentReview" name="contentReview" th:field="*{content}"></textarea>
+                    <button type="submit" class="button basic">PostReview</button>
+                </form>
+            </div>
         </div>
+        <script>
+        document.querySelectorAll('.vote-btn').forEach(button => {
+        button.addEventListener('click', function() {
+        const form = this.closest('form');
+        const codeId = form.getAttribute('data-code-id');
+        const voteType = this.value;
+        fetch('../api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
+        method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+        const scoreElement = form.querySelector('.vote-score');
+        scoreElement.textContent = data;
+        })
+        .catch(error => console.error('Error:', error));
+        });
+        });
+
+    </script>
 
     </body>
 </html>

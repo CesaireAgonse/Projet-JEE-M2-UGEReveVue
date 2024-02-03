@@ -16,7 +16,8 @@ public record CodeInformation(
         String unitContent,
         int scoreVote,
         Date date,
-        Set<CommentInformation> comments
+        Set<CommentInformation> comments,
+        Set<ReviewInformation> reviews
 ) {
     public static CodeInformation from(Code code){
         Objects.requireNonNull(code, "[CodeInformation] code is null");
@@ -29,7 +30,8 @@ public record CodeInformation(
                 code.getUnitContent(),
                 code.getScoreVote(),
                 code.getDate(),
-                code.getComments().stream().map(CommentInformation::from).collect(Collectors.toSet())
+                code.getComments().stream().map(CommentInformation::from).collect(Collectors.toSet()),
+                code.getReviews().stream().map(ReviewInformation::from).collect(Collectors.toSet())
         );
     }
 }

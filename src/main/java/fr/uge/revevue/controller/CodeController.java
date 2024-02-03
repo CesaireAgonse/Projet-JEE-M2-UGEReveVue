@@ -5,11 +5,9 @@ import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.LoginForm;
+import fr.uge.revevue.form.ReviewForm;
 import fr.uge.revevue.information.CodeInformation;
-import fr.uge.revevue.service.CodeService;
-import fr.uge.revevue.service.CommentService;
-import fr.uge.revevue.service.UserService;
-import fr.uge.revevue.service.VoteService;
+import fr.uge.revevue.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,12 +25,15 @@ public class CodeController {
     private final CodeService codeService;
     private final VoteService voteService;
     private final CommentService commentService;
+
+    private final ReviewService reviewService;
     @Autowired
-    public CodeController(CodeService codeService, UserService userService, VoteService voteService,CommentService commentService){
+    public CodeController(CodeService codeService, UserService userService, VoteService voteService,CommentService commentService,ReviewService reviewService){
         this.userService = userService;
         this.codeService = codeService;
         this.voteService = voteService;
         this.commentService = commentService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/codes/create")
@@ -54,7 +55,10 @@ public class CodeController {
     }
 
     @GetMapping("/codes/{codeId}")
-    public String code(@PathVariable("codeId") @Valid long codeId,@ModelAttribute("commentForm") @Valid CommentForm commentForm, Model model){
+    public String code(@PathVariable("codeId") @Valid long codeId,
+                       @ModelAttribute("commentForm") @Valid CommentForm commentForm,
+                       @ModelAttribute("reviewForm") @Valid ReviewForm reviewForm,
+                       Model model){
         model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
         var code = codeService.getInformation(codeId);
         model.addAttribute("code", code);
@@ -72,6 +76,13 @@ public class CodeController {
     public String codeCommented(@PathVariable("codeId") @Valid long codeId,
                                 @ModelAttribute("commentForm") CommentForm commentForm){
         commentService.postCommented(userService.currentUser().getId(),codeId,commentForm.getContent());
+        return "redirect:/codes/" + codeId;
+    }
+
+    @PostMapping("/codes/review/{codeId}")
+    public String codeReviewed(@PathVariable("codeId") @Valid long codeId,
+                               @ModelAttribute("reviewForm")ReviewForm reviewForm){
+        reviewService.postReview(userService.currentUser().getId(),codeId,reviewForm.getContent());
         return "redirect:/codes/" + codeId;
     }
 }

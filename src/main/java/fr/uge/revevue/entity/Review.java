@@ -1,9 +1,7 @@
 package fr.uge.revevue.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "Reviews")
@@ -13,13 +11,25 @@ public class Review extends Post{
     @ManyToOne(fetch= FetchType.LAZY)
     private Post post;
 
-    public Review(User user, String content, Post post) {
+
+    @OneToMany(fetch= FetchType.EAGER,mappedBy = "post")
+    private Set<Review> reviews;
+
+    public Review( String content,User user, Post post) {
         super(user);
         this.content = content;
         this.post = post;
     }
     public Review(){
 
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
     }
 
     public String getContent() {
