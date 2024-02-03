@@ -31,12 +31,17 @@ public class UserController {
                          BindingResult result,
                          Model model){
         if (result.hasErrors() || !signupForm.getPassword().equals(signupForm.getConfirmPassword())){
+            if (!signupForm.getPassword().equals(signupForm.getConfirmPassword())){
+                result.rejectValue("password", "error.signupForm", "The password is not the same.");
+            }
             return "users/signup";
         }
         try {
             userService.signup(signupForm.getUsername(), signupForm.getPassword());
         } catch (IllegalArgumentException e){
-            result.rejectValue("username", "error.signupForm", "This user name is already taken.");
+            if (e.getMessage().equals("username already used")){
+                result.rejectValue("username", "error.signupForm", "This user name is already taken.");
+            }
             return "users/signup";
         }
 
