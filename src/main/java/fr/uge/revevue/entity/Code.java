@@ -25,6 +25,9 @@ public class Code extends Post {
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String unitContent;
 
+    @OneToMany(fetch= FetchType.EAGER,mappedBy = "post")
+    private Set<Review> reviews;
+
     public Code(){}
 
     public Code(User user, String title, String description, String javaContent) {
@@ -50,5 +53,11 @@ public class Code extends Post {
 
     public void setUnitContent(String unitContent) {this.unitContent = unitContent;}
 
+    public Set<Review> getReviews() {
+        return reviews;
+    }
 
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
+    }
 }
