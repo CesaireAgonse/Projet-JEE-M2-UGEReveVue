@@ -43,6 +43,9 @@ public class User implements UserDetails {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<Post> posts = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<Comment> comments = new HashSet<>();
+
     public User(){}
 
     public User(String username, String password){
@@ -101,6 +104,14 @@ public class User implements UserDetails {
 
     public void setPosts(Set<Post> posts) {
         this.posts = posts;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 
     public Role getRole() {

@@ -149,13 +149,13 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public User delete(long codeId){
+    public UserInformation delete(long codeId){
         var user = userRepository.findById(codeId);
         if(user.isEmpty()){
             throw new IllegalArgumentException("User not found");
         }
         userRepository.delete(user.get());
-        return user.get();
+        return UserInformation.from(user.get());
     }
 }
 

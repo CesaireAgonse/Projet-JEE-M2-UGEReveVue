@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public record CodeInformation(
         long id,
-        UserInformation userInformation,
+        SimpleUserInformation userInformation,
         Vote.VoteType voteType,
         String title,
         String description,
@@ -26,7 +26,7 @@ public record CodeInformation(
         Objects.requireNonNull(code, "[CodeInformation] code is null");
         return new CodeInformation(
                 code.getId(),
-                UserInformation.from(code.getUser()),
+                SimpleUserInformation.from(code.getUser()),
                 code.getVoteUser(),
                 code.getTitle(),
                 code.getDescription(),

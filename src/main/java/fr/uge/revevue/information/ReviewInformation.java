@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public record ReviewInformation(
         long id,
-        UserInformation userInformation,
+        SimpleUserInformation userInformation,
         Vote.VoteType voteType,
         String title,
         String content,
@@ -25,7 +25,7 @@ public record ReviewInformation(
         Objects.requireNonNull(review, "[ReviewInformation] review is null");
         return new ReviewInformation(
                 review.getId(),
-                UserInformation.from(review.getUser()),
+                SimpleUserInformation.from(review.getUser()),
                 review.getVoteUser(),
                 review.getTitle(),
                 review.getContent(),

@@ -41,24 +41,9 @@
         </div>
     </div>
 </div>
-
+<script src="/script/post.js"></script>
 <script>
-    document.querySelectorAll('.vote-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const form = this.closest('form');
-            const reviewId = form.getAttribute('data-code-id');
-            const voteType = this.value;
-            fetch('../api/v1/codes/vote/' + reviewId + '?voteType=' + voteType, {
-                method: 'POST'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const scoreElement = form.querySelector('.vote-score');
-                    scoreElement.textContent = data;
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    });
+    votePost('.vote-btn', 'data-code-id', '.vote-score');
 </script>
 </body>
 </html>

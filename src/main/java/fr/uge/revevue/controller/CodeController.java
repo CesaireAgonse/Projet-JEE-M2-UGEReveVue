@@ -61,7 +61,7 @@ public class CodeController {
                 codeForm.getTitle(),
                 codeForm.getDescription(),
                 new String(codeForm.getJavaFile().getBytes(),StandardCharsets.UTF_8),
-                new String(codeForm.getJavaFile().getBytes(),StandardCharsets.UTF_8));
+                new String(codeForm.getUnitFile().getBytes(),StandardCharsets.UTF_8));
         return "redirect:/";
     }
 

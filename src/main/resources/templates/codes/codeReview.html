@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="edit-zone">
-                    <button class="button other" onclick="getSelectedCode()">Get Selected Code</button>
+                    <button class="button other" onclick='selectedCode()'>Get Selected Code</button>
                     <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
                         <input type="hidden" id="codeSelection" name="codeSelection" th:field="*{codeSelection}">
                         <pre><code id="preCodeSelection" name="preCodeSelection" ></code></pre>
@@ -44,49 +44,12 @@
                 </div>
             </div>
         </div>
-
+        <script src="/script/post.js"></script>
         <script>
-            document.querySelectorAll('.vote-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const form = this.closest('form');
-                    const codeId = form.getAttribute('data-code-id');
-                    const voteType = this.value;
-                    fetch('../api/v1/codes/vote/' + codeId + '?voteType=' + voteType, {
-                        method: 'POST'
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            const scoreElement = form.querySelector('.vote-score');
-                            scoreElement.textContent = data;
-                        })
-                        .catch(error => console.error('Error:', error));
-                });
-            });
-        </script>
-        <script>
-
-            function getSelectedCode() {
-                var selectedCode = "";
-                var codeElement = document.getElementById("codeBlock");
-                if (window.getSelection) {
-                    var selection = window.getSelection();
-                    if (selection.rangeCount > 0) {
-                        var range = selection.getRangeAt(0);
-                        if (codeElement.contains(range.startContainer) && codeElement.contains(range.endContainer)) {
-                            selectedCode = range.toString();
-                        }
-                    }
-                } else if (document.selection && document.selection.type !== "Control") {
-                    var textRange = document.selection.createRange();
-                    if (codeElement.contains(textRange.parentElement())) {
-                        selectedCode = textRange.text;
-                    }
-                }
-                document.getElementById("codeSelection").value = selectedCode;
-                document.getElementById("preCodeSelection").textContent = selectedCode;
+            votePost('.vote-btn', 'data-code-id', '.vote-score');
+            function selectedCode() {
+                getSelectedCode("codeBlock", "codeSelection", "preCodeSelection")
             }
         </script>
-
-
     </body>
 </html>
