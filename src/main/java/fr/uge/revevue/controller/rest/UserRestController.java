@@ -5,6 +5,7 @@ import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class UserRestController {
     public ResponseEntity<UserInformation> login(@RequestBody @Valid AuthenticationInformation authenticationInformation){
         return ResponseEntity.ok(userService.getInformation(authenticationInformation.username()));
     }
-
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/delete/{codeId}")
     public ResponseEntity<Void> userDeleted(@PathVariable("codeId") @Valid long codeId) {
         userService.delete(codeId);

@@ -8,6 +8,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
 
+import static fr.uge.revevue.entity.Role.TypeRole.ADMIN;
+
 
 @Entity
 @Table(name = "Users")
@@ -24,8 +26,8 @@ public class User implements UserDetails {
     @NotBlank
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Role> roles = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    private Role role;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -60,33 +62,13 @@ public class User implements UserDetails {
         return username;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + this.role.getTypeRole()));
     }
 
     public String getPassword() {
@@ -121,23 +103,32 @@ public class User implements UserDetails {
         this.posts = posts;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
-    public boolean isAdmin(){
-        if (roles!= null){
-            for (var r : roles){
-                if (r.getName().equals("ADMIN")){
-                    return true;
-                }
-            }
-        }
-        return false;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
@@ -146,7 +137,10 @@ public class User implements UserDetails {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", roles'=" + roles + '\''+
+                ", role=" + role +
+                ", followed=" + followed +
+                ", votes=" + votes +
+                ", posts=" + posts +
                 '}';
     }
 }

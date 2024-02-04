@@ -26,7 +26,6 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public String adminPage(Model model){
 

@@ -7,40 +7,37 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "Roles")
 public class Role {
 
+    public enum TypeRole {
+        USER,
+        ADMIN
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @NotBlank
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private TypeRole typeRole;
 
     public Role() {}
 
-    public Role(String name) {
-        this.name = name;
+    public Role(TypeRole typeRole) {
+        this.typeRole = typeRole;
     }
 
     public int getId() {return id;}
 
     public void setId(int id) {this.id = id;}
 
-    public String getName() {return name;}
+    public TypeRole getTypeRole() {return typeRole;}
 
-    public void setName(String name) {this.name = name;}
+    public void setTypeRole(String name) {this.typeRole = typeRole;}
 
     @Override
     public String toString() {
         return "Role{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", typeRole='" + typeRole + '\'' +
                 '}';
-    }
-
-    static public Role user(){
-        return new Role("USER");
-    }
-
-    static public Role admin(){
-        return new Role("ADMIN");
     }
 }

@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.uge.revevue.entity.Role;
 import fr.uge.revevue.entity.User;
 
 public record UserInformation (long id, String username, Set<FollowedInformation> followed, boolean isAdmin){
@@ -14,7 +15,7 @@ public record UserInformation (long id, String username, Set<FollowedInformation
                 user.getId(),
                 user.getUsername(),
                 user.getFollowed().stream().map(FollowedInformation::from).collect(Collectors.toSet()),
-                user.isAdmin()
+                user.getRole().getTypeRole().equals(Role.TypeRole.ADMIN)
         );
     }
 
