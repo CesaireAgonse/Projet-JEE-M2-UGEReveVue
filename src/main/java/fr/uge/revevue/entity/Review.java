@@ -14,8 +14,8 @@ public class Review extends Post{
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String content;
 
-    public Review( String content,User user, Post post) {
-        super(user);
+    public Review(String title, String content, User user, Post post) {
+        super(title, user);
         this.post = post;
         this.content = content;
     }

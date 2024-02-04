@@ -34,7 +34,7 @@ public class ReviewService {
         }
         var user = findUser.get();
         var post = findPost.get();
-        var comment = new Review(content, user, post);
+        var comment = new Review(post.getTitle(), content, user, post);
         reviewRepository.save(comment);
     }
 

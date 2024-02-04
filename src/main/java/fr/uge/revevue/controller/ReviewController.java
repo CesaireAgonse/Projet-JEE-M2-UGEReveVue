@@ -48,7 +48,7 @@ public class ReviewController {
     @PostMapping("/reviews/comment/{reviewId}")
     public String reviewCommented(@PathVariable("reviewId") @Valid long reviewId,
                                   @ModelAttribute("commentForm") CommentForm commentForm){
-        commentService.postCommented(userService.currentUser().getId(),reviewId,commentForm.getContent());
+        commentService.postCommented(userService.currentUser().getId(),reviewId,commentForm.getContent(), commentForm.getCodeSelection());
         return "redirect:/reviews/" + reviewId;
     }
 

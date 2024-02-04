@@ -16,7 +16,10 @@
                     </div>
                 </div>
                 <div class="edit-zone">
+                    <button class="button other" onclick="getSelectedCode()">Get Selected Code</button>
                     <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
+                        <input type="hidden" id="codeSelection" name="codeSelection" th:field="*{codeSelection}">
+                        <pre><code id="preCodeSelection" name="preCodeSelection" ></code></pre>
                         <textarea id="content" name="content" th:field="*{content}"></textarea>
                         <button type="submit" class="button basic">Comment</button>
                     </form>
@@ -60,5 +63,30 @@
                 });
             });
         </script>
+        <script>
+
+            function getSelectedCode() {
+                var selectedCode = "";
+                var codeElement = document.getElementById("codeBlock");
+                if (window.getSelection) {
+                    var selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        var range = selection.getRangeAt(0);
+                        if (codeElement.contains(range.startContainer) && codeElement.contains(range.endContainer)) {
+                            selectedCode = range.toString();
+                        }
+                    }
+                } else if (document.selection && document.selection.type !== "Control") {
+                    var textRange = document.selection.createRange();
+                    if (codeElement.contains(textRange.parentElement())) {
+                        selectedCode = textRange.text;
+                    }
+                }
+                document.getElementById("codeSelection").value = selectedCode;
+                document.getElementById("preCodeSelection").textContent = selectedCode;
+            }
+        </script>
+
+
     </body>
 </html>

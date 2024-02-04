@@ -1,6 +1,8 @@
 package fr.uge.revevue.information;
 
+import fr.uge.revevue.entity.Post;
 import fr.uge.revevue.entity.Review;
+import fr.uge.revevue.entity.Vote;
 
 import java.util.Date;
 import java.util.Objects;
@@ -10,6 +12,8 @@ import java.util.stream.Collectors;
 public record ReviewInformation(
         long id,
         UserInformation userInformation,
+        Vote.VoteType voteType,
+        String title,
         String content,
         int score,
         Date date,
@@ -22,6 +26,8 @@ public record ReviewInformation(
         return new ReviewInformation(
                 review.getId(),
                 UserInformation.from(review.getUser()),
+                review.getVoteUser(),
+                review.getTitle(),
                 review.getContent(),
                 review.getScoreVote(),
                 review.getDate(),

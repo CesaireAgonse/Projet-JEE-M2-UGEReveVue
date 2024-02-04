@@ -1,6 +1,7 @@
 package fr.uge.revevue.information;
 
 import fr.uge.revevue.entity.Code;
+import fr.uge.revevue.entity.Vote;
 
 import java.util.Date;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 public record CodeInformation(
         long id,
         UserInformation userInformation,
+        Vote.VoteType voteType,
         String title,
         String description,
         String javaContent,
@@ -25,6 +27,7 @@ public record CodeInformation(
         return new CodeInformation(
                 code.getId(),
                 UserInformation.from(code.getUser()),
+                code.getVoteUser(),
                 code.getTitle(),
                 code.getDescription(),
                 code.getJavaContent(),

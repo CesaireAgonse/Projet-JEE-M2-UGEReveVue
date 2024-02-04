@@ -19,7 +19,7 @@ public class CommentService {
         this.userRepository = userRepository;
     }
 
-    public void postCommented(long userId, long postId, String content){
+    public void postCommented(long userId, long postId, String content, String codeSelection){
         var findUser = userRepository.findById(userId);
         if (findUser.isEmpty()){
             throw new IllegalStateException("User not found");
@@ -31,6 +31,8 @@ public class CommentService {
         var user = findUser.get();
         var post = findPost.get();
         var comment = new Comment(content, user, post);
+        comment.setCodeSelection(codeSelection);
+        System.out.println(codeSelection);
         commentRepository.save(comment);
     }
 }

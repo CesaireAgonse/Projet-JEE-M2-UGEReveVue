@@ -23,6 +23,9 @@ public class Comment {
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String content;
 
+    @Column(columnDefinition = "VARCHAR(MAX)")
+    private String codeSelection;
+
     private Date date;
 
     public Comment() {}
@@ -48,6 +51,14 @@ public class Comment {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getCodeSelection() {
+        return codeSelection;
+    }
+
+    public void setCodeSelection(String codeSelection) {
+        this.codeSelection = codeSelection;
     }
 
     public User getUser() {

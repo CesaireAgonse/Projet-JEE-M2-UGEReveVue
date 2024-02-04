@@ -12,9 +12,6 @@ import java.util.Set;
 public class Code extends Post {
 
     @NotBlank
-    private String title;
-
-    @NotBlank
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String description;
 
@@ -28,15 +25,10 @@ public class Code extends Post {
     public Code(){}
 
     public Code(User user, String title, String description, String javaContent) {
-        super(user);
-        this.title = title;
+        super(title, user);
         this.description = description;
         this.javaContent = javaContent;
     }
-
-    public String getTitle() {return title;}
-
-    public void setTitle(String title) {this.title = title;}
 
     public String getDescription() {return description;}
 

@@ -6,6 +6,7 @@
         <div class ="author">
             <a th:href="'/users/' + ${comment.userInformation().username()}" th:text="${comment.userInformation().username()}"></a>
         </div>
+        <pre><code th:text="${comment.codeSelection()}"></code></pre>
         <p class="message" th:text="${comment.content()}"></p>
         <p class="date right" th:text="${comment.date()}"></p>
     </div>

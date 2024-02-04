@@ -4,6 +4,7 @@ import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.entity.Vote;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +30,11 @@ public abstract class Post {
 
     private Date date;
 
-    public Post(User user) {
+    @NotBlank
+    private String title;
+
+    public Post(String title, User user) {
+        this.title = title;
         this.user = user;
         this.date = new Date();
     }
@@ -72,6 +77,22 @@ public abstract class Post {
         return votes.stream()
                 .mapToInt(Vote::getScore)
                 .sum();
+    }
+
+    public Vote.VoteType getVoteUser(){
+        return votes.stream()
+                .filter(vote -> vote.getUser().getUsername().equals(user.getUsername()))
+                .map(Vote::getVoteType)
+                .findFirst()
+                .orElse(Vote.VoteType.NotVoted);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Set<Comment> getComments() {
