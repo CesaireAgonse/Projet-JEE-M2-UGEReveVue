@@ -4,13 +4,13 @@ import javax.validation.constraints.NotBlank;
 
 public class PasswordForm {
 
-    @NotBlank
+    @NotBlank(message = "Please enter your current password.")
     private String currentPassword;
 
-    @NotBlank
+    @NotBlank(message = "Please enter a new password.")
     private String newPassword;
 
-    @NotBlank
+    @NotBlank(message = "Please confirm your new password.")
     private String confirmPassword;
 
     public String getCurrentPassword() {

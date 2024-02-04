@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 public class CommentForm {
 
+    @NotBlank
     private String content;
 
     private String codeSelection;

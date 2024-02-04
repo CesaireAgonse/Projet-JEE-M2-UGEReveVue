@@ -17,7 +17,7 @@
         </div>
         <div class="edit-zone">
             <form th:action="@{/reviews/comment/{reviewId}(reviewId=${review.id()})}" th:object="${commentForm}" method="post">
-                <textarea id="content" name="content" th:field="*{content}"></textarea>
+                <textarea id="content" name="content" th:field="*{content}" required></textarea>
                 <button type="submit" class="button basic">Comment</button>
             </form>
         </div>
@@ -35,7 +35,7 @@
         </div>
         <div class="edit-zone">
             <form th:action="@{/reviews/review/{reviewId}(reviewId=${review.id()})}" th:object="${reviewForm}" method="post">
-                <textarea class="review" id="contentReview" name="contentReview" th:field="*{content}"></textarea>
+                <textarea class="review" id="contentReview" name="contentReview" th:field="*{content}" required></textarea>
                 <button type="submit" class="button basic">Review</button>
             </form>
         </div>

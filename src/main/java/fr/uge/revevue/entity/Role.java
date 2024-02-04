@@ -14,7 +14,7 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     @Enumerated(EnumType.STRING)
     private TypeRole typeRole;
@@ -25,9 +25,9 @@ public class Role {
         this.typeRole = typeRole;
     }
 
-    public int getId() {return id;}
+    public long getId() {return id;}
 
-    public void setId(int id) {this.id = id;}
+    public void setId(long id) {this.id = id;}
 
     public TypeRole getTypeRole() {return typeRole;}
 

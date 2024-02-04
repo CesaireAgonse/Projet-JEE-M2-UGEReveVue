@@ -11,11 +11,11 @@
         <div class="container auth-limit main">
             <form th:action="@{/login}" th:object="${loginForm}" method="post">
                 <div class="txt_field">
-                    <input id="l" type="text" name="username" placeholder="Username" th:field="*{username}">
+                    <input id="l" type="text" name="username" placeholder="Username" th:field="*{username}" required>
                     <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger">
                 </div>
                 <div class="txt_field">
-                    <input type="password" id="p" name="password" placeholder="Password" th:field="*{password}">
+                    <input type="password" id="p" name="password" placeholder="Password" th:field="*{password}" required>
                     <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger">
                 </div>
                 <input class="button basic auth" name="submit" type="Submit" value="Log in">

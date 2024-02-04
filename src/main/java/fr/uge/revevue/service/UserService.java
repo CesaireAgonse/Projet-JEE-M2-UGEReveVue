@@ -1,13 +1,11 @@
 package fr.uge.revevue.service;
 
-import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Role;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.RoleRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,8 +21,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.uge.revevue.entity.Role.TypeRole.ADMIN;
-import static fr.uge.revevue.entity.Role.TypeRole.USER;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -52,6 +48,7 @@ public class UserService implements UserDetailsService {
         this.em = em;
     }
 
+    @Transactional
     public void signup(String username, String password) {
         var find = userRepository.findByUsername(username);
         if (find.isPresent()){
@@ -59,13 +56,12 @@ public class UserService implements UserDetailsService {
         }
         var passwordCrypt = bCryptPasswordEncoder.encode(password);
         var user = new User(username, passwordCrypt);
-        var optionalRole = roleRepository.findByTypeRole(USER);
+        var optionalRole = roleRepository.findByTypeRole(Role.TypeRole.USER);
         if (optionalRole.isEmpty()){
             throw new IllegalStateException("USER role not found");
         }
         user.setRole(optionalRole.get());
         userRepository.save(user);
-        UserInformation.from(user);
     }
 
     @Override
@@ -94,17 +90,23 @@ public class UserService implements UserDetailsService {
         return optionalUser.map(UserInformation::from).orElse(null);
     }
 
+
+    public boolean matchesPassword(String currentPassword){
+        return bCryptPasswordEncoder.matches(currentPassword, currentUser().getPassword());
+    }
+
     @Transactional
-    public void modifyPassword(String username, String newPassword, String currentPassword){
-        var find = userRepository.findByUsername(username);
-        if (find.isEmpty()){
+    public UserInformation modifyPassword(String currentPassword, String newPassword){
+        var user = currentUser();
+        if (user == null){
             throw new IllegalStateException("User not found");
         }
-        if(!bCryptPasswordEncoder.matches(currentPassword,find.get().getPassword())){
+        if(!matchesPassword(currentPassword)){
             throw new IllegalArgumentException("Current Password are not the same");
         }
         var passwordCrypt = bCryptPasswordEncoder.encode(newPassword);
-        userRepository.update(username,passwordCrypt);
+        userRepository.update(user.getUsername(), passwordCrypt);
+        return UserInformation.from(user);
     }
 
     @Transactional

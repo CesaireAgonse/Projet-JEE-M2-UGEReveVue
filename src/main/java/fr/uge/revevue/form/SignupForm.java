@@ -4,13 +4,13 @@ import javax.validation.constraints.NotBlank;
 
 public class SignupForm {
 
-    @NotBlank
+    @NotBlank(message = "Please enter an username.")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "Please enter a password.")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "Please confirm your password.")
     private String confirmPassword;
 
     public String getUsername() {

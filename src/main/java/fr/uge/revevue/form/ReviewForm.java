@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 
 public class ReviewForm {
 
+    @NotBlank
     private String content;
 
     public String getContent() {

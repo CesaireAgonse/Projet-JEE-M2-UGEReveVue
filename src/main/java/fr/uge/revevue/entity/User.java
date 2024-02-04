@@ -26,7 +26,7 @@ public class User implements UserDetails {
     @NotBlank
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     private Role role;
 
     @ManyToMany(fetch = FetchType.EAGER)

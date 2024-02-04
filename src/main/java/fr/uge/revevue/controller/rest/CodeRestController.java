@@ -7,6 +7,7 @@ import fr.uge.revevue.service.UserService;
 import fr.uge.revevue.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,6 +32,7 @@ public class CodeRestController {
         return ResponseEntity.ok(voteService.postVoted(userService.currentUser().getId(), codeId, voteType));
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/delete/{codeId}")
     public ResponseEntity<Void> codeDeleted(@PathVariable("codeId") @Valid long codeId) {
         codeService.delete(codeId);

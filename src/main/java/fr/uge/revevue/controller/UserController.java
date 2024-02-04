@@ -3,6 +3,7 @@ package fr.uge.revevue.controller;
 import fr.uge.revevue.form.LoginForm;
 import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.form.SignupForm;
+import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @Controller
@@ -27,24 +29,19 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String signup(@ModelAttribute("signupForm") @Valid SignupForm signupForm,
-                         BindingResult result,
-                         Model model){
-        if (result.hasErrors() || !signupForm.getPassword().equals(signupForm.getConfirmPassword())){
-            if (!signupForm.getPassword().equals(signupForm.getConfirmPassword())){
-                result.rejectValue("password", "error.signupForm", "The password is not the same.");
-            }
+    public String signup(@ModelAttribute("signupForm") @Valid SignupForm signupForm, BindingResult result){
+        if (result.hasErrors()){
             return "users/signup";
         }
-        try {
-            userService.signup(signupForm.getUsername(), signupForm.getPassword());
-        } catch (IllegalArgumentException e){
-            if (e.getMessage().equals("username already used")){
-                result.rejectValue("username", "error.signupForm", "This user name is already taken.");
-            }
+        if (!signupForm.getPassword().equals(signupForm.getConfirmPassword())){
+            result.rejectValue("confirmPassword", "error.signupForm", "Password confirmation does not match the entered password.");
             return "users/signup";
         }
-
+        if (userService.getInformation(signupForm.getUsername()) != null){
+            result.rejectValue("username", "error.signupForm", "This username is already taken. Please choose another one.");
+            return "users/signup";
+        }
+        userService.signup(signupForm.getUsername(), signupForm.getPassword());
         return "redirect:/login";
     }
 
@@ -69,15 +66,25 @@ public class UserController {
     }
 
     @PostMapping("/password")
-    public String password(@ModelAttribute("passwordForm") @Valid PasswordForm passwordForm, BindingResult result){
-        if (result.hasErrors() || !passwordForm.getNewPassword().equals(passwordForm.getConfirmPassword())){
+    public String password(@ModelAttribute("passwordForm") @Valid PasswordForm passwordForm, BindingResult result, Model model){
+        model.addAttribute("auth", UserInformation.from(userService.currentUser()));
+        if (result.hasErrors()){
             return "users/password";
         }
-        if(passwordForm.getNewPassword().equals(passwordForm.getCurrentPassword())){
+        if (!passwordForm.getNewPassword().equals(passwordForm.getConfirmPassword())){
+            result.rejectValue("confirmPassword", "error.passwordForm", "The confirmation of the new password does not match the new password entered.");
             return "users/password";
         }
-        userService.modifyPassword(userService.currentUser().getUsername(), passwordForm.getNewPassword(), passwordForm.getCurrentPassword());
-        return "redirect:/users/" + userService.currentUser().getUsername();
+        if(userService.matchesPassword(passwordForm.getNewPassword())){
+            result.rejectValue("newPassword", "error.passwordForm", "The new password should be different from the current password.");
+            return "users/password";
+        }
+        if (!userService.matchesPassword(passwordForm.getCurrentPassword())) {
+            result.rejectValue("currentPassword", "error.passwordForm", "The current password you entered is incorrect. Please try again.");
+            return "users/password";
+        }
+        var userInformation = userService.modifyPassword(passwordForm.getCurrentPassword(), passwordForm.getNewPassword());
+        return "redirect:/users/" + userInformation.username();
     }
 
     @GetMapping("/users/{username}")
@@ -97,8 +104,7 @@ public class UserController {
         if (userInformation == null){
             return "redirect:/";
         }
-        var user = userService.currentUser();
-        userService.follow(user.getUsername(), username);
+        userService.follow(userService.currentUser().getUsername(), username);
         return "redirect:/users/" + username;
     }
 
@@ -108,9 +114,7 @@ public class UserController {
         if (userInformation == null){
             return "redirect:/";
         }
-        var user = userService.currentUser();
-        userService.unfollow(user.getUsername(), username);
+        userService.unfollow(userService.currentUser().getUsername(), username);
         return "redirect:/users/" + username;
     }
-
 }

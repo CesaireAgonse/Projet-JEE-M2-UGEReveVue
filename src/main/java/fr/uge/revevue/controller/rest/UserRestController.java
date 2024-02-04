@@ -37,6 +37,4 @@ public class UserRestController {
         userService.delete(codeId);
         return ResponseEntity.noContent().build();
     }
-
-
 }

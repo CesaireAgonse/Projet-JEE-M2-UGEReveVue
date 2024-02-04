@@ -3,12 +3,15 @@ package fr.uge.revevue.form;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class CodeForm {
 
-    @NotBlank
+    @NotBlank(message = "Please enter a title for your content.")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "Please provide a description for your content.")
     private String description;
 
     private MultipartFile javaFile;
