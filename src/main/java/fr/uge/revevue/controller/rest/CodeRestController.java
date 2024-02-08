@@ -2,15 +2,23 @@ package fr.uge.revevue.controller.rest;
 
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Vote;
+import fr.uge.revevue.form.CodeForm;
+import fr.uge.revevue.information.CodeInformation;
+import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
 import fr.uge.revevue.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("api/v1/codes")
@@ -24,6 +32,12 @@ public class CodeRestController {
         this.userService = userService;
         this.codeService = codeService;
         this.voteService = voteService;
+    }
+
+
+    @GetMapping("/create")
+    public ResponseEntity<String> post()  throws IOException {
+        return ResponseEntity.ok("Body Create");
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

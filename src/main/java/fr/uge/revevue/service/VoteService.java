@@ -25,23 +25,13 @@ public class VoteService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    @PersistenceUnit
-    private final EntityManagerFactory emf;
-
-    @PersistenceContext
-    private final EntityManager em;
-
     @Autowired
     public VoteService(VoteRepository voteRepository,
                        PostRepository postRepository,
-                       UserRepository userRepository,
-                       EntityManagerFactory emf,
-                       EntityManager em){
+                       UserRepository userRepository){
         this.voteRepository = voteRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.emf = emf;
-        this.em = em;
     }
 
     @Transactional
@@ -65,7 +55,6 @@ public class VoteService {
         }
         else if (vote.getVoteType() != voteType){
             vote.setVoteType(voteType);
-            em.persist(vote);
             return post.getScoreVote();
         }
         post.getVotes().remove(vote);

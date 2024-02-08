@@ -1,6 +1,7 @@
 package fr.uge.revevue.information;
 
 import fr.uge.revevue.entity.Code;
+import fr.uge.revevue.entity.Post;
 import fr.uge.revevue.entity.Vote;
 
 import java.util.Date;

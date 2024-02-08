@@ -6,6 +6,8 @@ import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class CommentService {
 
@@ -18,7 +20,7 @@ public class CommentService {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
     }
-
+    @Transactional
     public void postCommented(long userId, long postId, String content, String codeSelection){
         var findUser = userRepository.findById(userId);
         if (findUser.isEmpty()){
@@ -32,7 +34,6 @@ public class CommentService {
         var post = findPost.get();
         var comment = new Comment(content, user, post);
         comment.setCodeSelection(codeSelection);
-        System.out.println(codeSelection);
         commentRepository.save(comment);
     }
 }

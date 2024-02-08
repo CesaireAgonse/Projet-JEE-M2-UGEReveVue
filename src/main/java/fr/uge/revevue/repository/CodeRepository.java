@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface CodeRepository  extends CrudRepository<Code, Long> {
 
     List<Code> findAll(Pageable pageable);
-    
+
+
     List<Code> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
 }

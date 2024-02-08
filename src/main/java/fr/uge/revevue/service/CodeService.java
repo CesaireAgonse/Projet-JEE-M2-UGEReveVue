@@ -5,6 +5,7 @@ import fr.uge.revevue.entity.User;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.repository.CodeRepository;
+import fr.uge.revevue.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +18,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class CodeService {
-
     private CodeRepository codeRepository;
+
 
     public CodeService(){}
 
@@ -34,7 +35,7 @@ public class CodeService {
         }
         codeRepository.save(code);
     }
-
+    @Transactional
     public CodeInformation getInformation(long idCode){
         var code = codeRepository.findById(idCode);
         if(code.isEmpty()){
@@ -42,12 +43,7 @@ public class CodeService {
         }
         return CodeInformation.from(code.get());
     }
-
-    public Set<CodeInformation> findAll(int offset, int limit){
-        Pageable page = PageRequest.of(offset, limit);
-        return codeRepository.findAll(page).stream().map(CodeInformation::from).collect(Collectors.toSet());
-    }
-    
+    @Transactional
     public Set<CodeInformation> findWithKeyword(String keyword, int offset, int limit) {
         Pageable page = PageRequest.of(offset, limit);
         var codes = codeRepository

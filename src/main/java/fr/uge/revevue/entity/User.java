@@ -5,6 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
 
@@ -26,25 +27,16 @@ public class User implements UserDetails {
     @NotBlank
     private String password;
 
-    @OneToOne()
+    @OneToOne
     private Role role;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_followed",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "followed_id")
     )
     private Set<User> followed = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    private Set<Vote> votes;
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    private Set<Post> posts = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    private Set<Comment> comments = new HashSet<>();
 
     public User(){}
 
@@ -68,7 +60,6 @@ public class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + this.role.getTypeRole()));
@@ -88,30 +79,6 @@ public class User implements UserDetails {
 
     public void setFollowed(Set<User> followed) {
         this.followed = followed;
-    }
-
-    public Set<Vote> getVotes() {
-        return votes;
-    }
-
-    public void setVotes(Set<Vote> votes) {
-        this.votes = votes;
-    }
-
-    public Set<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
-    }
-
-    public Set<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
     }
 
     public Role getRole() {
@@ -150,8 +117,6 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 ", role=" + role +
                 ", followed=" + followed +
-                ", votes=" + votes +
-                ", posts=" + posts +
                 '}';
     }
 }

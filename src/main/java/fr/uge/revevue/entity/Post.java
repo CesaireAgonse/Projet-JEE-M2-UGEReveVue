@@ -10,22 +10,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "Posts")
 public abstract class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     protected Set<Vote> votes = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     protected Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "post")
-    protected Set<Review> reviews = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    public Set<Review> reviews = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     private Date date;

@@ -10,7 +10,6 @@ import fr.uge.revevue.entity.User;
 public record UserInformation (long id,
                                String username,
                                Set<SimpleUserInformation> followed,
-                               Set<CommentInformation> comments,
                                boolean isAdmin){
 
     public static UserInformation from(User user){
@@ -19,7 +18,6 @@ public record UserInformation (long id,
                 user.getId(),
                 user.getUsername(),
                 user.getFollowed().stream().map(SimpleUserInformation::from).collect(Collectors.toSet()),
-                user.getComments().stream().limit(10).map(CommentInformation::from).collect(Collectors.toSet()),
                 user.getRole().getTypeRole().equals(Role.TypeRole.ADMIN)
         );
     }

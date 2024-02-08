@@ -10,6 +10,8 @@ import fr.uge.revevue.repository.ReviewRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class ReviewService {
 
@@ -22,8 +24,8 @@ public class ReviewService {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
     }
-
-    public void postReview(long userId, long postId, String content){
+    @Transactional
+    public void create(long userId, long postId, String content){
         var findUser = userRepository.findById(userId);
         if (findUser.isEmpty()){
             throw new IllegalStateException("User not found");
@@ -38,6 +40,7 @@ public class ReviewService {
         reviewRepository.save(comment);
     }
 
+    @Transactional
     public ReviewInformation getInformation(long reviewId){
         var review = reviewRepository.findById(reviewId);
         if(review.isEmpty()){

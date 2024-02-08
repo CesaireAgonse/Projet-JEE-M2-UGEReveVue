@@ -3,6 +3,7 @@ package fr.uge.revevue.controller;
 import fr.uge.revevue.form.LoginForm;
 import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.form.SignupForm;
+import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +29,13 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String adminPage(Model model){
-
         var user = userService.currentUser();
-        if (user != null){
-            model.addAttribute("auth", UserInformation.from(user));
+        if (user == null){
+            throw new IllegalStateException("user is null");
         }
-
+        model.addAttribute("auth", SimpleUserInformation.from(user));
         var users = userService.getAllUser();
         model.addAttribute("users", users);
-
         return "/admin";
     }
 

@@ -1,6 +1,7 @@
 package fr.uge.revevue.entity;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 
 @Entity

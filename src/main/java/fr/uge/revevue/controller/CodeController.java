@@ -4,6 +4,7 @@ import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
+import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,7 +36,7 @@ public class CodeController {
 
     @GetMapping("/codes/create")
     public String post(@ModelAttribute("codeForm") CodeForm codeForm, Model model){
-        model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
+        model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
         return "codes/create";
     }
 
@@ -70,7 +71,7 @@ public class CodeController {
                        @ModelAttribute("commentForm") CommentForm commentForm,
                        @ModelAttribute("reviewForm") ReviewForm reviewForm,
                        Model model){
-        model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
+        model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
         var code = codeService.getInformation(codeId);
         if (code == null){
             throw new IllegalStateException("code not found");
@@ -93,7 +94,7 @@ public class CodeController {
     @PostMapping("/codes/comment/{codeId}")
     public String codeCommented(@PathVariable("codeId") @Valid long codeId,
                                 @ModelAttribute("commentForm") @Valid CommentForm commentForm,
-                                BindingResult result, Model model){
+                                BindingResult result){
         if (result.hasErrors()){
             return "redirect:/codes/" + codeId;
         }
@@ -108,7 +109,7 @@ public class CodeController {
         if (result.hasErrors()){
             return "redirect:/codes/" + codeId;
         }
-        reviewService.postReview(userService.currentUser().getId(),codeId,reviewForm.getContent());
+        reviewService.create(userService.currentUser().getId(),codeId,reviewForm.getContent());
         return "redirect:/codes/" + codeId;
     }
 }

@@ -3,6 +3,7 @@ package fr.uge.revevue.controller;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
+import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.service.CommentService;
 import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;
@@ -37,7 +38,7 @@ public class ReviewController {
                        @ModelAttribute("commentForm") CommentForm commentForm,
                        @ModelAttribute("reviewForm") ReviewForm reviewForm,
                        Model model){
-        model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
+        model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
         var review = reviewService.getInformation(reviewId);
         if (review == null){
             throw new IllegalStateException("review not found");
@@ -75,7 +76,7 @@ public class ReviewController {
         if (result.hasErrors()){
             return "redirect:/reviews/" + reviewId;
         }
-        reviewService.postReview(userService.currentUser().getId(),reviewId,reviewForm.getContent());
+        reviewService.create(userService.currentUser().getId(),reviewId,reviewForm.getContent());
         return "redirect:/reviews/" + reviewId;
     }
 }

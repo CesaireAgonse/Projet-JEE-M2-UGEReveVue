@@ -2,6 +2,7 @@ package fr.uge.revevue.controller;
 
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.User;
+import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
@@ -38,7 +39,7 @@ public class HomeController {
                            Model model) {
         var user = userService.currentUser();
         if (user != null){
-            model.addAttribute("auth", UserInformation.from(user));
+            model.addAttribute("auth", SimpleUserInformation.from(user));
         }
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;

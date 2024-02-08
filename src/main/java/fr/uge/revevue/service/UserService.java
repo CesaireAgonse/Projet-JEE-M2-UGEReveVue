@@ -1,6 +1,7 @@
 package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Role;
+import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.RoleRepository;
@@ -29,27 +30,17 @@ public class UserService implements UserDetailsService {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @PersistenceUnit
-    private final EntityManagerFactory emf;
-
-    @PersistenceContext
-    private final EntityManager em;
-
     @Autowired
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
-                       BCryptPasswordEncoder bCryptPasswordEncoder,
-                       EntityManagerFactory emf,
-                       EntityManager em){
+                       BCryptPasswordEncoder bCryptPasswordEncoder){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.emf = emf;
-        this.em = em;
     }
 
     @Transactional
-    public void signup(String username, String password) {
+    public UserInformation signup(String username, String password) {
         var find = userRepository.findByUsername(username);
         if (find.isPresent()){
             throw new IllegalArgumentException("username already used");
@@ -62,6 +53,7 @@ public class UserService implements UserDetailsService {
         }
         user.setRole(optionalRole.get());
         userRepository.save(user);
+        return UserInformation.from(user);
     }
 
     @Override
@@ -84,6 +76,11 @@ public class UserService implements UserDetailsService {
        return null;
     }
 
+    public boolean isExisted(String username){
+        return userRepository.existsByUsername(username);
+    }
+
+
     @Transactional
     public UserInformation getInformation(String username){
         var optionalUser = userRepository.findByUsername(username);
@@ -96,7 +93,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public UserInformation modifyPassword(String currentPassword, String newPassword){
+    public SimpleUserInformation modifyPassword(String currentPassword, String newPassword){
         var user = currentUser();
         if (user == null){
             throw new IllegalStateException("User not found");
@@ -106,7 +103,7 @@ public class UserService implements UserDetailsService {
         }
         var passwordCrypt = bCryptPasswordEncoder.encode(newPassword);
         userRepository.update(user.getUsername(), passwordCrypt);
-        return UserInformation.from(user);
+        return SimpleUserInformation.from(user);
     }
 
     @Transactional
@@ -122,7 +119,6 @@ public class UserService implements UserDetailsService {
         var followedUser = optionalFollowedUser.get();
         var followerUser = optionalFollowerUser.get();
         followerUser.getFollowed().add(followedUser);
-        em.persist(followerUser);
     }
 
     @Transactional
@@ -138,7 +134,6 @@ public class UserService implements UserDetailsService {
         var followedUser = optionalFollowedUser.get();
         var followerUser = optionalFollowerUser.get();
         followerUser.getFollowed().remove(followedUser);
-        em.persist(followerUser);
     }
 
     @Transactional
