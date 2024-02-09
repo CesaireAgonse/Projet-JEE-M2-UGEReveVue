@@ -11,24 +11,26 @@
         </div>
         <p class="date right post-date" th:text="${code.date()}"></p>
     </div>
-    <div class ="post code-container">
-        <div class ="buttons">
-            <div class ="votes">
-                <form name="vote" id="vote" th:data-code-id="${code.id()}">
-                    <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
-                    <p class="vote-score" th:text="${code.score()}"></p>
-                    <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+    <div class ="post">
+        <div class ="resize">
+            <div class ="buttons">
+                <div class ="votes">
+                    <form name="vote" id="vote" th:data-code-id="${code.id()}">
+                        <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
+                        <p class="vote-score" th:text="${code.score()}"></p>
+                        <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+                    </form>
+                </div>
+                <form th:if="${auth.isAdmin()}" name="delete" id="delete" th:data-code-id="${code.id()}">
+                    <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
                 </form>
             </div>
-            <form th:if="${auth.isAdmin()}" name="delete" id="delete" th:data-code-id="${code.id()}">
-                <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
-            </form>
-        </div>
 
-        <div class ="content">
-            <p class="description" th:text="${code.description()}"></p>
-            <pre><code id="codeBlock" class="language-java java-code" th:data-code="${code.javaContent()}"></code></pre>
-            <pre th:if="${code.unitContent() != null}"><code class="language-java" th:text="${code.unitContent()}"></code></pre>
+            <div class ="content">
+                <p class="description" th:text="${code.description()}"></p>
+                <pre><code id="codeBlock" class="language-java java-code" th:data-code="${code.javaContent()}"></code></pre>
+                <pre th:if="${code.unitContent() != null}"><code class="language-java" th:text="${code.unitContent()}"></code></pre>
+            </div>
         </div>
     </div>
     <script src="/prism/prism.js"></script>

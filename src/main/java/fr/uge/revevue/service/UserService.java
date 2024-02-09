@@ -7,6 +7,8 @@ import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.RoleRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,33 +16,36 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService{
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
-                       BCryptPasswordEncoder bCryptPasswordEncoder){
+                       BCryptPasswordEncoder bCryptPasswordEncoder
+    ){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    @Autowired
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
     @Transactional
-    public UserInformation signup(String username, String password) {
+    public SimpleUserInformation signup(String username, String password) {
         var find = userRepository.findByUsername(username);
         if (find.isPresent()){
             throw new IllegalArgumentException("username already used");
@@ -53,43 +58,24 @@ public class UserService implements UserDetailsService {
         }
         user.setRole(optionalRole.get());
         userRepository.save(user);
-        return UserInformation.from(user);
+        return SimpleUserInformation.from(user);
     }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = userRepository.findByUsername(username);
-        if (user.isEmpty()){
-            throw new UsernameNotFoundException("User not found");
-        }
-        return user.get();
-    }
-
-    public User currentUser(){
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null){
-            var principal = authentication.getPrincipal();
-            if (principal instanceof User){
-                return (User) principal;
-            }
-        }
-       return null;
-    }
-
-    public boolean isExisted(String username){
-        return userRepository.existsByUsername(username);
-    }
-
 
     @Transactional
-    public UserInformation getInformation(String username){
-        var optionalUser = userRepository.findByUsername(username);
-        return optionalUser.map(UserInformation::from).orElse(null);
-    }
-
-
-    public boolean matchesPassword(String currentPassword){
-        return bCryptPasswordEncoder.matches(currentPassword, currentUser().getPassword());
+    public SimpleUserInformation login(String username, String password){
+        var userOptional = userRepository.findByUsername(username);
+        if (userOptional.isEmpty()){
+            throw new IllegalArgumentException("this username not existed");
+        }
+        var user = userOptional.get();
+        if(!matchesPassword(password, user.getPassword())){
+            throw new IllegalArgumentException("password incorrect");
+        }
+        var authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return SimpleUserInformation.from(user);
     }
 
     @Transactional
@@ -98,7 +84,7 @@ public class UserService implements UserDetailsService {
         if (user == null){
             throw new IllegalStateException("User not found");
         }
-        if(!matchesPassword(currentPassword)){
+        if(!matchesPassword(currentPassword, user.getPassword())){
             throw new IllegalArgumentException("Current Password are not the same");
         }
         var passwordCrypt = bCryptPasswordEncoder.encode(newPassword);
@@ -136,21 +122,58 @@ public class UserService implements UserDetailsService {
         followerUser.getFollowed().remove(followedUser);
     }
 
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
+            throw new UsernameNotFoundException("User not found");
+        }
+        return user.get();
+    }
+
+    public User currentUser(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null){
+            var principal = authentication.getPrincipal();
+            if (principal instanceof User){
+                return (User) principal;
+            }
+        }
+       return null;
+    }
+
+    public boolean isExisted(String username){
+        return userRepository.existsByUsername(username);
+    }
+
+    public Optional<User> findUserByName(String username){
+        return userRepository.findByUsername(username);
+    }
+
+    @Transactional
+    public UserInformation getInformation(String username){
+        var optionalUser = userRepository.findByUsername(username);
+        return optionalUser.map(UserInformation::from).orElse(null);
+    }
     @Transactional
     public List<UserInformation> getAllUser(){
-        List<UserInformation> list = new ArrayList<>();
-        userRepository.findAll().forEach( user -> { list.add( getInformation(user.getUsername()));});
-        return list;
+        return userRepository.findAll().stream().map(UserInformation::from).toList();
+    }
+
+    public boolean matchesPassword(String rawPassword, String encodedPassword){
+        return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
     }
 
     @Transactional
     public UserInformation delete(long codeId){
-        var user = userRepository.findById(codeId);
-        if(user.isEmpty()){
+        var userOptional = userRepository.findById(codeId);
+        if(userOptional.isEmpty()){
             throw new IllegalArgumentException("User not found");
         }
-        userRepository.delete(user.get());
-        return UserInformation.from(user.get());
+        var user = userOptional.get();
+        userRepository.delete(user);
+        return UserInformation.from(user);
     }
 }
 

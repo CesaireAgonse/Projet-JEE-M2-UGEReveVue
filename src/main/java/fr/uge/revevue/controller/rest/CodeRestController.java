@@ -3,6 +3,8 @@ package fr.uge.revevue.controller.rest;
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CodeForm;
+import fr.uge.revevue.form.CommentForm;
+import fr.uge.revevue.form.ReviewForm;
 import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.service.CodeService;
@@ -34,10 +36,13 @@ public class CodeRestController {
         this.voteService = voteService;
     }
 
-
-    @GetMapping("/create")
-    public ResponseEntity<String> post()  throws IOException {
-        return ResponseEntity.ok("Body Create");
+    @GetMapping("/{codeId}")
+    public ResponseEntity<CodeInformation> code(@PathVariable("codeId") @Valid long codeId)  throws IOException {
+        var code = codeService.getInformation(codeId);
+        if (code == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(code);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

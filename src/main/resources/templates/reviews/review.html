@@ -2,28 +2,27 @@
     <link rel="stylesheet" href="/css/style.css"/>
     <link rel="stylesheet" href="/css/posts/post.css" />
     <link rel="stylesheet" href="/prism/prism.css">
-
-
     <div class ="author pre-review">
         <p>from: </p>
         <a th:href="'/users/' + ${review.userInformation().username()}" th:text="${review.userInformation().username()}"></a>
     </div>
     <p class="date right post-date" th:text="${review.date()}"></p>
     <div class ="post">
-        <div class ="buttons">
-            <div class ="votes">
-                <form name="vote" id="vote" th:data-code-id="${review.id()}">
-                    <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
-                    <p class="vote-score" th:text="${review.score()}"></p>
-                    <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
-                </form>
+        <div class ="resize">
+            <div class ="buttons">
+                <div class ="votes">
+                    <form name="vote" id="vote" th:data-code-id="${review.id()}">
+                        <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
+                        <p class="vote-score" th:text="${review.score()}"></p>
+                        <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+                    </form>
+                </div>
             </div>
+            <a th:href="'/reviews/'+${review.id()}">
+                <div class ="content">
+                    <p class="description" th:text="${review.content()}"></p>
+                </div>
+            </a>
         </div>
-        <a th:href="'/reviews/'+${review.id()}">
-            <div class ="content">
-                <p class="description" th:text="${review.content()}"></p>
-            </div>
-        </a>
     </div>
-    <script src="/prism/prism.js"></script>
 </div>
