@@ -1,17 +1,43 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <LoginForm v-if="isLoginModalVisible" @close-modal="hideLoginModal" :isLoginModalVisible="isLoginModalVisible" />
+  <SignupForm v-if="isSignupModalVisible" @close-modal="hideSignupModal" :isSignupModalVisible="isSignupModalVisible" />
+  <HomePage @show-login-modal="showLoginModal" :isLoginModalVisible="isLoginModalVisible"
+            @show-signup-modal="showSignupModal" :isSignupModalVisible="isSignupModalVisible"/>
+
+
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import HomePage from "@/components/HomePage.vue";
+import LoginForm from "@/components/LoginForm.vue";
+import SignupForm from "@/components/SignupForm.vue";
 export default {
-  name: 'App',
   components: {
-    HelloWorld
+    SignupForm,
+    LoginForm,
+    HomePage
+  },
+  data() {
+    return {
+      isLoginModalVisible: false,
+      isSignupModalVisible: false
+    };
+  },
+  methods: {
+    showLoginModal() {
+      this.isLoginModalVisible = true;
+    },
+    hideLoginModal() {
+      this.isLoginModalVisible = false;
+    },
+    showSignupModal() {
+      this.isSignupModalVisible = true;
+    },
+    hideSignupModal() {
+      this.isSignupModalVisible = false;
+    }
   }
-}
+};
 </script>
 
 <style>
@@ -20,7 +46,8 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #ffffff;
+  background: #333333;
+  margin:-8px;
 }
 </style>
