@@ -15,7 +15,7 @@
             <button class="signup-button" @click="showSignupModal">S'inscrire</button>
           </div>
           <div v-if="authUser !== ''">
-            <button class="logout-button" @click="logout">Se déconnecter</button>
+            <button class="basic-button" @click="logout">Se déconnecter</button>
           </div>
         </div>
         <div class="center-arrow" @click="scrollImageUp">
@@ -152,7 +152,7 @@ input::placeholder {
 
 .login-button,
 .signup-button,
-.logout-button {
+.basic-button {
   border: 1px solid #fff;
   background-color: transparent;
   color: #fff;
@@ -164,13 +164,13 @@ input::placeholder {
 }
 
 .signup-button,
-.logout-button{
+.basic-button{
   margin-right: 10px;
 }
 
 .login-button:hover,
 .signup-button:hover,
-.logout-button:hover {
+.basic-button:hover {
   color: black;
   background-color: #fff;
 }
