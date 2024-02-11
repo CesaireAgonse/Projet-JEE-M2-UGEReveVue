@@ -57,6 +57,9 @@ public class HomeController {
                 default: codes = codeService.findWithKeyword(query, pageNumber, LIMIT); break;
             }
         }
+        if(user != null) {
+            codeService.getCodeFromFollowed(user, query, pageNumber, LIMIT);
+        }
         
         model.addAttribute("codes", codes);
         model.addAttribute("sortBy", sortBy);

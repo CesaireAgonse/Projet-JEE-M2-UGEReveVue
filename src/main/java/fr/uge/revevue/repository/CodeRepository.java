@@ -20,4 +20,6 @@ public interface CodeRepository  extends CrudRepository<Code, Long> {
     List<Code> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
     
     List<Code> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCaseOrderByDateDesc(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
+    
+    List<Code> findByUserIdAndTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(Pageable pageable, long userId, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
 }

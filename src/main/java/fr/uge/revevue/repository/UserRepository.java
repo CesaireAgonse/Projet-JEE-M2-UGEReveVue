@@ -9,12 +9,16 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByUsername(String username);
     Iterable<User> findAll();
+    
+    @Query("SELECT u.followed FROM User u WHERE u.id= :userId ")
+    List<User> findFollowedById(long userId);
 
     @Modifying
     @Query("UPDATE User SET password = :password WHERE username = :username")
