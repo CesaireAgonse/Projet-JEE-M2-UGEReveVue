@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div v-if="isLoginModalVisible" class="modal">
+    <div v-if="isLoginModalVisible" class="modal" @click="handleModalClick">
       <div class="modal-content">
         <span class="close" @click="hideLoginModal">&times;</span>
         <h2>Connexion</h2>
         <form @submit.prevent="connect">
           <label for="username">Nom d'utilisateur:</label>
-          <input type="text" id="username" v-model="username">
+          <input type="text" id="username" v-model="username" required>
 
           <label for="password">Mot de passe:</label>
-          <input type="password" id="password" v-model="password">
+          <input type="password" id="password" v-model="password" required>
 
           <button type="submit">Se connecter</button>
         </form>
@@ -46,6 +46,11 @@ export default {
     },
     hideLoginModal() {
       this.$emit('close-modal');
+    },
+    handleModalClick(event) {
+      if (!event.target.closest('.modal-content')) {
+        this.hideLoginModal();
+      }
     }
   }
 };
@@ -60,21 +65,21 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4); /* Fond transparent */
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
-  background-color: transparent; /* Contenu de la modal transparent */
+  background-color: transparent;
   margin: 15% auto;
   padding: 20px;
   border-radius: 10px;
   width: 80%;
   max-width: 600px;
-  border: 2px solid #fff; /* Bordure blanche */
+  border: 2px solid #fff;
 }
 
 .close {
-  color: #fff; /* Couleur du texte */
+  color: #fff;
   float: right;
   font-size: 28px;
   font-weight: bold;
@@ -94,30 +99,30 @@ form {
 
 label {
   margin-bottom: 10px;
-  color: #fff; /* Couleur du texte */
+  color: #fff;
 }
 
 input {
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 5px;
-  border: 1px solid #fff; /* Bordure blanche */
+  border: 1px solid #fff;
   outline: none;
-  background-color: transparent; /* Fond transparent */
-  color: #fff; /* Couleur du texte */
+  background-color: transparent;
+  color: #fff;
 }
 
 button {
   padding: 10px 20px;
-  background-color: transparent; /* Fond transparent */
-  color: #fff; /* Couleur du texte */
-  border: 1px solid #fff; /* Bordure blanche */
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
   border-radius: 5px;
   cursor: pointer;
 }
 
 button:hover {
-  background-color: #fff; /* Fond blanc */
-  color: #000; /* Couleur du texte */
+  background-color: #fff;
+  color: #000;
 }
 </style>

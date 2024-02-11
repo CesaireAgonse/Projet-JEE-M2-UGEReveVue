@@ -7,8 +7,11 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -20,12 +23,12 @@ public class SecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/signup", "/login", "/css/**", "/prism/**", "/script/**","/").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/api/v1/signup", "/api/v1/login").permitAll()
+                .antMatchers("/api/v1/signup", "/api/v1/login", "/api/v1/auth").permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
                 .permitAll()
                 .anyRequest().authenticated();
+        //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable();
-        http.headers().frameOptions().disable();
         return http.build();
     }
     @Bean

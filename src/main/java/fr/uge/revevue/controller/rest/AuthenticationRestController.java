@@ -45,6 +45,15 @@ public class AuthenticationRestController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
         SecurityContextHolder.clearContext();
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Logged out successfully");
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
+    @GetMapping("/auth")
+    public ResponseEntity<SimpleUserInformation> auth(){
+        var user = userService.currentUser();
+        if (user == null){
+            return null;
+        }
+        return ResponseEntity.ok(SimpleUserInformation.from(user));
     }
 }
