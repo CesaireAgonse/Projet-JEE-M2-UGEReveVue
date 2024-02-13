@@ -5,6 +5,7 @@
       <div class="profile-info">
         <h1>{{ username }}</h1>
         <p>{{ "Ceci est une description de profile" }}</p>
+        <p> {{user}}</p>
         <button class="basic-button button-profile">Suivre</button>
         <button class="basic-button button-profile">Ne plus suivre</button>
         <button class="basic-button button-profile">Modifier son mot de passe</button>
@@ -15,17 +16,26 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   mounted() {
     document.title = "Profile"
     this.username = this.$route.params.name;
+    this.user = this.userInformation();
   },
   data() {
     return {
       username: '',
+      user: null
     };
   },
-
+  methods:{
+    async userInformation(){
+      const content = await axios.get("/api/v1/users/" + this.username);
+      this.user = content.data;
+    }
+  }
 }
 </script>
 

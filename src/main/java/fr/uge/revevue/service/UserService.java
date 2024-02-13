@@ -27,7 +27,6 @@ public class UserService implements UserDetailsService{
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private AuthenticationManager authenticationManager;
 
     @Autowired
     public UserService(UserRepository userRepository,
@@ -37,11 +36,6 @@ public class UserService implements UserDetailsService{
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
-    @Autowired
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
     }
 
     @Transactional
@@ -62,23 +56,6 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
-    public SimpleUserInformation login(String username, String password){
-        var userOptional = userRepository.findByUsername(username);
-        if (userOptional.isEmpty()){
-            throw new IllegalArgumentException("this username not existed");
-        }
-        var user = userOptional.get();
-        if(!matchesPassword(password, user.getPassword())){
-            throw new IllegalArgumentException("password incorrect");
-        }
-        var authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return SimpleUserInformation.from(user);
-    }
-
-    @Transactional
     public SimpleUserInformation modifyPassword(String currentPassword, String newPassword){
         var user = currentUser();
         if (user == null){
@@ -94,13 +71,16 @@ public class UserService implements UserDetailsService{
 
     @Transactional
     public void follow(String followerUsername, String followedUsername){
+        if (followerUsername.equals(followedUsername)){
+            throw new IllegalStateException("follower and followed are the same user");
+        }
         var optionalFollowedUser = userRepository.findByUsername(followedUsername);
         if (optionalFollowedUser.isEmpty()){
-            throw new IllegalStateException("User follower not found");
+            throw new IllegalStateException("user follower not found");
         }
         var optionalFollowerUser = userRepository.findByUsername(followerUsername);
         if (optionalFollowerUser.isEmpty()){
-            throw new IllegalStateException("User followed not found");
+            throw new IllegalStateException("user followed not found");
         }
         var followedUser = optionalFollowedUser.get();
         var followerUser = optionalFollowerUser.get();
@@ -109,13 +89,16 @@ public class UserService implements UserDetailsService{
 
     @Transactional
     public void unfollow(String followerUsername, String followedUsername){
+        if (followerUsername.equals(followedUsername)){
+            throw new IllegalStateException("follower and followed are the same user");
+        }
         var optionalFollowedUser = userRepository.findByUsername(followedUsername);
         if (optionalFollowedUser.isEmpty()){
-            throw new IllegalStateException("User follower not found");
+            throw new IllegalStateException("user follower not found");
         }
         var optionalFollowerUser = userRepository.findByUsername(followerUsername);
         if (optionalFollowerUser.isEmpty()){
-            throw new IllegalStateException("User followed not found");
+            throw new IllegalStateException("user followed not found");
         }
         var followedUser = optionalFollowedUser.get();
         var followerUser = optionalFollowerUser.get();
@@ -124,7 +107,7 @@ public class UserService implements UserDetailsService{
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByUsername(username);
         if (user.isEmpty()){
             throw new UsernameNotFoundException("User not found");
