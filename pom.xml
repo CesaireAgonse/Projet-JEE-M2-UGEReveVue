@@ -112,7 +112,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>install axios vue vue-router vue-transition-css --save</arguments>
+                            <arguments>install axios vue vue-router vue-transition-css jwt-decode --save</arguments>
                         </configuration>
                     </execution>
                     <execution>

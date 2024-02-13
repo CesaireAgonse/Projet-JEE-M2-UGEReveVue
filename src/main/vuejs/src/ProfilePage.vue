@@ -1,11 +1,11 @@
-<template>
+<template  v-if="username !== null">
+  <button class="basic-button left" @click="home">Home</button>
   <div class="profile">
     <div class="profile-header">
       <img src="../src/assets/profile.jpg" alt="Photo de profil" class="profile-photo">
       <div class="profile-info">
         <h1>{{ username }}</h1>
         <p>{{ "Ceci est une description de profile" }}</p>
-        <p> {{user}}</p>
         <button class="basic-button button-profile">Suivre</button>
         <button class="basic-button button-profile">Ne plus suivre</button>
         <button class="basic-button button-profile">Modifier son mot de passe</button>
@@ -16,24 +16,23 @@
 
 <script>
 
-import axios from "axios";
-
+import {userService} from "@/services/user.service";
+import router from "@/router";
 export default {
   mounted() {
     document.title = "Profile"
-    this.username = this.$route.params.name;
-    this.user = this.userInformation();
+    userService.profile(this.$route.params.name).then(res => {
+          this.username = res.data.username
+        }).catch(err => console.log(err))
   },
   data() {
     return {
-      username: '',
-      user: null
+      username: null
     };
   },
-  methods:{
-    async userInformation(){
-      const content = await axios.get("/api/v1/users/" + this.username);
-      this.user = content.data;
+  methods : {
+    home(){
+      router.push("/")
     }
   }
 }
@@ -64,4 +63,8 @@ export default {
 .profile-info {
   font-size: 120%;
 }
+.left {
+  float:left;
+}
+
 </style>

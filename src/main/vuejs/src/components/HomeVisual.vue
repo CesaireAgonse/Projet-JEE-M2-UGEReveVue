@@ -10,12 +10,13 @@
           <input class="bar" type="text" placeholder="Rechercher..." />
         </div>
         <div class="auth-buttons">
-          <div v-if="authUser === ''">
+          <div v-if="!authenticationService.isLogged()">
             <button class="login-button" @click="showLoginModal">Se connecter</button>
             <button class="signup-button" @click="showSignupModal">S'inscrire</button>
           </div>
-          <div v-if="authUser !== ''">
+          <div v-if="authenticationService.isLogged()">
             <button class="basic-button" @click="logout">Se déconnecter</button>
+            <button class="basic-button" @click="profile">Mon profil</button>
           </div>
         </div>
         <div class="center-arrow" @click="scrollImageUp">
@@ -27,11 +28,13 @@
 </template>
 
 <script>
-import axios from "axios";
-
+import {authenticationService} from "@/services/authentication.service";
+import router from "@/router";
 export default {
-  mounted() {
-    this.auth()
+  computed: {
+    authenticationService() {
+      return authenticationService
+    }
   },
   props: {
     isLoginModalVisible: {
@@ -73,13 +76,14 @@ export default {
     showSignupModal() {
       this.$emit('show-signup-modal');
     },
-    async auth(){
-      const content = await axios.get("/api/v1/auth");
-      this.authUser = content.data;
+    logout(){
+      authenticationService.logout().then(res => {
+        console.log(res)
+        authenticationService.removeToken()
+      }).catch(err => console.log(err))
     },
-    async logout(){
-      await axios.post("/api/v1/logout");
-      this.authUser = "";
+    profile(){
+      router.push('/profile/')
     }
   }
 };

@@ -19,7 +19,8 @@
 </template>
 
 <script>
-import axios from "axios";
+import {authenticationService} from '@/services/authentication.service'
+import router from "@/router";
 export default {
   props: {
     isLoginModalVisible: {
@@ -34,15 +35,16 @@ export default {
     };
   },
   methods: {
-    async connect() {
-      const response = await axios.post("/api/v1/login", {
-        username: this.username,
-        password: this.password
-      })
-      console.log(response);
-      this.username = '';
-      this.password = '';
-      this.$emit('close-modal');
+    connect() {
+      authenticationService.login({username: this.username,  password: this.password})
+          .then(res => {
+              authenticationService.addToken(res.data.bearer)
+              router.push('/')
+              this.username = '';
+              this.password = '';
+              this.$emit('close-modal');
+          })
+          .catch(err => console.log(err))
     },
     hideLoginModal() {
       this.$emit('close-modal');
