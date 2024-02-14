@@ -112,7 +112,13 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>install axios vue vue-router vue-transition-css jwt-decode --save</arguments>
+                            <arguments>install axios vue vue-router vue-transition-css
+                                @fortawesome/vue-fontawesome
+                                @fortawesome/fontawesome-svg-core
+                                @fortawesome/free-solid-svg-icons
+                                @fortawesome/free-regular-svg-icons
+                                @fortawesome/free-brands-svg-icons
+                                --save</arguments>
                         </configuration>
                     </execution>
                     <execution>

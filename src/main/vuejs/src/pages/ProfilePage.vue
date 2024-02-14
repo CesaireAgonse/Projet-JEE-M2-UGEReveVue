@@ -2,7 +2,7 @@
   <button class="basic-button left" @click="home">Home</button>
   <div class="profile">
     <div class="profile-header">
-      <img src="../src/assets/profile.jpg" alt="Photo de profil" class="profile-photo">
+      <img src="../assets/profile.jpg" alt="Photo de profil" class="profile-photo">
       <div class="profile-info">
         <h1>{{ username }}</h1>
         <p>{{ "Ceci est une description de profile" }}</p>

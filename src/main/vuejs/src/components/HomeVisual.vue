@@ -2,12 +2,18 @@
   <div>
     <transition class="slide-up">
       <div class="image-container">
-        <img v-if="showImage" src="../assets/home.jpg" @click="scrollImageUp" class="scrollable-image" :style="{ transform: imageTransform }" />
+        <img src="../assets/home.jpg" @click="scrollImageUp" class="scrollable-image" :style="{ transform: imageTransform }" />
         <div v-if="!(isLoginModalVisible || isSignupModalVisible)" class="welcome-message" :style="{ top: welcomeMessageTop }">
           <h1 class="create-message">Bienvenue sur UGEReveVue</h1>
         </div>
         <div v-if="!(isLoginModalVisible || isSignupModalVisible)" class="search-bar" :style="{ top: searchBarTop }">
           <input class="bar" type="text" placeholder="Rechercher..." />
+        </div>
+        <div v-if="imageUp" class = "chevron-down" @click="scrollImageUp">
+          <i class="fa-solid fa-chevron-down fa-beat-fade fa-2xl"></i>
+        </div>
+        <div v-if="!imageUp" class = "chevron-up" @click="scrollImageUp">
+          <i class="fa-solid fa-chevron-up fa-beat-fade fa-2xl"></i>
         </div>
         <div class="auth-buttons">
           <div v-if="!authenticationService.isLogged()">
@@ -16,11 +22,8 @@
           </div>
           <div v-if="authenticationService.isLogged()">
             <button class="basic-button" @click="logout">Se déconnecter</button>
-            <button class="basic-button" @click="profile">Mon profil</button>
+            <i class="fa-regular fa-circle-user fa-2xl " @click="profile" style="margin-right: 10px"></i>
           </div>
-        </div>
-        <div class="center-arrow" @click="scrollImageUp">
-          <div class="arrow" :style= "{transform : arrowDegree}"></div>
         </div>
       </div>
     </transition>
@@ -30,7 +33,16 @@
 <script>
 import {authenticationService} from "@/services/authentication.service";
 import router from "@/router";
+import { library, dom } from "@fortawesome/fontawesome-svg-core";
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+library.add(fas, far, fab)
+dom.watch();
+
 export default {
+  components: {
+  },
   computed: {
     authenticationService() {
       return authenticationService
@@ -48,26 +60,34 @@ export default {
   },
   data() {
     return {
-      showImage: true,
       imageTransform: '',
       searchBarTop: '40%',
       welcomeMessageTop:'20%',
-      arrowDegree:'rotate(135deg)',
-      authUser: ""
+      authUser: "",
+      imageUp: true,
+      post: {
+        title: 'Titre du post',
+        description: 'Description du post',
+        author: 'Auteur du post',
+        date: 'Date du post',
+        code: 'function example() {\n  console.log("Hello, world!");\n}',
+        liked: true,
+        score: 0
+      }
     };
   },
   methods: {
     scrollImageUp() {
-      if (this.imageTransform === 'translateY(-90%)') {
+      if (this.imageTransform === 'translateY(-92%)') {
         this.imageTransform = '';
         this.searchBarTop = '40%';
         this.welcomeMessageTop = '20%';
-        this.arrowDegree = 'rotate(135deg)';
+        this.imageUp = true;
       } else {
-        this.imageTransform = 'translateY(-90%)';
+        this.imageTransform = 'translateY(-92%)';
         this.searchBarTop = '15%';
         this.welcomeMessageTop = '-90%';
-        this.arrowDegree='rotate(-45deg) translate(1500%, -1500%)';
+        this.imageUp = false;
       }
     },
     showLoginModal() {
@@ -187,38 +207,20 @@ body {
   background-color: #282828;
 }
 
-center-arrow{
-  transition: top 1s ease;
+.chevron-down{
+  position: absolute;
+  bottom: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
 }
 
-div.arrow {
-  width: 4vmin;
-  height: 4vmin;
-  box-sizing: border-box;
+.chevron-up{
   position: absolute;
-  left: 49%;
-  top: 75%;
-
-  &::before {
-    content: '';
-    width: 100%;
-    height: 100%;
-    border-width: .8vmin .8vmin 0 0;
-    border-style: solid;
-    border-color: #fafafa;
-    transition: .2s ease;
-    display: block;
-    transform-origin: 100% 0;
-  }
-
-  &:hover::after {
-    border-color: orange;
-    transform: scale(.8);
-  }
-  &:hover::before {
-    border-color: orange;
-    transform: scale(.8);
-  }
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
 }
 
 </style>
