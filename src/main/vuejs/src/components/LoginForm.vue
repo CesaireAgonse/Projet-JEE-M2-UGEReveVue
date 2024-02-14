@@ -20,7 +20,6 @@
 
 <script>
 import {authenticationService} from '@/services/authentication.service'
-import router from "@/router";
 export default {
   props: {
     isLoginModalVisible: {
@@ -39,10 +38,10 @@ export default {
       authenticationService.login({username: this.username,  password: this.password})
           .then(res => {
               authenticationService.addToken(res.data.bearer)
-              router.push('/')
               this.username = '';
               this.password = '';
               this.$emit('close-modal');
+              this.$emit('connect');
           })
           .catch(err => console.log(err))
     },
