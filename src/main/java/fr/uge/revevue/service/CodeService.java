@@ -25,6 +25,8 @@ public class CodeService {
 
     private CodeRepository codeRepository;
     private UserRepository userRepository;
+    private long currentUserId;
+    private int currentOffset;
 
     public CodeService(){}
     
@@ -58,21 +60,21 @@ public class CodeService {
     public List<CodeInformation> findWithKeyword(String keyword, int offset, int limit) {
         Pageable page = PageRequest.of(offset, limit);
         var codes = codeRepository
-                .findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(page, keyword, keyword, keyword);
+                .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCase(page, keyword, keyword, keyword);
         return codes.stream().map(CodeInformation::from).toList();
     }
     
     public List<CodeInformation> findWithKeywordByNewest(String keyword, int offset, int limit) {
         Pageable page = PageRequest.of(offset, limit);
         var codes = codeRepository
-          .findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCaseOrderByDateDesc(page, keyword, keyword, keyword);
+          .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByDateDesc(page, keyword, keyword, keyword);
         return codes.stream().map(CodeInformation::from).toList();
     }
     
     public List<CodeInformation> findWithKeywordByScore(String keyword, int offset, int limit) {
         Pageable page = PageRequest.of(offset, limit);
         var codes = codeRepository
-          .findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(keyword, keyword, keyword);
+          .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCase(keyword, keyword, keyword);
         var codes2 = codes.stream().map(CodeInformation::from).sorted((o1, o2) -> {
             if(o1.scoreVote() == o2.scoreVote())
                 return 0;
@@ -88,17 +90,36 @@ public class CodeService {
         if(user == null) {
             return codes;
         }
+        
         var usersAlreadySeen = new ArrayList<User>();
         var followed = userRepository.findFollowedById(user.getId());
+        var nbCodesDisplayed = offset * limit;
+        var nbCodesLeftDisplay = limit;
         Pageable page = PageRequest.of(offset, limit);
         for(var follow : followed) {
             if(!usersAlreadySeen.contains(follow)) {
-                codeRepository.findByUserIdAndTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(page, follow.getId(), keyword, keyword, keyword).stream().map(CodeInformation::from).forEach(c -> codes.add(c));
+                //codeRepository.findByUserIdAndTitleContainingIgnoreCaseOrUserIdAndDescriptionContainingIgnoreCaseOrUserIdAndUserUsernameContainingIgnoreCase(page, follow.getId(), keyword, follow.getId(), keyword, follow.getId(), keyword).stream().map(CodeInformation::from).forEach(c -> codes.add(c));
+                var nbCodesFollow = codeRepository.countByUserIdAndTitleContainingIgnoreCaseOrUserIdAndDescriptionContainingIgnoreCaseOrUserIdAndUserUsernameContainingIgnoreCase(follow.getId(), keyword, follow.getId(), keyword, follow.getId(), keyword);
+                System.out.println(nbCodesFollow);
+                
+                if(nbCodesDisplayed >= nbCodesFollow) {
+                    nbCodesDisplayed -= nbCodesFollow;
+                }
+                else {
+                    var nbCodesLeft = nbCodesFollow - nbCodesDisplayed;
+                    if(nbCodesLeft < nbCodesLeftDisplay) {
+                        nbCodesLeftDisplay -= nbCodesLeft;
+                        
+                    }
+                    else {
+                        //limit
+                        //break;
+                    }
+                }
             }
-            usersAlreadySeen.add(follow);
         }
-        System.out.println(codes);
-        return codes;
+        
+        return codes.stream().skip(offset * limit).limit(limit).toList();
     }
 
     @Transactional
