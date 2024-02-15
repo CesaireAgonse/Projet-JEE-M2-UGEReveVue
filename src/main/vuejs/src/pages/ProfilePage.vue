@@ -1,14 +1,18 @@
 <template  v-if="username !== null">
-  <button class="basic-button left" @click="home">Home</button>
+  <button class="basic-button left" @click="home">
+    <i>
+      <i class="fa-solid fa-arrow-left"></i>
+      Home
+    </i>
+  </button>
   <div class="profile">
     <div class="profile-header">
       <img src="../assets/profile.jpg" alt="Photo de profil" class="profile-photo">
       <div class="profile-info">
-        <h1>{{ username }}</h1>
-        <p>{{ "Ceci est une description de profile" }}</p>
-        <button class="basic-button button-profile">Suivre</button>
-        <button class="basic-button button-profile">Ne plus suivre</button>
-        <button class="basic-button button-profile">Modifier son mot de passe</button>
+        <h1 class="left">{{ username }}</h1>
+        <p class="left"> {{nbFollowed}} <i class="fa-solid fa-user-group"></i></p>
+        <p class="left">{{ "Ceci est une description de profile" }}</p>
+        <button class="basic-button button-profile left">Modifier son mot de passe</button>
       </div>
     </div>
   </div>
@@ -18,16 +22,25 @@
 
 import {userService} from "@/services/user.service";
 import router from "@/router";
+import { library, dom } from "@fortawesome/fontawesome-svg-core";
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+library.add(fas, far, fab)
+dom.watch();
+
 export default {
   mounted() {
     document.title = "Profile"
-    userService.profile(this.$route.params.name).then(res => {
+    userService.profile().then(res => {
           this.username = res.data.username
+          this.nbFollowed = res.data.followed.size()
         }).catch(err => console.log(err))
   },
   data() {
     return {
-      username: null
+      username: null,
+      nbFollowed: 0
     };
   },
   methods : {

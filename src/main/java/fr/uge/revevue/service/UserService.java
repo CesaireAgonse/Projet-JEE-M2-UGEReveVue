@@ -6,11 +6,12 @@ import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.RoleRepository;
 import fr.uge.revevue.repository.UserRepository;
+import fr.uge.revevue.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,41 +19,21 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
 @Service
 public class UserService implements UserDetailsService{
-
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository,
-                       RoleRepository roleRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder
     ){
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
-    @Transactional
-    public SimpleUserInformation signup(String username, String password) {
-        var find = userRepository.findByUsername(username);
-        if (find.isPresent()){
-            throw new IllegalArgumentException("username already used");
-        }
-        var passwordCrypt = bCryptPasswordEncoder.encode(password);
-        var user = new User(username, passwordCrypt);
-        var optionalRole = roleRepository.findByTypeRole(Role.TypeRole.USER);
-        if (optionalRole.isEmpty()){
-            throw new IllegalStateException("USER role not found");
-        }
-        user.setRole(optionalRole.get());
-        userRepository.save(user);
-        return SimpleUserInformation.from(user);
     }
 
     @Transactional

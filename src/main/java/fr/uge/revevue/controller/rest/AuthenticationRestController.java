@@ -2,7 +2,9 @@ package fr.uge.revevue.controller.rest;
 
 import fr.uge.revevue.information.AuthenticationInformation;
 import fr.uge.revevue.information.SimpleUserInformation;
+import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.security.JwtService;
+import fr.uge.revevue.service.AuthenticationService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +22,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/v1")
 public class AuthenticationRestController {
-    private final UserService userService;
-    private AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final AuthenticationService authenticationService;
     @Autowired
-    public AuthenticationRestController(UserService userService, JwtService jwtService){
-        this.jwtService = jwtService;
-        this.userService = userService;
+    public AuthenticationRestController(AuthenticationService authenticationService){
+        this.authenticationService = authenticationService;
     }
-
-    @Autowired
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
-
 
     @PostMapping("/signup")
     public ResponseEntity<SimpleUserInformation> signup(@RequestBody @Valid AuthenticationInformation authenticationInformation,
@@ -41,35 +34,19 @@ public class AuthenticationRestController {
         if (result.hasErrors()){
             return ResponseEntity.badRequest().build();
         }
-        var user = userService.signup(authenticationInformation.username(), authenticationInformation.password());
+        var user = authenticationService.signup(authenticationInformation.username(), authenticationInformation.password());
         return ResponseEntity.ok(user);
     }
-    @GetMapping("/test")
-    public ResponseEntity<String> test(){
-            return ResponseEntity.ok("SALUT");
-    }
-
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody @Valid AuthenticationInformation authenticationInformation,
-                                     BindingResult result){
-        final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationInformation.username(), authenticationInformation.password())
-        );
-        if (authentication.isAuthenticated()){
-             return this.jwtService.generate(authenticationInformation.username());
-        }
-        return null;
+    public Map<String, String> login(@RequestBody @Valid AuthenticationInformation authenticationInformation){
+        return authenticationService.login(authenticationInformation.username(), authenticationInformation.password());
     }
 
-//    @PostMapping("/refresh")
-//    public @ResponseBody Map<String, String> refresh(@RequestBody Map<String, String> token, HttpServletRequest request){
-//        String authorization = request.getHeader("Authorization");
-//        if(authorization == null || !authorization.startsWith("Bearer ")){
-//            return null;
-//        }
-//        return this.jwtService.refreshToken(token, authorization.substring(7));
-//    }
+    @PostMapping("/refresh")
+    public Map<String, String> refresh(@RequestBody Map<String, String> token){
+        return authenticationService.refresh(token);
+    }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {

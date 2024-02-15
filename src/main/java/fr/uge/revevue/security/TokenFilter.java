@@ -1,7 +1,6 @@
 package fr.uge.revevue.security;
 
 import fr.uge.revevue.service.UserService;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,33 +16,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Service
-public class JwtFilter extends OncePerRequestFilter {
+public class TokenFilter extends OncePerRequestFilter {
 
     private final UserService userService;
     private final JwtService jwtService;
+    private final CookieService cookieService;
 
     @Autowired
-    public JwtFilter(UserService userService, JwtService jwtService) {
+    public TokenFilter(UserService userService, JwtService jwtService, CookieService cookieService) {
         this.userService = userService;
         this.jwtService = jwtService;
-    }
-
-    private Cookie findCookie(String name, Cookie[] cookies){
-        if (cookies != null){
-            for (var cookie:cookies){
-                if (cookie.getName().equals(name)){
-                    return cookie;
-                }
-            }
-        }
-        return null;
-    }
-
-    private void removeCookie(String name, HttpServletResponse response){
-        var removeCookie = new Cookie(name, null);
-        removeCookie.setPath("/");
-        removeCookie.setMaxAge(0);
-        response.addCookie(removeCookie);
+        this.cookieService = cookieService;
     }
 
     @Override
@@ -51,23 +34,26 @@ public class JwtFilter extends OncePerRequestFilter {
         String token;
         String username = null;
         boolean isTokenExpired = true;
-        Cookie cookie = findCookie("bearer", request.getCookies());
-        if (cookie != null){
+        // Client léger
+        Cookie cookie = cookieService.findCookie("bearer", request);
+        if (cookie != null){    // Si il y a un cookie d'authentification
             token = cookie.getValue();
             isTokenExpired = jwtService.isTokenExpired(token);
-            if (isTokenExpired){
-                removeCookie("bearer", response);
-                response.sendRedirect("/login");
+            if (isTokenExpired){    // Si le token dans le cookie est expiré
+                cookieService.removeCookie("bearer", response);
+                response.sendRedirect("/refresh");  // on fait un refresh token si on peut
                 return;
             }
-            username = jwtService.readUsername(token);
+            username = jwtService.getUsername(token);
         }
+        // Client lourd
         String authorization = request.getHeader("Authorization");
-        if(authorization != null && authorization.startsWith("Bearer ")){
+        if(authorization != null && authorization.startsWith("Bearer ")){   // Si il y a un jwt d'authentification
             token = authorization.substring(7);
             isTokenExpired = jwtService.isTokenExpired(token);
-            username = jwtService.readUsername(token);
+            username = jwtService.getUsername(token);
         }
+        // Chargement de l'utilisateur avec le token
         if (!isTokenExpired && username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

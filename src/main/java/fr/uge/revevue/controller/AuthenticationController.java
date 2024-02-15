@@ -1,8 +1,10 @@
 package fr.uge.revevue.controller;
 
+import fr.uge.revevue.security.CookieService;
 import fr.uge.revevue.security.JwtService;
 import fr.uge.revevue.form.LoginForm;
 import fr.uge.revevue.form.SignupForm;
+import fr.uge.revevue.service.AuthenticationService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,26 +15,25 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Map;
+
 @Controller
 public class AuthenticationController {
     private final UserService userService;
-    private AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final CookieService cookieService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    public AuthenticationController(UserService userService, JwtService jwtService){
-        this.jwtService = jwtService;
+    public AuthenticationController(UserService userService, CookieService cookieService, AuthenticationService authenticationService){
         this.userService = userService;
-    }
-
-    @Autowired
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
+        this.cookieService = cookieService;
+        this.authenticationService = authenticationService;
     }
 
     @GetMapping("/signup")
@@ -56,16 +57,10 @@ public class AuthenticationController {
             result.rejectValue("username", "error.signupForm", "This username is already taken. Please choose another one.");
             return "users/signup";
         }
-        userService.signup(signupForm.getUsername(), signupForm.getPassword());
-        var authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(signupForm.getUsername(), signupForm.getPassword())
-        );
-        if (authentication.isAuthenticated()){
-            var tokens = jwtService.generate(signupForm.getUsername());
-            var cookie = new Cookie("bearer", tokens.get("bearer"));
-            cookie.setPath("/");
-            cookie.setHttpOnly(true);
-            response.addCookie(cookie);
+        authenticationService.signup(signupForm.getUsername(), signupForm.getPassword());
+        var tokens = authenticationService.login(signupForm.getUsername(), signupForm.getPassword());
+        if (tokens != null){
+            cookieService.addAllCookies(tokens, response);
         }
         return "redirect:/";
     }
@@ -94,18 +89,25 @@ public class AuthenticationController {
             result.rejectValue("password", "error.loginForm", "The password you entered is incorrect. Please try again.");
             return "users/login";
         }
-        var authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword())
-        );
-        if (authentication.isAuthenticated()){
-           var tokens = jwtService.generate(loginForm.getUsername());
-           var cookie = new Cookie("bearer", tokens.get("bearer"));
-           cookie.setPath("/");
-           cookie.setHttpOnly(true);
-           response.addCookie(cookie);
+        var tokens = authenticationService.login(loginForm.getUsername(), loginForm.getPassword());
+        if (tokens != null){
+            cookieService.addAllCookies(tokens, response);
         }
         return "redirect:/";
     }
+
+    @GetMapping("/refresh")
+    public String refresh(HttpServletRequest request, HttpServletResponse response){
+        var cookie = cookieService.findCookie("refresh", request);
+        if (cookie == null) {
+            return "redirect:/login";
+        }
+        var tokens = authenticationService.refresh(Map.of(cookie.getName(), cookie.getValue()));
+        cookieService.addAllCookies(tokens, response);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/");
+    }
+
 
 //    @PostMapping("/logout")
 //    public String logout(HttpServletResponse response) {

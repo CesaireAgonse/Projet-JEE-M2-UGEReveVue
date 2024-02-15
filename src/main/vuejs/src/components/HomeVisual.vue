@@ -56,11 +56,6 @@ export default {
   components: {
     CodeVisual
   },
-  computed: {
-    authenticationService() {
-      return authenticationService
-    }
-  },
   props: {
     isLoginModalVisible: {
       type: Boolean,
@@ -124,7 +119,7 @@ export default {
       }).catch(err => console.log(err))
     },
     profile(){
-      router.push('/profile/')
+      router.push('/profile')
     },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;

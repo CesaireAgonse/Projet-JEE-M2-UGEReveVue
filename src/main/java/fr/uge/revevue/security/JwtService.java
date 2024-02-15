@@ -12,17 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.security.Key;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
 public class JwtService {
     private final UserService userService;
-    @Value("${encryption.key}")
+    @Value("${token.encryption.key}")
     private String ENCRYPTION_KEY;
-    private static final long EXPIRATION_TIME = 30 * 60 * 1000;
+    @Value("${token.expiration.time.authentication}")
+    private long EXPIRATION_TIME;
+    @Value("${token.expiration.time.refresh}")
+    private long EXPIRATION_REFRESH_TIME;
 
     @Autowired
     public JwtService(UserService userService){
@@ -30,10 +33,10 @@ public class JwtService {
     }
     public Map<String, String> generate(String username){
         User user = this.userService.loadUserByUsername(username);
-        return this.generateJwt(user);
+        return this.generateTokenWithRefreshToken(user);
     }
 
-    public String readUsername(String token) {
+    public String getUsername(String token) {
         return this.getClaim(token, Claims::getSubject);
     }
 
@@ -44,6 +47,14 @@ public class JwtService {
         }catch (ExpiredJwtException e){
             return true;
         }
+    }
+
+    public Map<String, String> refreshToken(Map<String, String> token) {
+        var refresh = token.get("refresh");
+        if (isTokenExpired(refresh)){
+            throw new RuntimeException("token invalide");
+        }
+        return generate(getUsername(refresh));
     }
 
     private Date getExpirationDateFromToken(String token) {
@@ -63,37 +74,29 @@ public class JwtService {
                 .getBody();
     }
 
-    private Map<String, String> generateJwt(User user) {
-        final long currentTime = System.currentTimeMillis();
-        final long expirationTime = currentTime + EXPIRATION_TIME;
+    private String createToken(User user, long expirationTime){
         var claims = Map.of(
-                Claims.EXPIRATION, new Date(expirationTime),
+                Claims.EXPIRATION, new Date(System.currentTimeMillis() + expirationTime),
                 Claims.SUBJECT, user.getUsername()
         );
-        final var bearer = Jwts.builder()
-                .setIssuedAt(new Date(currentTime))
-                .setExpiration(new Date(expirationTime))
+        return Jwts.builder()
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .setSubject(user.getUsername())
                 .setClaims(claims)
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
-        return Map.of("bearer", bearer);
+    }
+
+    private Map<String, String> generateTokenWithRefreshToken(User user) {
+        return Map.of(
+                "bearer", createToken(user, EXPIRATION_TIME),
+                "refresh", createToken(user, EXPIRATION_REFRESH_TIME)
+        );
     }
 
     private Key getKey() {
         var decoder = Decoders.BASE64.decode(ENCRYPTION_KEY);
         return Keys.hmacShaKeyFor(decoder);
-
-
     }
-
-//    public Map<String, String> refreshToken(Map<String, String> token, String authorizationToken) {
-//        if (!token.get("bearer").equals(authorizationToken)){
-//            throw new IllegalStateException("Token");
-//        }
-//        if (isTokenExpired(authorizationToken)){
-//            throw new RuntimeException();
-//        }
-//        return generate(readUsername(authorizationToken));
-//    }
 }

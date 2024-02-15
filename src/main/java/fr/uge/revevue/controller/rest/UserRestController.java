@@ -72,4 +72,9 @@ public class UserRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<UserInformation> profile(){
+        return ResponseEntity.ok(userService.getInformation(userService.currentUser().getUsername()));
+    }
+
 }

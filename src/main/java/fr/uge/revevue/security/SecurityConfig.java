@@ -23,28 +23,27 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final JwtFilter jwtFilter;
+    private final TokenFilter tokenFilter;
 
     @Autowired
-    public SecurityConfig(JwtFilter jwtFilter, BCryptPasswordEncoder bCryptPasswordEncoder, UserDetailsService userDetailsService){
-        this.jwtFilter = jwtFilter;
+    public SecurityConfig(TokenFilter tokenFilter, BCryptPasswordEncoder bCryptPasswordEncoder, UserDetailsService userDetailsService){
+        this.tokenFilter = tokenFilter;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userDetailsService = userDetailsService;
     }
-
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/signup", "/login", "/css/**", "/prism/**", "/script/**","/").permitAll()
+                .antMatchers("/css/**", "/prism/**", "/script/**", "/h2-console/**").permitAll()
+                .antMatchers("/","/signup", "/login", "/refresh").permitAll()   // Client léger
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/api/v1/signup", "/api/v1/login").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/api/v1/signup", "/api/v1/login", "/api/v1/refresh").permitAll()  // Client lourd
                 .anyRequest().authenticated()
-                .and().logout().deleteCookies("bearer");
+                .and().logout().deleteCookies("bearer", "refresh");
         return http.build();
     }
 
