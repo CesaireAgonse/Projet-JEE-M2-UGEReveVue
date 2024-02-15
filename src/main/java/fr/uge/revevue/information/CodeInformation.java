@@ -4,9 +4,7 @@ import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Post;
 import fr.uge.revevue.entity.Vote;
 
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public record CodeInformation(
@@ -19,8 +17,8 @@ public record CodeInformation(
         String unitContent,
         int score,
         Date date,
-        Set<CommentInformation> comments,
-        Set<ReviewInformation> reviews
+        List<CommentInformation> comments,
+        List<ReviewInformation> reviews
 ) {
 
     public static CodeInformation from(Code code){
@@ -35,8 +33,10 @@ public record CodeInformation(
                 code.getUnitContent(),
                 code.getScoreVote(),
                 code.getDate(),
-                code.getComments().stream().map(CommentInformation::from).collect(Collectors.toSet()),
-                code.getReviews().stream().map(ReviewInformation::from).collect(Collectors.toSet())
+                code.getComments().stream().map(CommentInformation::from).sorted(Comparator.comparing(CommentInformation::date).reversed()).toList(),
+                code.getReviews().stream().map(ReviewInformation::from)
+                        .sorted(Comparator.comparing(ReviewInformation::date).reversed())
+                        .sorted(Comparator.comparing(ReviewInformation::score).reversed()).toList()
         );
     }
 }

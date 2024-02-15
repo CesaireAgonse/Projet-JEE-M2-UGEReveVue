@@ -1,12 +1,12 @@
 package fr.uge.revevue.information;
 
-import fr.uge.revevue.entity.Post;
 import fr.uge.revevue.entity.Review;
 import fr.uge.revevue.entity.Vote;
 
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public record ReviewInformation(
@@ -17,8 +17,8 @@ public record ReviewInformation(
         String content,
         int score,
         Date date,
-        Set<CommentInformation> comments,
-        Set<ReviewInformation> reviews
+        List<CommentInformation> comments,
+        List<ReviewInformation> reviews
 ) {
 
     public static ReviewInformation from(Review review){
@@ -31,8 +31,10 @@ public record ReviewInformation(
                 review.getContent(),
                 review.getScoreVote(),
                 review.getDate(),
-                review.getComments().stream().map(CommentInformation::from).collect(Collectors.toSet()),
-                review.getReviews().stream().map(ReviewInformation::from).collect(Collectors.toSet())
+                review.getComments().stream().map(CommentInformation::from).sorted(Comparator.comparing(CommentInformation::date).reversed()).toList(),
+                review.getReviews().stream().map(ReviewInformation::from)
+                        .sorted(Comparator.comparing(ReviewInformation::date).reversed())
+                        .sorted(Comparator.comparing(ReviewInformation::score).reversed()).toList()
         );
     }
 }

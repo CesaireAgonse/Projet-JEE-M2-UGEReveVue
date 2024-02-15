@@ -23,6 +23,7 @@ import java.util.Map;
 @RequestMapping("api/v1")
 public class AuthenticationRestController {
     private final AuthenticationService authenticationService;
+
     @Autowired
     public AuthenticationRestController(AuthenticationService authenticationService){
         this.authenticationService = authenticationService;

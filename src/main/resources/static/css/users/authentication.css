@@ -42,5 +42,6 @@ form .txt_field{
 }
 
 .container.auth-limit {
+    margin-top: 10%;
     max-width: 30%;
 }

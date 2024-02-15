@@ -1,13 +1,14 @@
 <template>
   <div>
-    <div v-if="isLoginModalVisible" class="modal" @click="handleModalClick">
+    <div v-if="isPasswordModalVisible" class="modal" @click="handleModalClick">
       <div class="modal-content">
-        <span class="close" @click="hideLoginModal">&times;</span>
-        <h1 class="label">Connexion</h1>
-        <form @submit.prevent="connect">
-          <input type="text" id="username" v-model="username" placeholder="Nom d'utilisateur" required>
-          <input type="password" id="password" v-model="password" placeholder="Mot de passe" required>
-          <button type="submit">Se connecter</button>
+        <span class="close" @click="hideUpdateModal">&times;</span>
+        <h1 class="label">Modifier son mot de passe</h1>
+        <form @submit.prevent="updatePassword">
+          <input type="password" id="currentPassword" v-model="currentPassword" placeholder="Mot de passe actuel" required>
+          <input type="password" id="newPassword" v-model="newPassword" placeholder="Nouveau mot de passe" required>
+          <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Confirmation du nouveau mot de passe" required>
+          <button type="submit">Confirmer</button>
         </form>
       </div>
     </div>
@@ -15,38 +16,36 @@
 </template>
 
 <script>
-import {authenticationService} from '@/services/authentication.service'
+import {userService} from "@/services/user.service";
 export default {
   props: {
-    isLoginModalVisible: {
+    isPasswordModalVisible: {
       type: Boolean,
       required: true
     }
   },
   data() {
     return {
-      username: '',
-      password: ''
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
     };
   },
   methods: {
-    connect() {
-      authenticationService.login({username: this.username,  password: this.password})
-          .then(res => {
-              authenticationService.addToken(res.data.bearer)
-              this.username = '';
-              this.password = '';
-              this.$emit('close-modal');
-              this.$emit('connect');
-          })
-          .catch(err => console.log(err))
+    async updatePassword() {
+      let response = userService.updatePassword({currentPassword: this.currentPassword, newPassword: this.newPassword})
+      console.log(response);
+      this.currentPassword = '';
+      this.newPassword = '';
+      this.confirmPassword = '';
+      this.$emit('close-modal');
     },
-    hideLoginModal() {
+    hideUpdateModal() {
       this.$emit('close-modal');
     },
     handleModalClick(event) {
       if (!event.target.closest('.modal-content')) {
-        this.hideLoginModal();
+        this.hideUpdateModal();
       }
     }
   }
@@ -129,4 +128,5 @@ button:hover {
   transition: all .5s;
   color: #000;
 }
+
 </style>

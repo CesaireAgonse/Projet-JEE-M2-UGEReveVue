@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 
 @Service
 public class CommentService {
-
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -20,6 +19,7 @@ public class CommentService {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
     }
+
     @Transactional
     public void postCommented(long userId, long postId, String content, String codeSelection){
         var findUser = userRepository.findById(userId);

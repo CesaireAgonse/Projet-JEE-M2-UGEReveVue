@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class CodeService {
     private CodeRepository codeRepository;
 
-
     public CodeService(){}
 
     @Autowired
@@ -35,6 +34,7 @@ public class CodeService {
         }
         codeRepository.save(code);
     }
+
     @Transactional
     public CodeInformation getInformation(long idCode){
         var code = codeRepository.findById(idCode);
@@ -43,6 +43,7 @@ public class CodeService {
         }
         return CodeInformation.from(code.get());
     }
+
     @Transactional
     public Set<CodeInformation> findWithKeyword(String keyword, int offset, int limit) {
         Pageable page = PageRequest.of(offset, limit);

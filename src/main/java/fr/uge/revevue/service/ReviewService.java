@@ -14,7 +14,6 @@ import javax.transaction.Transactional;
 
 @Service
 public class ReviewService {
-
     private final ReviewRepository reviewRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -36,15 +35,15 @@ public class ReviewService {
         }
         var user = findUser.get();
         var post = findPost.get();
-        var comment = new Review(post.getTitle(), content, user, post);
-        reviewRepository.save(comment);
+        var review = new Review(post.getTitle(), content, user, post);
+        reviewRepository.save(review);
     }
 
     @Transactional
     public ReviewInformation getInformation(long reviewId){
         var review = reviewRepository.findById(reviewId);
         if(review.isEmpty()){
-            throw new IllegalArgumentException("Code not found");
+            throw new IllegalArgumentException("Review not found");
         }
         return ReviewInformation.from(review.get());
     }

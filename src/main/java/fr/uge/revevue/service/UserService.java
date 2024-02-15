@@ -1,16 +1,10 @@
 package fr.uge.revevue.service;
 
-import fr.uge.revevue.entity.Role;
 import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.entity.User;
-import fr.uge.revevue.repository.RoleRepository;
 import fr.uge.revevue.repository.UserRepository;
-import fr.uge.revevue.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 
@@ -91,7 +84,7 @@ public class UserService implements UserDetailsService{
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByUsername(username);
         if (user.isEmpty()){
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("user not found");
         }
         return user.get();
     }

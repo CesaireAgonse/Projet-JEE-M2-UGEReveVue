@@ -19,18 +19,20 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private final UserService userService;
     @Value("${token.encryption.key}")
     private String ENCRYPTION_KEY;
     @Value("${token.expiration.time.authentication}")
-    private long EXPIRATION_TIME;
+    private long TOKEN_EXPIRATION_TIME;
     @Value("${token.expiration.time.refresh}")
-    private long EXPIRATION_REFRESH_TIME;
+    private long TOKEN_EXPIRATION_REFRESH_TIME;
+
+    private final UserService userService;
 
     @Autowired
     public JwtService(UserService userService){
         this.userService = userService;
     }
+
     public Map<String, String> generate(String username){
         User user = this.userService.loadUserByUsername(username);
         return this.generateTokenWithRefreshToken(user);
@@ -90,8 +92,8 @@ public class JwtService {
 
     private Map<String, String> generateTokenWithRefreshToken(User user) {
         return Map.of(
-                "bearer", createToken(user, EXPIRATION_TIME),
-                "refresh", createToken(user, EXPIRATION_REFRESH_TIME)
+                "bearer", createToken(user, TOKEN_EXPIRATION_TIME),
+                "refresh", createToken(user, TOKEN_EXPIRATION_REFRESH_TIME)
         );
     }
 

@@ -60,7 +60,7 @@ public class AuthenticationController {
         authenticationService.signup(signupForm.getUsername(), signupForm.getPassword());
         var tokens = authenticationService.login(signupForm.getUsername(), signupForm.getPassword());
         if (tokens != null){
-            cookieService.addAllCookies(tokens, response);
+            cookieService.addAllCookiesFromTokens(tokens, response);
         }
         return "redirect:/";
     }
@@ -91,7 +91,7 @@ public class AuthenticationController {
         }
         var tokens = authenticationService.login(loginForm.getUsername(), loginForm.getPassword());
         if (tokens != null){
-            cookieService.addAllCookies(tokens, response);
+            cookieService.addAllCookiesFromTokens(tokens, response);
         }
         return "redirect:/";
     }
@@ -103,7 +103,7 @@ public class AuthenticationController {
             return "redirect:/login";
         }
         var tokens = authenticationService.refresh(Map.of(cookie.getName(), cookie.getValue()));
-        cookieService.addAllCookies(tokens, response);
+        cookieService.addAllCookiesFromTokens(tokens, response);
         String referer = request.getHeader("Referer");
         return "redirect:" + (referer != null ? referer : "/");
     }

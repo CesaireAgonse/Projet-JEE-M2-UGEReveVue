@@ -7,7 +7,6 @@ let updatePassword = (credentials) => {
     return Axios.post('api/v1/users/password', credentials)
 }
 
-
 export const userService = {
     profile,
     updatePassword

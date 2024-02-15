@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,7 +18,6 @@ import java.io.IOException;
 
 @Service
 public class TokenFilter extends OncePerRequestFilter {
-
     private final UserService userService;
     private final JwtService jwtService;
     private final CookieService cookieService;

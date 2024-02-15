@@ -4,6 +4,7 @@ import fr.uge.revevue.form.LoginForm;
 import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.information.AuthenticationInformation;
 import fr.uge.revevue.information.SimpleUserInformation;
+import fr.uge.revevue.information.UpdatePasswordInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,12 @@ public class UserRestController {
 
 
     @PostMapping("/password")
-    public ResponseEntity<Void> password(@RequestBody @Valid PasswordForm passwordForm, BindingResult result){
+    public ResponseEntity<Void> password(@RequestBody @Valid UpdatePasswordInformation updatePasswordInformation, BindingResult result){
         if (result.hasErrors()){
             return  ResponseEntity.badRequest().build();
         }
-        var userInformation = userService.modifyPassword(passwordForm.getCurrentPassword(), passwordForm.getNewPassword());
-        return ResponseEntity.noContent().build();
+        userService.modifyPassword(updatePasswordInformation.currentPassword(), updatePasswordInformation.newPassword());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{username}")
@@ -60,7 +61,7 @@ public class UserRestController {
             return ResponseEntity.badRequest().build();
         }
         userService.follow(userService.currentUser().getUsername(), username);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/unfollow/{username}")
@@ -69,7 +70,7 @@ public class UserRestController {
             return ResponseEntity.badRequest().build();
         }
         userService.unfollow(userService.currentUser().getUsername(), username);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/profile")

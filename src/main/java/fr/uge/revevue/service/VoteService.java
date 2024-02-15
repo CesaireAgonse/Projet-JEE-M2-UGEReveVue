@@ -20,7 +20,6 @@ import javax.transaction.Transactional;
 
 @Service
 public class VoteService {
-
     private final VoteRepository voteRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;

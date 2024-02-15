@@ -41,7 +41,7 @@
 </template>
 
 
-<script>
+<script  scoped>
 import CodeVisual from "@/components/CodeVisual.vue";
 import {authenticationService} from "@/services/authentication.service";
 import router from "@/router";
