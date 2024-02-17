@@ -1,6 +1,5 @@
 package fr.uge.microservice.controller;
 
-import fr.uge.microservice.UnitTestExecutor;
 import fr.uge.microservice.form.UnitTestClassForm;
 import fr.uge.microservice.information.UnitTestResultInformation;
 import fr.uge.microservice.service.UnitTestExecutorService;

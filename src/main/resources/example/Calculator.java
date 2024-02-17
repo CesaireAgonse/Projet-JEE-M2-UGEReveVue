@@ -1,4 +1,6 @@
-public class Calculator {
+import java.io.ObjectStreamConstants;
+
+public class Calculator implements ObjectStreamConstants {
     public int add(int a, int b) {
         return a + b;
     }
