@@ -1,10 +1,10 @@
 package fr.uge.revevue.controller;
 
-import fr.uge.revevue.microservice.UnitTestExecutor;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
+import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class CodeController {
 
     private final ReviewService reviewService;
     @Autowired
-    public CodeController(CodeService codeService, UserService userService, VoteService voteService,CommentService commentService,ReviewService reviewService){
+    public CodeController(CodeService codeService, UserService userService, VoteService voteService, CommentService commentService, ReviewService reviewService){
         this.userService = userService;
         this.codeService = codeService;
         this.voteService = voteService;
@@ -63,6 +63,10 @@ public class CodeController {
                 codeForm.getDescription(),
                 codeForm.getJavaFile().getBytes(),
                 codeForm.getUnitFile().getBytes());
+        if (!codeForm.getUnitFile().isEmpty()){
+            var results = WebClientService.microServiceExecute(new UnitTestClassForm(codeForm.getJavaFile().getBytes(), codeForm.getUnitFile().getBytes()));
+            System.out.println("TEST: " + results.block());
+        }
         return "redirect:/";
     }
 
