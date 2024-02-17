@@ -11,7 +11,7 @@
 
 import LoginForm from "@/components/LoginForm.vue";
 import SignupForm from "@/components/SignupForm.vue";
-import HomeVisual from "@/components/HomeVisual.vue";
+import HomeVisual from "@/visuals/HomeVisual.vue";
 import {authenticationService} from '@/services/authentication.service'
 export default {
   mounted() {

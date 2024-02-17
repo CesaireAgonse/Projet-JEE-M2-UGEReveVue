@@ -36,13 +36,14 @@
         </div>
       </div>
     </transition>
+
     <CodeVisual  :post="post" class="code-visual" :style="{ transform: listCode }"/>
   </div>
 </template>
 
 
 <script  scoped>
-import CodeVisual from "@/components/CodeVisual.vue";
+import CodeVisual from "@/visuals/CodeVisual.vue";
 import {authenticationService} from "@/services/authentication.service";
 import router from "@/router";
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
@@ -95,7 +96,7 @@ export default {
         this.imageTransform = '';
         this.searchBarTop = '40%';
         this.welcomeMessageTop = '20%';
-        this.listCode = 'translate(-50%, 200%)'
+        this.listCode = 'translate(-50%, 250%)'
         this.imageUp = true;
       } else {
         this.imageTransform = 'translateY(-92%)';
@@ -143,7 +144,7 @@ input::placeholder {
   position: absolute;
   top: calc(50% + 20px); /* Positionnez-le au milieu de la barre de recherche */
   left: 50%;
-  transform: translate(-50%, 200%);
+  transform: translate(-50%, 250%);
   transition: all 1s ease;
   width: 50%;
 }
@@ -281,5 +282,20 @@ body {
 
 .dropdown-option:last-child {
   border-bottom: none;
+}
+
+.post-create-code {
+  background-color: #282828;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
+  padding: 20px;
+  margin-bottom: 20px;
+  max-width: calc(33.3333% - 40px); /* 1/3 de la largeur de l'écran moins la marge et le padding */
+  position: absolute;
+  top: calc(50% + 20px); /* Positionnez-le au milieu de la barre de recherche */
+  left: 50%;
+  transform: translate(-50%, 550%);
+  transition: all 1s ease;
+  width: 50%;
 }
 </style>

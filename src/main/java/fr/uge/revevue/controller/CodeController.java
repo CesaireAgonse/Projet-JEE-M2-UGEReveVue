@@ -1,5 +1,6 @@
 package fr.uge.revevue.controller;
 
+import fr.uge.revevue.microservice.UnitTestExecutor;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 @Controller
@@ -61,8 +61,8 @@ public class CodeController {
         codeService.create(userService.currentUser(),
                 codeForm.getTitle(),
                 codeForm.getDescription(),
-                new String(codeForm.getJavaFile().getBytes(),StandardCharsets.UTF_8),
-                new String(codeForm.getUnitFile().getBytes(),StandardCharsets.UTF_8));
+                codeForm.getJavaFile().getBytes(),
+                codeForm.getUnitFile().getBytes());
         return "redirect:/";
     }
 

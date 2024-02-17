@@ -30,13 +30,9 @@ public class AuthenticationRestController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SimpleUserInformation> signup(@RequestBody @Valid AuthenticationInformation authenticationInformation,
-                                                        BindingResult result){
-        if (result.hasErrors()){
-            return ResponseEntity.badRequest().build();
-        }
-        var user = authenticationService.signup(authenticationInformation.username(), authenticationInformation.password());
-        return ResponseEntity.ok(user);
+    public Map<String, String> signup(@RequestBody @Valid AuthenticationInformation authenticationInformation){
+        authenticationService.signup(authenticationInformation.username(), authenticationInformation.password());
+        return authenticationService.login(authenticationInformation.username(), authenticationInformation.password());
     }
 
     @PostMapping("/login")

@@ -3,6 +3,7 @@ package fr.uge.revevue.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,14 +18,14 @@ public class Code extends Post {
 
     @NotNull
     @Column(columnDefinition = "VARCHAR(MAX)")
-    private String javaContent;
+    private byte[] javaContent;
 
     @Column(columnDefinition = "VARCHAR(MAX)")
-    private String unitContent;
+    private byte[] unitContent;
 
     public Code(){}
 
-    public Code(User user, String title, String description, String javaContent) {
+    public Code(User user, String title, String description, byte[] javaContent) {
         super(title, user);
         this.description = description;
         this.javaContent = javaContent;
@@ -34,11 +35,15 @@ public class Code extends Post {
 
     public void setDescription(String description) {this.description = description;}
 
-    public String getJavaContent() {return javaContent;}
+    public String getJavaContent() {
+        return new String(javaContent, StandardCharsets.UTF_8);
+    }
 
-    public void setJavaContent(String javaContent) {this.javaContent = javaContent;}
+    public void setJavaContent(byte[] javaContent) {this.javaContent = javaContent;}
 
-    public String getUnitContent() {return unitContent;}
+    public String getUnitContent() {
+        return new String(unitContent, StandardCharsets.UTF_8);
+    }
 
-    public void setUnitContent(String unitContent) {this.unitContent = unitContent;}
+    public void setUnitContent(byte[] unitContent) {this.unitContent = unitContent;}
 }
