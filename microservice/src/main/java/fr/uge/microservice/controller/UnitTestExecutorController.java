@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping("api/v1")
@@ -22,10 +23,14 @@ public class UnitTestExecutorController {
     }
 
     @PostMapping("/execute")
-    public ResponseEntity<UnitTestResultInformation> execute(@RequestBody @Valid UnitTestClassForm unitTestClassForm, BindingResult result){
+    public ResponseEntity<UnitTestResultInformation> execute(@RequestBody @Valid UnitTestClassForm unitTestClassForm, BindingResult result) {
         if (result.hasErrors()){
             ResponseEntity.badRequest();
         }
-        return ResponseEntity.ok(unitTestExecutorService.execute(unitTestClassForm.getJavaCode(), unitTestClassForm.getUnitCode()));
+        try {
+            return ResponseEntity.ok(unitTestExecutorService.executeWithVerification(unitTestClassForm.getJavaCode(), unitTestClassForm.getUnitCode()));
+        } catch (TimeoutException e) {
+            return ResponseEntity.status(504).build();
+        }
     }
 }

@@ -11,6 +11,7 @@ import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -27,6 +29,8 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 
 @Service
 public class UnitTestExecutorService {
+    private static final int TIMEOUT = 60;
+
 
     private static String findClassName(String code){
         Pattern classPattern = Pattern.compile("class\\s+([\\w$]+)\\s*(?:implements|extends)?\\s*([\\w$]+)?\\s*\\{");
@@ -37,7 +41,22 @@ public class UnitTestExecutorService {
         return matcher.group(1);
     }
 
-    public UnitTestResultInformation execute(byte[] javaCode, byte[] unitCode){
+    public UnitTestResultInformation executeWithVerification(byte[] javaCode, byte[] unitCode) throws TimeoutException {
+        UnitTestResultInformation unitTestResultInformation = null;
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<UnitTestResultInformation> task = () -> execute(javaCode, unitCode);
+        Future<UnitTestResultInformation> future = executor.submit(task);
+        try {
+            unitTestResultInformation = future.get(TIMEOUT, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException e) {
+            future.cancel(true);
+        }
+        executor.shutdownNow();
+        return unitTestResultInformation;
+    }
+
+
+    private UnitTestResultInformation execute(byte[] javaCode, byte[] unitCode){
         try {
             String javaFileCode = new String(javaCode, StandardCharsets.UTF_8);
             String unitFileCode = new String(unitCode, StandardCharsets.UTF_8);

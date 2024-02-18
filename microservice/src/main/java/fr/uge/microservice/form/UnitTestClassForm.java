@@ -1,9 +1,13 @@
 package fr.uge.microservice.form;
 
+import javax.validation.constraints.NotNull;
+
 public class UnitTestClassForm {
 
+    @NotNull
     private byte[] javaCode;
 
+    @NotNull
     private byte[] unitCode;
 
     public byte[] getJavaCode() {

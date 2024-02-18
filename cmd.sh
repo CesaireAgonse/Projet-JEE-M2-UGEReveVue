@@ -7,12 +7,12 @@ jar2="microservice/target/microservice-1.0-SNAPSHOT.jar"
 # Chemin vers le frontend
 dossier_npm="frontend"
 
-# Lancement des deux JARs
+# Lancement du back-end et du micro-service
 java -jar "$jar1" &
 java -jar "$jar2" &
 
-# Changement de répertoire vers le frontend
+# Changement de répertoire vers le front-end
 cd "$dossier_npm" || exit
 
-# Lancement de npm run serve
+# Lancement du frontend
 npm run serve
