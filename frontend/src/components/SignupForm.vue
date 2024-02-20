@@ -65,7 +65,6 @@ export default {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
 }
 
 .modal-content {
@@ -76,6 +75,7 @@ export default {
   width: 80%;
   max-width: 600px;
   border: 2px solid #fff;
+  backdrop-filter: blur(10px);
 }
 
 .close {

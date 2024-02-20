@@ -36,7 +36,7 @@
         </div>
       </div>
     </transition>
-
+    <button class="basic-button create-button" :style="{ transform: createButton }" @click="showCodeModal">Poster un code</button>
     <CodeVisual  :post="post" class="code-visual" :style="{ transform: listCode }"/>
   </div>
 </template>
@@ -66,6 +66,10 @@ export default {
       type: Boolean,
       required: true
     },
+    isCodeModalVisible: {
+      type: Boolean,
+      required: true
+    },
     isLogged:{
       type:Boolean
     }
@@ -77,6 +81,7 @@ export default {
       welcomeMessageTop:'20%',
       authUser: "",
       listCode:'',
+      createButton:'',
       imageUp: true,
       showDropdown: false,
       post: {
@@ -97,12 +102,14 @@ export default {
         this.searchBarTop = '40%';
         this.welcomeMessageTop = '20%';
         this.listCode = 'translate(-50%, 250%)'
+        this.createButton = 'translate(-175%, 3000%)'
         this.imageUp = true;
       } else {
         this.imageTransform = 'translateY(-92%)';
         this.searchBarTop = '15%';
         this.welcomeMessageTop = '-90%';
         this.listCode = 'translate(-50%, -50%)'
+        this.createButton = 'translate(-175%, 175%)'
         this.imageUp = false;
       }
     },
@@ -111,6 +118,9 @@ export default {
     },
     showSignupModal() {
       this.$emit('show-signup-modal');
+    },
+    showCodeModal() {
+      this.$emit('show-code-modal');
     },
     logout(){
       authenticationService.logout().then(res => {
@@ -142,7 +152,7 @@ input::placeholder {
 
 .code-visual {
   position: absolute;
-  top: calc(50% + 20px); /* Positionnez-le au milieu de la barre de recherche */
+  top: calc(50% + 20px);
   left: 50%;
   transform: translate(-50%, 250%);
   transition: all 1s ease;
@@ -170,6 +180,15 @@ input::placeholder {
   background: transparent;
   color: white;
 }
+
+.create-button {
+  position: absolute;
+  top: calc(20%);
+  transform: translate(-175%, 3000%);
+  transition: all 1s ease;
+  width: 10%;
+}
+
 
 .search-bar {
   position: absolute;
