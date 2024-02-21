@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+    <head>
+        <title>Codes Results</title>
+        <link rel="stylesheet" href="/css/style.css" />
+        <link rel="stylesheet" href="/css/posts/create.css" />
+        <link rel="stylesheet" href="/prism/prism.css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <div th:replace="navbar :: navbar"></div>
+        <div class="main">
+            <div class="container limit">
+                <p th:text="'Total : ' + ${results.testsTotalCount()}"></p>
+                <p th:text="'Time : ' + ${results.testsTotalTime()}"></p>
+                <p th:text="'Succeded : ' + ${results.testsSucceededCount()}"></p>
+                <p th:text="'Failed : ' + ${results.testsFailedCount()}"></p>
+                <ul th:each="failure : ${results.failures().entrySet()}">
+                    <li>
+                        <p th:text="'Failure : ' + ${failure.getKey()} + ' - ' + ${failure.getValue()}"/>
+                    </li>
+                </ul>
+                <a th:href="'/'" class="basic button">Home</a>
+            </div>
+        </div>
+    </body>
+</html>
