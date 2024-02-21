@@ -52,4 +52,17 @@ public class CodeRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<Void> post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result)  throws IOException {
+        if (result.hasErrors()){
+            return  ResponseEntity.badRequest().build();
+        }
+        codeService.create(userService.currentUser(),
+                codeForm.getTitle(),
+                codeForm.getDescription(),
+                new String(codeForm.getJavaFile().getBytes(),StandardCharsets.UTF_8),
+                new String(codeForm.getUnitFile().getBytes(),StandardCharsets.UTF_8));
+        return ResponseEntity.noContent().build();
+    }
+
 }

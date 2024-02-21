@@ -8,6 +8,7 @@ import fr.uge.revevue.service.CommentService;
 import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;
 import fr.uge.revevue.service.VoteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,7 +26,7 @@ public class ReviewController {
     private final CommentService commentService;
 
     private final ReviewService reviewService;
-
+    @Autowired
     public ReviewController(VoteService voteService, UserService userService,CommentService commentService, ReviewService reviewService) {
         this.voteService = voteService;
         this.userService = userService;
