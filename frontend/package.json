@@ -21,7 +21,7 @@
     "vue": "^3.4.19",
     "vue-awesome": "^4.5.0",
     "vue-prism-component": "^2.0.0",
-    "vue-router": "^4.2.5",
+    "vue-router": "^4.3.0",
     "vue-transition-css": "^1.0.5"
   },
   "devDependencies": {

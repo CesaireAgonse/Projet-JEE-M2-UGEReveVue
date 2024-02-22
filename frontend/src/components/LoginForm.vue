@@ -33,7 +33,8 @@ export default {
     connect() {
       authenticationService.login({username: this.username,  password: this.password})
           .then(res => {
-              authenticationService.addToken(res.data.bearer)
+              authenticationService.addToken('bearer', res.data.bearer)
+              authenticationService.addToken('refresh', res.data.refresh)
               this.username = '';
               this.password = '';
               this.$emit('close-modal');

@@ -23,7 +23,6 @@ import java.util.List;
 
 @Controller
 public class HomeController {
-    private final static int LIMIT = 3;
     UserService userService;
     CodeService codeService;
 
@@ -44,7 +43,7 @@ public class HomeController {
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;
         }
-        var codes = codeService.findWithKeyword(query, pageNumber, LIMIT);
+        var codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
         model.addAttribute("codes", codes);
         model.addAttribute("pageNumber", pageNumber);
         return "home";

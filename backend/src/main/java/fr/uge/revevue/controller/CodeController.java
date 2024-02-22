@@ -58,11 +58,12 @@ public class CodeController {
             result.rejectValue("unitFile", "error.codeForm", "Please upload a java file.");
             return "codes/create";
         }
-        codeService.create(userService.currentUser(),
+        codeService.create(
+                userService.currentUser().getId(),
                 codeForm.getTitle(),
                 codeForm.getDescription(),
-                codeForm.getJavaFile().getBytes(),
-                codeForm.getUnitFile().getBytes());
+                codeForm.getJavaFile(),
+                codeForm.getUnitFile());
         if (!codeForm.getUnitFile().isEmpty()){
             var results = WebClientService.microServiceExecute(new UnitTestClassForm(codeForm.getJavaFile().getBytes(), codeForm.getUnitFile().getBytes()));
             model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));

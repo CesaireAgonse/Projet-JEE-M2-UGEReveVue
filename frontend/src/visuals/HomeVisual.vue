@@ -37,7 +37,9 @@
       </div>
     </transition>
     <button class="basic-button create-button" :style="{ transform: createButton }" @click="showCodeModal">Poster un code</button>
-    <CodeVisual  :post="post" class="code-visual" :style="{ transform: listCode }"/>
+    <div class="code-visual" :style="{ transform: listCode }">
+      <div v-for="post in posts" :key="post"><CodeVisual  :post="post"/></div>
+    </div>
   </div>
 </template>
 
@@ -72,6 +74,9 @@ export default {
     },
     isLogged:{
       type:Boolean
+    },
+    posts:{
+      type:Object
     }
   },
   data() {
@@ -84,15 +89,6 @@ export default {
       createButton:'',
       imageUp: true,
       showDropdown: false,
-      post: {
-        title: 'Titre du post',
-        description: 'Description du post',
-        author: 'Auteur du post',
-        date: 'Date du post',
-        code: 'function example() {\n  console.log("Hello, world!");\n}',
-        liked: true,
-        score: 0
-      }
     };
   },
   methods: {
@@ -101,14 +97,14 @@ export default {
         this.imageTransform = '';
         this.searchBarTop = '40%';
         this.welcomeMessageTop = '20%';
-        this.listCode = 'translate(-50%, 250%)'
+        this.listCode = 'translate(-50%, 650px)'
         this.createButton = 'translate(-175%, 3000%)'
         this.imageUp = true;
       } else {
         this.imageTransform = 'translateY(-92%)';
         this.searchBarTop = '15%';
         this.welcomeMessageTop = '-90%';
-        this.listCode = 'translate(-50%, -50%)'
+        this.listCode = 'translate(-50%, -300px)'
         this.createButton = 'translate(-175%, 175%)'
         this.imageUp = false;
       }
@@ -147,16 +143,17 @@ input::placeholder {
 
 
 .image-container {
+  overflow: hidden;
   position: relative;
 }
 
 .code-visual {
   position: absolute;
-  top: calc(50% + 20px);
-  left: 50%;
-  transform: translate(-50%, 250%);
+  top: 600px;
+  left: 90%;
+  transform: translate(-50%, 650px);
   transition: all 1s ease;
-  width: 50%;
+  width: 120%;
 }
 
 .scrollable-image {

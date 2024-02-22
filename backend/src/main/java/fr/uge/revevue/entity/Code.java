@@ -42,6 +42,9 @@ public class Code extends Post {
     public void setJavaContent(byte[] javaContent) {this.javaContent = javaContent;}
 
     public String getUnitContent() {
+        if (unitContent == null){
+            return null;
+        }
         return new String(unitContent, StandardCharsets.UTF_8);
     }
 

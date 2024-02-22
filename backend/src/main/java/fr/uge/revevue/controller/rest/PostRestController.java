@@ -28,13 +28,13 @@ public class PostRestController {
         this.commentService = commentService;
         this.reviewService = reviewService;
     }
-    @PostMapping("/vote/{codeId}")
+    @PostMapping("/vote/{postId}")
     public ResponseEntity<Integer> postVoted(@PathVariable("postId") @Valid long postId,
-                                             @RequestParam("voteType") Vote.VoteType voteType) {
-        return ResponseEntity.ok(voteService.postVoted(userService.currentUser().getId(), postId, voteType));
+                                             @RequestParam("voteType") String voteType) {
+        return ResponseEntity.ok(voteService.postVoted(userService.currentUser().getId(), postId, Vote.VoteType.valueOf(voteType)));
     }
 
-    @PostMapping("/comment/{codeId}")
+    @PostMapping("/comment/{postId}")
     public ResponseEntity<Void> postCommented(@PathVariable("postId") @Valid long postId,
                                 @ModelAttribute("commentForm") @Valid CommentForm commentForm,
                                 BindingResult result){
@@ -45,7 +45,7 @@ public class PostRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/review/{codeId}")
+    @PostMapping("/review/{postId}")
     public ResponseEntity<Void> postReviewed(@PathVariable("postId") @Valid long postId,
                                @ModelAttribute("reviewForm") @Valid ReviewForm reviewForm,
                                BindingResult result){

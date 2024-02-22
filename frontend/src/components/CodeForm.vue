@@ -14,14 +14,14 @@
             <textarea id="description" v-model="description" required></textarea>
           </div>
           <div class="form-group">
-            <label for="file1">Classe Java:</label>
-            <input type="file" id="file1" @change="handleFileUpload(1)" accept=".java" required>
-            <span v-if="file1">Fichier sélectionné: {{ file1.name }}</span>
+            <label for="javaFile">Classe Java:</label>
+            <input type="file" ref="javaFile" accept=".java" required>
+            <span v-if="javaFile">Fichier sélectionné: {{ javaFile.name }}</span>
           </div>
           <div class="form-group">
-            <label for="file2">Classe Test:</label>
-            <input type="file" id="file2" @change="handleFileUpload(2)" accept=".java">
-            <span v-if="file2">Fichier sélectionné: {{ file2.name }}</span>
+            <label for="unitFile">Classe Test:</label>
+            <input type="file" ref="unitFile" accept=".java">
+            <span v-if="unitFile">Fichier sélectionné: {{ unitFile.name }}</span>
           </div>
           <button type="submit">Poster</button>
         </form>
@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import {codeService} from '@/services/code.service'
 export default {
   props: {
     isCodeModalVisible: {
@@ -42,31 +43,25 @@ export default {
     return {
       title: '',
       description: '',
-      file1: null,
-      file2: null
+      javaFile: null,
+      unitFile: null
     };
   },
   methods: {
-    handleFileUpload(fileNumber) {
-      const fileInput = event.target;
-      const file = fileInput.files[0];
-      if (fileNumber === 1) {
-        this.file1 = file;
-      } else if (fileNumber === 2) {
-        this.file2 = file;
-      }
-    },
     post() {
-      const formData = {
-        title: this.title,
-        description: this.description,
-        file1: this.file1,
-        file2: this.file2
-      };
-      console.log(formData);
-      this.hideCodeModal();
+      const javaFile = this.$refs.javaFile.files[0];
+      const unitFile = this.$refs.unitFile.files[0];
+      const formData = new FormData();
+      formData.append('title', this.title);
+      formData.append('description', this.description);
+      formData.append('javaFile', javaFile);
+      formData.append('unitFile', unitFile);
+      codeService.create(formData).then(() => {
+        this.hideCodeModal();
+      });
     },
     hideCodeModal() {
+      this.$emit('refresh-filter');
       this.$emit('close-modal');
     },
     handleModalClick(event) {

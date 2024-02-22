@@ -35,13 +35,14 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
+        http.headers().frameOptions().disable();
         http.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/css/**", "/prism/**", "/script/**", "/h2-console/**").permitAll()
                 .antMatchers("/","/signup", "/login", "/refresh").permitAll()   // Client léger
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/api/v1/signup", "/api/v1/login", "/api/v1/refresh").permitAll()  // Client lourd
+                .antMatchers("/api/v1/signup", "/api/v1/login", "/api/v1/refresh", "/api/v1/codes/filter").permitAll()  // Client lourd
                 .anyRequest().authenticated()
                 .and().logout().deleteCookies("bearer", "refresh");
         return http.build();

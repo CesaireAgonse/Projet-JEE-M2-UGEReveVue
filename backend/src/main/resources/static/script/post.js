@@ -2,9 +2,9 @@ function votePost(voteButtonClass, postId, resultClass) {
     document.querySelectorAll(voteButtonClass).forEach(button => {
         button.addEventListener('click', function () {
             const form = this.closest('form');
-            const codeId = form.getAttribute(postId);
+            const id = form.getAttribute(postId);
             const voteType = this.value;
-            fetch('../api/v1/posts/vote/' + codeId + '?voteType=' + voteType, {
+            fetch('../api/v1/posts/vote/' + id + '?voteType=' + voteType, {
                 method: 'POST'
             })
                 .then(response => response.json())

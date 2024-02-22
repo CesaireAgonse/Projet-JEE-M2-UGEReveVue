@@ -6,12 +6,15 @@ import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.repository.CodeRepository;
 import fr.uge.revevue.repository.PostRepository;
+import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,18 +22,22 @@ import java.util.stream.Collectors;
 @Service
 public class CodeService {
     private CodeRepository codeRepository;
+    private UserRepository userRepository;
+    public final static int LIMIT = 3;
 
     public CodeService(){}
 
     @Autowired
-    public CodeService(CodeRepository codeRepository){
+    public CodeService(CodeRepository codeRepository, UserRepository userRepository){
         this.codeRepository = codeRepository;
+        this.userRepository = userRepository;
     }
-
-    public void create(User user, String title, String description, byte[] javaContent, byte[] unitContent){
-        var code = new Code(user, title, description, javaContent);
+    @Transactional
+    public void create(long id, String title, String description, MultipartFile javaContent, MultipartFile unitContent) throws IOException {
+        var user = userRepository.findById(id);
+        var code = new Code(user.get(), title, description, javaContent.getBytes());
         if (unitContent != null){
-            code.setUnitContent(unitContent);
+            code.setUnitContent(unitContent.getBytes());
         }
         codeRepository.save(code);
     }

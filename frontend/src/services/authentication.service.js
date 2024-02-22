@@ -10,16 +10,16 @@ let logout = () => {
     return Axios.post('/api/v1/logout')
 }
 
-let addToken = (token) => {
-    localStorage.setItem('bearer', token)
+let addToken = (name, token) => {
+    localStorage.setItem(name, token)
 }
 
 let removeToken = () => {
     localStorage.removeItem('bearer')
 }
 
-let getToken = () => {
-    return localStorage.getItem('bearer')
+let getToken = (name) => {
+    return localStorage.getItem(name)
 }
 
 let isLogged = () => {

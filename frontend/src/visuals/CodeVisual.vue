@@ -4,7 +4,7 @@
       <div class="post-header-info">
         <img class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
         <div class="post-author-info">
-          <h2>{{ post.author }}</h2>
+          <h2>{{ post.userInformation.username }}</h2>
         </div>
       </div>
       <p class="post-date">{{ post.date }}</p>
@@ -12,27 +12,27 @@
     </div>
     <h2 class="post-title">{{ post.title }}</h2>
     <p class="post-description">{{ post.description }}</p>
-    <pre class="post-code language-java"><code>{{ post.code }}</code></pre>
+    <pre class="post-code language-java"><code>{{ post.javaContent }}</code></pre>
 
     <div class="post-footer">
       <div class="post-votes">
         <button class="post-button" @click="like">
           <i class="fa-regular fa-thumbs-up fa-beat" style="color: #00ffb3"></i>
         </button>
-        <p style="padding-right: 7px">0</p>
+        <p style="padding-right: 7px">{{ this.score }}</p>
         <button class="post-button" @click="dislike">
           <i class="fa-regular fa-thumbs-down fa-beat" style="color: #f44e4e"></i>
         </button>
       </div>
       <div  class="post-votes">
-        <button class="post-button" @click="toggleComments">
+        <button class="post-button">
           <i class="fa-regular fa-comment fa-bounce" style="color: #74C0FC"></i>
         </button>
-        <p style="padding-right: 7px">0</p>
+        <p style="padding-right: 7px">{{post.comments.length }}</p>
         <button class="post-button" >
           <i class="fa-regular fa-pen-to-square fa-2xs" style="color: #74C0FC"></i>
         </button>
-        <p>{{ 0 }}</p>
+        <p>{{post.reviews.length }}</p>
       </div>
     </div>
   </div>
@@ -43,14 +43,12 @@ import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
-
+import { postService } from "@/services/post.service";
 
 library.add(fas, far, fab)
 dom.watch();
 export default {
   name: 'PostVisual',
-  components: {
-  },
   props: {
     post: {
       type: Object,
@@ -59,24 +57,19 @@ export default {
   },
   data() {
     return {
-      //commentsVisible: false
-    };
-  },
-  computed: {
-    commentsButtonLabel() {
-      return 5
-      //return this.commentsVisible ? `Hide Comments (${this.post.comments.length})` : `Show Comments (${this.post.comments.length})`;
+      score:this.post.score,
     }
   },
   methods: {
     like() {
-      // Ajouter la logique pour incrémenter les likes
+      postService.vote(this.post.id, "UpVote").then(res => {
+        this.score=res.data
+      })
     },
     dislike() {
-      // Ajouter la logique pour incrémenter les dislikes
-    },
-    toggleComments() {
-      //this.commentsVisible = !this.commentsVisible;
+      postService.vote(this.post.id, "DownVote").then(res => {
+        this.score=res.data
+      })
     }
   }
 }

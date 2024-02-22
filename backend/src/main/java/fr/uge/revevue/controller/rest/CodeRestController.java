@@ -6,6 +6,7 @@ import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
 import fr.uge.revevue.information.CodeInformation;
+import fr.uge.revevue.information.FilterInformation;
 import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -54,15 +56,26 @@ public class CodeRestController {
 
     @PostMapping("/create")
     public ResponseEntity<Void> post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result)  throws IOException {
-        if (result.hasErrors()){
-            return  ResponseEntity.badRequest().build();
-        }
-        codeService.create(userService.currentUser(),
+//        if (result.hasErrors()){
+//            return  ResponseEntity.badRequest().build();
+//        }
+        codeService.create(userService.currentUser().getId(),
                 codeForm.getTitle(),
                 codeForm.getDescription(),
-                new String(codeForm.getJavaFile().getBytes(),StandardCharsets.UTF_8),
-                new String(codeForm.getUnitFile().getBytes(),StandardCharsets.UTF_8));
+                codeForm.getJavaFile(),
+                codeForm.getUnitFile());
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/filter")
+    public ResponseEntity<FilterInformation> filter(@RequestParam(value = "q", required = false, defaultValue = "")String query,
+                                                    @RequestParam(value = "pageNumber", required = false)Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        var codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
+        return ResponseEntity.ok(new FilterInformation(codes.stream().toList(), pageNumber));
     }
 
 }
