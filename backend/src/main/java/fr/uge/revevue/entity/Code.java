@@ -4,9 +4,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "Codes")
@@ -22,6 +19,9 @@ public class Code extends Post {
 
     @Column(columnDefinition = "VARCHAR(MAX)")
     private byte[] unitContent;
+
+    @Embedded
+    private TestResults testResults;
 
     public Code(){}
 
@@ -49,4 +49,12 @@ public class Code extends Post {
     }
 
     public void setUnitContent(byte[] unitContent) {this.unitContent = unitContent;}
+
+    public TestResults getTestResults() {
+        return testResults;
+    }
+
+    public void setTestResults(TestResults testResults) {
+        this.testResults = testResults;
+    }
 }

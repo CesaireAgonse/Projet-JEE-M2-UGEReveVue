@@ -1,20 +1,17 @@
 <template>
-  <div class="post">
-    <div @click="code()">
-      <div class="post-header">
-        <div class="post-header-info">
-          <img class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
-          <div class="post-author-info">
-            <h2>{{ post.userInformation.username }}</h2>
-          </div>
+  <div class="post" @click="review()">
+    <div class="post-header">
+      <div class="post-header-info">
+        <img class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
+        <div class="post-author-info">
+          <h2>{{ post.userInformation.username }}</h2>
         </div>
-        <p class="post-date">{{ post.date }}</p>
-        <div class="post-actions"></div>
       </div>
-      <h2 class="post-title">{{ post.title }}</h2>
-      <p class="post-description">{{ post.description }}</p>
-      <pre class="post-code language-java"><code>{{ post.javaContent }}</code></pre>
+      <p class="post-date">{{ post.date }}</p>
+      <div class="post-actions"></div>
     </div>
+    <h2 class="post-title">{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
 
     <div class="post-footer">
       <div class="post-votes">
@@ -51,7 +48,7 @@ import router from "@/router";
 library.add(fas, far, fab)
 dom.watch();
 export default {
-  name: 'PostVisual',
+  name: 'ReviewVisual',
   props: {
     post: {
       type: Object,
@@ -74,8 +71,8 @@ export default {
         this.score=res.data
       })
     },
-    code(){
-      router.push('/codes/' + this.post.id)
+    review(){
+      router.push('/reviews/' + this.post.id)
     }
   }
 }
@@ -83,12 +80,12 @@ export default {
 
 <style scoped>
 .post {
-  background-color: #282828;
+  background-color: #1e1e1e;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
   padding: 20px;
-  margin: 20px;
-  width: calc(33.3333% - 40px); /* 1/3 de la largeur de l'écran moins la marge et le padding */
+  max-width: 100%;
+  text-align: left;
 }
 
 .post-header {
@@ -130,15 +127,6 @@ export default {
 .post-description {
   font-size: 16px;
   margin-bottom: 15px;
-  text-align: left;
-}
-
-.post-code {
-  background-color: #0c0808;
-  border-radius: 8px;
-  padding: 15px;
-  font-family: 'Courier New', Courier, monospace;
-  white-space: pre-wrap;
   text-align: left;
 }
 

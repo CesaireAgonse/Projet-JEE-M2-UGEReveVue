@@ -21,10 +21,8 @@ public class ReviewRestController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/reviews/{reviewId}")
-    public ResponseEntity<ReviewInformation> review(@PathVariable("reviewId") @Valid long reviewId,
-                                                    @ModelAttribute("commentForm") CommentForm commentForm,
-                                                    @ModelAttribute("reviewForm") ReviewForm reviewForm){
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<ReviewInformation> review(@PathVariable("reviewId") @Valid long reviewId){
         var review = reviewService.getInformation(reviewId);
         if (review == null){
             ResponseEntity.notFound().build();

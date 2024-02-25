@@ -58,18 +58,27 @@ public class CodeController {
             result.rejectValue("unitFile", "error.codeForm", "Please upload a java file.");
             return "codes/create";
         }
+//        if (!codeForm.getUnitFile().isEmpty()){
+//            var results = WebClientService.microServiceExecute(new UnitTestClassForm(codeForm.getJavaFile().getBytes(), codeForm.getUnitFile().getBytes()));
+//
+//            codeService.create(
+//                    userService.currentUser().getId(),
+//                    codeForm.getTitle(),
+//                    codeForm.getDescription(),
+//                    codeForm.getJavaFile(),
+//                    codeForm.getUnitFile());
+//
+//
+//            model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
+//            model.addAttribute("results", results);
+//            return "codes/results";
+//        }
         codeService.create(
                 userService.currentUser().getId(),
                 codeForm.getTitle(),
                 codeForm.getDescription(),
                 codeForm.getJavaFile(),
                 codeForm.getUnitFile());
-        if (!codeForm.getUnitFile().isEmpty()){
-            var results = WebClientService.microServiceExecute(new UnitTestClassForm(codeForm.getJavaFile().getBytes(), codeForm.getUnitFile().getBytes()));
-            model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
-            model.addAttribute("results", results);
-            return "codes/results";
-        }
         return "redirect:/";
     }
 

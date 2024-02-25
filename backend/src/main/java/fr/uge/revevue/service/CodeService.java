@@ -1,8 +1,10 @@
 package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Code;
+import fr.uge.revevue.entity.TestResults;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.entity.Vote;
+import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.repository.CodeRepository;
 import fr.uge.revevue.repository.PostRepository;
@@ -36,8 +38,11 @@ public class CodeService {
     public void create(long id, String title, String description, MultipartFile javaContent, MultipartFile unitContent) throws IOException {
         var user = userRepository.findById(id);
         var code = new Code(user.get(), title, description, javaContent.getBytes());
+        code.setTestResults(new TestResults());
         if (unitContent != null){
             code.setUnitContent(unitContent.getBytes());
+            var results = WebClientService.microServiceExecute(new UnitTestClassForm(javaContent.getBytes(), unitContent.getBytes()));
+            code.setTestResults(new TestResults(results.testsTotalCount(), results.testsSucceededCount(), results.testsFailedCount(), results.testsTotalTime()));
         }
         codeRepository.save(code);
     }

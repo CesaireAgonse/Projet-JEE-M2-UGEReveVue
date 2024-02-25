@@ -30,4 +30,17 @@ public class VoteId implements Serializable {
     public void setPost(Long post) {
         this.post = post;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VoteId voteId = (VoteId) o;
+        return Objects.equals(user, voteId.user) && Objects.equals(post, voteId.post);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, post);
+    }
 }

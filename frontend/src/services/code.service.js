@@ -7,13 +7,18 @@ let create = (code) => {
     })
 }
 
+let get = (codeId) => {
+    return Axios.get('/api/v1/codes/' + codeId)
+}
+
 let filter = () => {
-    return Axios.get('api/v1/codes/filter')
+    return Axios.get('/api/v1/codes/filter')
 }
 
 export const codeService = {
     create,
     filter,
+    get
 }
 
 

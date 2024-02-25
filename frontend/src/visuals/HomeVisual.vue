@@ -119,8 +119,7 @@ export default {
       this.$emit('show-code-modal');
     },
     logout(){
-      authenticationService.logout().then(res => {
-        console.log(res)
+      authenticationService.logout().then(() => {
         authenticationService.removeToken()
         this.$emit('disconnect');
       }).catch(err => console.log(err))
