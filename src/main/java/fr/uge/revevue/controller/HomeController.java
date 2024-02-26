@@ -58,8 +58,8 @@ public class HomeController {
             }
         }
         if(user != null) {
-            //System.out.println("test");
-            //codeService.getCodeFromFollowed(user, query, pageNumber, LIMIT);//.stream().forEach(System.out::println);
+            System.out.println("test");
+            System.out.println(codeService.getCodeFromFollowed(user, query, pageNumber, LIMIT));
         }
         
         model.addAttribute("codes", codes);
