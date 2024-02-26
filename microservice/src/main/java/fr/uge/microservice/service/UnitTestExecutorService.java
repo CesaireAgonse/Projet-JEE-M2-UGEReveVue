@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -94,10 +91,9 @@ public class UnitTestExecutorService {
         launcher.execute(testPlan);
         var summary = listener.getSummary();
         long totalTime = summary.getTimeFinished() - summary.getTimeStarted();
-        Map<String, String> failures = summary.getFailures().stream()
-                .collect(Collectors.toMap(
-                        failure -> failure.getTestIdentifier().getDisplayName(),
-                        failure -> failure.getException().getLocalizedMessage()));
+        String failures = summary.getFailures().stream()
+                .map(failure -> failure.getTestIdentifier().getDisplayName() + " - " + failure.getException().getLocalizedMessage())
+                .collect(Collectors.joining("\n"));
         return new UnitTestResultInformation(
                 summary.getTestsFoundCount(),
                 summary.getTestsSucceededCount(),

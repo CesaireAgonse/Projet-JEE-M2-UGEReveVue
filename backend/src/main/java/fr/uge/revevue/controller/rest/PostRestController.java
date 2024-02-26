@@ -36,7 +36,7 @@ public class PostRestController {
 
     @PostMapping("/comment/{postId}")
     public ResponseEntity<Void> postCommented(@PathVariable("postId") @Valid long postId,
-                                @ModelAttribute("commentForm") @Valid CommentForm commentForm,
+                                @RequestBody @Valid CommentForm commentForm,
                                 BindingResult result){
         if (result.hasErrors()){
             return ResponseEntity.notFound().build();
@@ -47,7 +47,7 @@ public class PostRestController {
 
     @PostMapping("/review/{postId}")
     public ResponseEntity<Void> postReviewed(@PathVariable("postId") @Valid long postId,
-                               @ModelAttribute("reviewForm") @Valid ReviewForm reviewForm,
+                               @RequestBody @Valid ReviewForm reviewForm,
                                BindingResult result){
         if (result.hasErrors()){
             return ResponseEntity.notFound().build();

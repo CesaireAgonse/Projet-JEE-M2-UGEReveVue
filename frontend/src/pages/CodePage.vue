@@ -14,6 +14,12 @@
         <p v-for="comment in post.comments" :key="comment">
           <CommentVisual  :comment="comment"></CommentVisual>
         </p>
+        <div class="row">
+          <textarea v-model="contentTextarea" placeholder="Entrez votre texte ici"></textarea>
+          <div class="send-button" @click="comment()">
+            <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
+          </div>
+        </div>
       </div>
     </div>
     <div class="reviews" v-if="post != null">
@@ -21,6 +27,12 @@
       <p v-for="review in post.reviews" :key="review">
         <ReviewVisual  :post="review"></ReviewVisual>
       </p>
+      <div class="row">
+        <textarea v-model="reviewTextarea" placeholder="Entrez votre texte ici"></textarea>
+        <div class="send-button" @click="review()">
+          <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -31,7 +43,7 @@ import CommentVisual from "@/visuals/CommentVisual.vue";
 import CodeTestVisual from "@/visuals/CodeTestVisual.vue";
 import ReviewVisual from "@/visuals/ReviewVisual.vue";
 import { codeService } from "@/services/code.service";
-
+import {postService } from "@/services/post.service";
 import router from "@/router";
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
@@ -48,7 +60,9 @@ export default {
   },
   data() {
     return {
-      post: null
+      post: null,
+      contentTextarea: '',
+      reviewTextarea:''
     }
   },
   methods : {
@@ -60,14 +74,20 @@ export default {
     },
     home(){
       router.push("/")
+    },
+    comment(){
+      postService.comment(this.$route.params.id, {content:this.contentTextarea, codeSelection:null})
+      this.contentTextarea = ''
+    },
+    review(){
+      postService.review(this.$route.params.id, {content:this.reviewTextarea})
+      this.reviewTextarea = ''
     }
   }
 }
 </script>
 
 <style scoped>
-
-
 
 .comments {
   background-color: #282828;
@@ -96,9 +116,25 @@ export default {
   flex-direction: column;
 }
 
-
 .left {
   float:left;
+}
+
+textarea{
+  height: 80px;
+  width: 80%;
+  margin-left: 20px;
+  margin-right: 15px;
+  resize: none;
+  border-radius: 10px;
+}
+
+.send-button{
+  margin-top: 15px;
+  margin-bottom: 25px;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
 }
 
 </style>

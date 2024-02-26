@@ -38,11 +38,13 @@ public class CodeService {
     public void create(long id, String title, String description, MultipartFile javaContent, MultipartFile unitContent) throws IOException {
         var user = userRepository.findById(id);
         var code = new Code(user.get(), title, description, javaContent.getBytes());
-        code.setTestResults(new TestResults());
-        if (unitContent != null){
+        if (unitContent != null && !unitContent.isEmpty()){
             code.setUnitContent(unitContent.getBytes());
             var results = WebClientService.microServiceExecute(new UnitTestClassForm(javaContent.getBytes(), unitContent.getBytes()));
-            code.setTestResults(new TestResults(results.testsTotalCount(), results.testsSucceededCount(), results.testsFailedCount(), results.testsTotalTime()));
+            if (results == null){
+                throw new IllegalStateException("results is null");
+            }
+            code.setTestResults(new TestResults(results.testsTotalCount(), results.testsSucceededCount(), results.testsFailedCount(), results.testsTotalTime(), results.failures()));
         }
         codeRepository.save(code);
     }

@@ -2,24 +2,28 @@ package fr.uge.revevue.entity;
 
 
 import javax.persistence.*;
+import java.util.List;
 
 @Embeddable
 public class TestResults {
-
+    @Column(columnDefinition = "BIGINT DEFAULT 0")
     private long testsTotalCount;
+    @Column(columnDefinition = "BIGINT DEFAULT 0")
     private long testsSucceededCount;
+    @Column(columnDefinition = "BIGINT DEFAULT 0")
     private long testsFailedCount;
+    @Column(columnDefinition = "BIGINT DEFAULT 0")
     private long testsTotalTime;
-    //private Map<String, String> failures;
+    private String failures;
 
     public TestResults() {}
 
-    public TestResults(long testsTotalCount, long testsSucceededCount, long testsFailedCount, long testsTotalTime) {
+    public TestResults(long testsTotalCount, long testsSucceededCount, long testsFailedCount, long testsTotalTime, String failures) {
         this.testsTotalCount = testsTotalCount;
         this.testsSucceededCount = testsSucceededCount;
         this.testsFailedCount = testsFailedCount;
         this.testsTotalTime = testsTotalTime;
-        //this.failures = failures;
+        this.failures = failures;
     }
 
     public long getTestsTotalCount() {
@@ -54,12 +58,11 @@ public class TestResults {
         this.testsTotalTime = testsTotalTime;
     }
 
+    public String getFailures() {
+        return failures;
+    }
 
-//    public Map<String, String> getFailures() {
-//        return failures;
-//    }
-//
-//    public void setFailures(Map<String, String> failures) {
-//        this.failures = failures;
-//    }
+    public void setFailures(String failures) {
+        this.failures = failures;
+    }
 }

@@ -1,11 +1,26 @@
 package fr.uge.revevue.information;
 
-import java.util.Map;
+import fr.uge.revevue.entity.TestResults;
+
+import java.util.List;
 
 public record UnitTestResultInformation(
         long testsTotalCount,
         long testsSucceededCount,
         long testsFailedCount,
         long testsTotalTime,
-        Map<String, String> failures
-) {}
+        String failures
+) {
+    public static UnitTestResultInformation from(TestResults testResults){
+        if (testResults == null){
+            return null;
+        }
+        return new UnitTestResultInformation(
+                testResults.getTestsTotalCount(),
+                testResults.getTestsSucceededCount(),
+                testResults.getTestsFailedCount(),
+                testResults.getTestsTotalTime(),
+                testResults.getFailures()
+        );
+    }
+}

@@ -1,7 +1,7 @@
 <template>
   <div class="post">
     <div class="post-header">
-      <div class="post-header-info">
+      <div class="post-header-info" @click="user()">
         <img class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
         <div class="post-author-info">
           <h2>{{ comment.userInformation.username }}</h2>
@@ -10,7 +10,7 @@
       <p class="post-date">{{ comment.date }}</p>
       <div class="post-actions"></div>
     </div>
-    <p>{{comment.content}}</p>
+    <pre> {{comment.content}}</pre>
   </div>
 </template>
 
@@ -19,6 +19,7 @@ import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import router from "@/router";
 
 library.add(fas, far, fab)
 dom.watch();
@@ -27,6 +28,11 @@ export default {
     comment: {
       type: Object,
       required: true
+    }
+  },
+  methods: {
+    user() {
+      router.push('/profile/' + this.comment.userInformation.username)
     }
   }
 }

@@ -1,8 +1,8 @@
 <template>
   <div class="post">
-    <div @click="code()">
+
       <div class="post-header">
-        <div class="post-header-info">
+        <div class="post-header-info" @click="user()">
           <img class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
           <div class="post-author-info">
             <h2>{{ post.userInformation.username }}</h2>
@@ -11,6 +11,7 @@
         <p class="post-date">{{ post.date }}</p>
         <div class="post-actions"></div>
       </div>
+    <div @click="code()">
       <h2 class="post-title">{{ post.title }}</h2>
       <p class="post-description">{{ post.description }}</p>
       <pre class="post-code language-java"><code>{{ post.javaContent }}</code></pre>
@@ -76,6 +77,9 @@ export default {
     },
     code(){
       router.push('/codes/' + this.post.id)
+    },
+    user(){
+      router.push('/profile/' + this.post.userInformation.username)
     }
   }
 }

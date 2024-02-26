@@ -1,10 +1,18 @@
 <template>
   <div class="post"  v-if="post.unitContent !== null && post.unitContent !== ''">
     <pre class="post-code language-java"><code>{{ post.unitContent }}</code></pre>
-    <p>Total: {{post.testResultsInformation.testsTotalCount}}</p>
-    <p><i class="fa-solid fa-check" style="color: #63E6BE;"></i> {{post.testResultsInformation.testsSucceededCount}}</p>
-    <p><i class="fa-solid fa-xmark" style="color: #f44e4e;"></i> {{post.testResultsInformation.testsFailedCount}}</p>
-    <p><i class="fa-solid fa-hourglass-end" style="color: #74C0FC;"></i> {{post.testResultsInformation.testsTotalTime}}</p>
+    <div class="row">
+      <div>
+        <p>Total: {{post.testResultsInformation.testsTotalCount}}</p>
+        <p><i class="fa-solid fa-check" style="color: #63E6BE;"></i> {{post.testResultsInformation.testsSucceededCount}}</p>
+        <p><i class="fa-solid fa-xmark" style="color: #f44e4e;"></i> {{post.testResultsInformation.testsFailedCount}}</p>
+        <p><i class="fa-solid fa-hourglass-end" style="color: #74C0FC;"></i> {{post.testResultsInformation.testsTotalTime}}</p>
+      </div>
+      <div class="failures">
+        <p>Echecs: </p>
+        <pre>{{post.testResultsInformation.failures}}</pre>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -43,4 +51,15 @@ export default {
   white-space: pre-wrap;
   text-align: left;
 }
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.failures{
+  text-align: left;
+  padding-left: 50px;
+}
+
+
 </style>

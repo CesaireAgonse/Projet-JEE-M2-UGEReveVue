@@ -11,7 +11,7 @@
       <div class="post-actions"></div>
     </div>
     <h2 class="post-title">{{ post.title }}</h2>
-    <p>{{ post.content }}</p>
+    <pre>{{ post.content }}</pre>
 
     <div class="post-footer">
       <div class="post-votes">

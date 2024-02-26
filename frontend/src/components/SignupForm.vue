@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import {authenticationService} from '@/services/authentication.service'
 export default {
   props: {
     isSignupModalVisible: {
@@ -33,11 +33,11 @@ export default {
   },
   methods: {
     async register() {
-      const response = await axios.post("/api/v1/signup", {
+      authenticationService.signup({
         username: this.username,
         password: this.password
       })
-      console.log(response);
+
       this.username = '';
       this.password = '';
       this.ConfirmPassword = '';
