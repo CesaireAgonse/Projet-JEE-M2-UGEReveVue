@@ -47,19 +47,26 @@ public class HomeController {
         }
         
         List<CodeInformation> codes;
-        if(sortBy == null) {
-            codes = codeService.findWithKeyword(query, pageNumber, LIMIT);
-        }
-        else {
-            switch(sortBy) {
-                case "newest": codes = codeService.findWithKeywordByNewest(query, pageNumber, LIMIT); break;
-                case "relevance": codes = codeService.findWithKeywordByScore(query, pageNumber, LIMIT); break;
-                default: codes = codeService.findWithKeyword(query, pageNumber, LIMIT); break;
+        
+        switch (sortBy != null ? sortBy : "") {
+            // Display all codes by newest
+            case "newest" -> {
+                codes = codeService.findWithKeywordByNewest(query, pageNumber, LIMIT);
             }
-        }
-        if(user != null) {
-            System.out.println("test");
-            System.out.println(codeService.getCodeFromFollowed(user, query, pageNumber, LIMIT));
+            // Display all codes by relevance
+            case "relevance"-> {
+                codes = codeService.findWithKeywordByScore(query, pageNumber, LIMIT);
+            }
+            default -> {
+                if(user != null) {
+                    // Display codes from follows
+                    codes = codeService.getCodeFromFollowed(user, query, pageNumber, LIMIT);
+                }
+                else {
+                    // Display all codes
+                    codes = codeService.findWithKeyword(query, pageNumber, LIMIT);
+                }
+            }
         }
         
         model.addAttribute("codes", codes);

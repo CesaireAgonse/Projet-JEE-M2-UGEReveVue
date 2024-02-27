@@ -22,6 +22,8 @@ public abstract class Post {
 
     @ManyToOne
     private User user;
+    
+    private long score;
 
     private Date date;
     public Post(User user) {
@@ -64,11 +66,13 @@ public abstract class Post {
     public void setDate(Date date) {
         this.date = date;
     }
-
-    public int getScoreVote(){
-        return votes.stream()
-                .mapToInt(Vote::getScore)
-                .sum();
+    
+    public long getScore() {
+        return score;
+    }
+    
+    public void setScore(long score) {
+        this.score = score;
     }
 
     public Set<Comment> getComments() {

@@ -13,9 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,7 +70,8 @@ public class CodeService {
     }
     
     public List<CodeInformation> findWithKeywordByScore(String keyword, int offset, int limit) {
-        Pageable page = PageRequest.of(offset, limit);
+        /*Pageable page = PageRequest.of(offset, limit);
+        
         var codes = codeRepository
           .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCase(keyword, keyword, keyword);
         var codes2 = codes.stream().map(CodeInformation::from).sorted((o1, o2) -> {
@@ -82,7 +81,11 @@ public class CodeService {
                 return 1;
             else return -1;
         }).skip(offset*limit).limit(limit).toList();
-        return codes2;
+        return codes2;*/
+        Pageable page = PageRequest.of(offset, limit);
+        var codes = codeRepository
+          .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByScoreDesc(page, keyword, keyword, keyword);
+        return codes.stream().map(CodeInformation::from).toList();
     }
     
     public List<CodeInformation> getCodeWithLimitAndOffset(User user, String keyword, int offset, int limit) {
@@ -107,11 +110,36 @@ public class CodeService {
         
         List<User> usersAlreadySeen = new ArrayList<>();
         List<User> followed = userRepository.findFollowedById(user.getId());
+        var queueFollow = new ArrayDeque<>(followed);
         
-        int totalCodesAlreadyDisplayed = offset * limit;
-        int codesCurrentPageDisplayed = 0;
+        var totalCodesAlreadyDisplayed = offset * limit;
+        var codesCurrentPageDisplayed = 0;
         
-        for (User follow : followed) {
+        while(!queueFollow.isEmpty() && codesCurrentPageDisplayed < limit) {
+            var follow = queueFollow.pollFirst();
+            queueFollow.addAll(userRepository.findFollowedByIdFilterUsers(follow.getId(), usersAlreadySeen));
+            
+            if (!usersAlreadySeen.contains(follow)) {
+                var nbCodesFollow = codeRepository.countByUserIdAndTitleContainingIgnoreCaseOrUserIdAndDescriptionContainingIgnoreCaseOrUserIdAndUserUsernameContainingIgnoreCase(follow.getId(), keyword, follow.getId(), keyword, follow.getId(), keyword);
+        
+                if (totalCodesAlreadyDisplayed >= nbCodesFollow) {
+                    totalCodesAlreadyDisplayed -= nbCodesFollow;
+                }
+                else {
+                    var remainingCodesToDisplay = nbCodesFollow - totalCodesAlreadyDisplayed;
+                    var codesToAdd = Math.min(remainingCodesToDisplay, limit - codesCurrentPageDisplayed);
+            
+                    codes.addAll(getCodeWithLimitAndOffset(follow, keyword, totalCodesAlreadyDisplayed, codesToAdd));
+                    codesCurrentPageDisplayed += codesToAdd;
+            
+                    totalCodesAlreadyDisplayed = 0;
+                }
+        
+                usersAlreadySeen.add(follow);
+            }
+        }
+        
+        /*for (var follow : followed) {
             if (!usersAlreadySeen.contains(follow)) {
                 int nbCodesFollow = codeRepository.countByUserIdAndTitleContainingIgnoreCaseOrUserIdAndDescriptionContainingIgnoreCaseOrUserIdAndUserUsernameContainingIgnoreCase(follow.getId(), keyword, follow.getId(), keyword, follow.getId(), keyword);
                 
@@ -133,7 +161,7 @@ public class CodeService {
                     break;
                 }
             }
-        }
+        }*/
         
         return codes;
     }

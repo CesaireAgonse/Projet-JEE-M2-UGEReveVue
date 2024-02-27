@@ -14,7 +14,7 @@ public record CodeInformation(
         String description,
         String javaContent,
         String unitContent,
-        int scoreVote,
+        long scoreVote,
         Date date,
         Set<CommentInformation> comments
 ) {
@@ -27,7 +27,7 @@ public record CodeInformation(
                 code.getDescription(),
                 code.getJavaContent(),
                 code.getUnitContent(),
-                code.getScoreVote(),
+                code.getScore(),
                 code.getDate(),
                 code.getComments().stream().map(CommentInformation::from).collect(Collectors.toSet())
         );
