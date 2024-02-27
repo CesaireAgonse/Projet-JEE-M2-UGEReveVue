@@ -29,7 +29,7 @@ public class PostRestController {
         this.reviewService = reviewService;
     }
     @PostMapping("/vote/{postId}")
-    public ResponseEntity<Integer> postVoted(@PathVariable("postId") @Valid long postId,
+    public ResponseEntity<Long> postVoted(@PathVariable("postId") @Valid long postId,
                                              @RequestParam("voteType") String voteType) {
         return ResponseEntity.ok(voteService.postVoted(userService.currentUser().getId(), postId, Vote.VoteType.valueOf(voteType)));
     }

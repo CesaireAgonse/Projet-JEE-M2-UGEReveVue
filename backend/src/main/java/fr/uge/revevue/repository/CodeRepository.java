@@ -12,9 +12,7 @@ import java.util.List;
 public interface CodeRepository  extends CrudRepository<Code, Long> {
 
     List<Code> findAll(Pageable pageable);
-    
-    List<Code> findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCase(String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
-    
+
     List<Code> findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCase(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
     
     List<Code> findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByDateDesc(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);

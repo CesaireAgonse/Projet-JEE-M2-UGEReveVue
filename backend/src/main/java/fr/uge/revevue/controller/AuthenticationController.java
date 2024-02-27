@@ -107,15 +107,4 @@ public class AuthenticationController {
         String referer = request.getHeader("Referer");
         return "redirect:" + (referer != null ? referer : "/");
     }
-
-
-//    @PostMapping("/logout")
-//    public String logout(HttpServletResponse response) {
-//        SecurityContextHolder.clearContext();
-//        Cookie cookieToDelete = new Cookie("bearer", "");
-//        cookieToDelete.setMaxAge(0);
-//        cookieToDelete.setPath("/");
-//        response.addCookie(cookieToDelete);
-//        return "redirect:/login";
-//    }
 }

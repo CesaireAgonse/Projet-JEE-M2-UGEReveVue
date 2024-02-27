@@ -46,8 +46,6 @@ public class HomeController {
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;
         }
-        var codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
-
         List<CodeInformation> codes;
 
         switch (sortBy != null ? sortBy : "") {

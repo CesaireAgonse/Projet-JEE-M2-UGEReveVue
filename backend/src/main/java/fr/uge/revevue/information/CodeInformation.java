@@ -16,7 +16,7 @@ public record CodeInformation(
         String javaContent,
         String unitContent,
         UnitTestResultInformation testResultsInformation,
-        int score,
+        long score,
         Date date,
         List<CommentInformation> comments,
         List<ReviewInformation> reviews
@@ -33,7 +33,7 @@ public record CodeInformation(
                 code.getJavaContent(),
                 code.getUnitContent(),
                 UnitTestResultInformation.from(code.getTestResults()),
-                code.getScoreVote(),
+                code.getScore(),
                 code.getDate(),
                 code.getComments().stream().map(CommentInformation::from).sorted(Comparator.comparing(CommentInformation::date).reversed()).toList(),
                 code.getReviews().stream().map(ReviewInformation::from)

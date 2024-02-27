@@ -15,7 +15,7 @@ public record ReviewInformation(
         Vote.VoteType voteType,
         String title,
         String content,
-        int score,
+        long score,
         Date date,
         List<CommentInformation> comments,
         List<ReviewInformation> reviews
@@ -29,7 +29,7 @@ public record ReviewInformation(
                 review.getVoteUser(),
                 review.getTitle(),
                 review.getContent(),
-                review.getScoreVote(),
+                review.getScore(),
                 review.getDate(),
                 review.getComments().stream().map(CommentInformation::from).sorted(Comparator.comparing(CommentInformation::date).reversed()).toList(),
                 review.getReviews().stream().map(ReviewInformation::from)
