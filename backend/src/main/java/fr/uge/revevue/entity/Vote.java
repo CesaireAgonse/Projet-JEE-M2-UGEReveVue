@@ -55,8 +55,4 @@ public class Vote {
     public VoteType getVoteType() {return voteType;}
 
     public void setVoteType(VoteType voteType) {this.voteType = voteType;}
-
-    public int getScore(){
-        return this.getVoteType().ordinal() - 1;
-    }
 }

@@ -2,6 +2,7 @@ package fr.uge.revevue.service;
 
 
 import fr.uge.revevue.entity.Code;
+import fr.uge.revevue.entity.Post;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.repository.CodeRepository;
@@ -20,21 +21,36 @@ import javax.transaction.Transactional;
 
 @Service
 public class VoteService {
-    private final VoteRepository voteRepository;
-    private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private VoteRepository voteRepository;
+    private PostRepository postRepository;
+    private UserRepository userRepository;
+    private VoteServiceWithFailure voteServiceWithFailure;
 
     @Autowired
     public VoteService(VoteRepository voteRepository,
                        PostRepository postRepository,
-                       UserRepository userRepository){
+                       UserRepository userRepository,
+                       VoteServiceWithFailure voteServiceWithFailure){
         this.voteRepository = voteRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.voteServiceWithFailure = voteServiceWithFailure;
+    }
+
+    public void incrementScoreWithOptimisticLock(Post post, int value){
+        var retry=true;
+        while(retry) {
+            retry=false;
+            try {
+                voteServiceWithFailure.incrementScoreWrong(post, value);
+            } catch (org.springframework.orm.ObjectOptimisticLockingFailureException e){
+                retry=true;
+            }
+        }
     }
 
     @Transactional
-    public int postVoted(long userId, long postId, Vote.VoteType voteType){
+    public long postVoted(long userId, long postId, Vote.VoteType voteType){
         var findUser = userRepository.findById(userId);
         if (findUser.isEmpty()){
             throw new IllegalStateException("User not found");
@@ -50,14 +66,17 @@ public class VoteService {
             var newVote = new Vote(user, post, voteType);
             post.getVotes().add(newVote);
             voteRepository.save(newVote);
-            return post.getScoreVote();
+            incrementScoreWithOptimisticLock(post, voteType.ordinal() - 1);
+            return post.getScore();
         }
         else if (vote.getVoteType() != voteType){
             vote.setVoteType(voteType);
-            return post.getScoreVote();
+            incrementScoreWithOptimisticLock(post, 2 * (voteType.ordinal() - 1));
+            return post.getScore();
         }
         post.getVotes().remove(vote);
         voteRepository.delete(vote);
-        return post.getScoreVote();
+        incrementScoreWithOptimisticLock(post, - (voteType.ordinal() - 1));
+        return post.getScore();
     }
 }

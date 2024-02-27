@@ -28,6 +28,8 @@ public abstract class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+    
+    private long score;
 
     private Date date;
 
@@ -73,11 +75,13 @@ public abstract class Post {
     public void setDate(Date date) {
         this.date = date;
     }
-
-    public int getScoreVote(){
-        return votes.stream()
-                .mapToInt(Vote::getScore)
-                .sum();
+    
+    public long getScore() {
+        return score;
+    }
+    
+    public void setScore(long score) {
+        this.score = score;
     }
 
     public Vote.VoteType getVoteUser(){

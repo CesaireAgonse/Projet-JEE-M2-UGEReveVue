@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cdceaa79-13da-49a6-92fa-c8bae479c718" name="Changes" comment="Sélection des codes des followed&#10;Récupère tous les codes des followers directe du compte connecté, marche avec la pagination. Follow de follow ne marche pas encore.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/service/VoteServiceWithFailure.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/controller/HomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/controller/HomeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/controller/rest/CodeRestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/controller/rest/CodeRestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/entity/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/entity/Post.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/entity/Vote.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/entity/Vote.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/information/CodeInformation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/information/CodeInformation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/repository/CodeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/repository/CodeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/service/CodeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/service/CodeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/service/VoteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/fr/uge/revevue/service/VoteService.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectId" id="2bdQjadEQ77Lopi3xwj2Vf6NiXL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/rikud/Documents/M2/Backend/UGEReveVue&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cdceaa79-13da-49a6-92fa-c8bae479c718" name="Changes" comment="" />
+      <created>1706542617296</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1706542617296</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Barre de recherche par description&#10;On peut trouver un code par sa description ou son titre">
+      <created>1706627218956</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1706627218956</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Barre de recherche par auteur&#10;On peut chercher un code par son titre, sa description et son auteur">
+      <created>1706627949452</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1706627949452</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Barre de recherche et CSS&#10;Début de la pagination, update de l'affichage de la Home">
+      <created>1706632329373</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1706632329373</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Nettoyage de la branche avant merge">
+      <created>1706632620409</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1706632620409</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Trie par newest et relevance, conservation de la query lorsqu'on change de page&#10;Le trie par relevance fait un SELECT *, piste d'amélioration : mettre le score dans la base de données pour ORDER BY score.">
+      <created>1706974307354</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1706974307354</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Sélection des codes des followed&#10;prend également en compte la query.&#10;Il faut traiter la pagination, les méthodes de trie et les follows de follows">
+      <created>1707668246741</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1707668246741</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Sélection des codes des followed&#10;Ne récupère plus els codes des non follow, pas encore de limit et offset en fonction de la page">
+      <created>1707932180535</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1707932180535</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Sélection des codes des followed&#10;Récupère tous les codes des followers directe du compte connecté, marche avec la pagination. Follow de follow ne marche pas encore.">
+      <created>1708964321687</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1708964321687</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/searchbar" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Barre de recherche par description&#10;On peut trouver un code par sa description ou son titre" />
+    <MESSAGE value="Barre de recherche par auteur&#10;On peut chercher un code par son titre, sa description et son auteur" />
+    <MESSAGE value="Barre de recherche et CSS&#10;Début de la pagination, update de l'affichage de la Home" />
+    <MESSAGE value="Nettoyage de la branche avant merge" />
+    <MESSAGE value="Trie par newest et relevance, conservation de la query lorsqu'on change de page&#10;Le trie par relevance fait un SELECT *, piste d'amélioration : mettre le score dans la base de données pour ORDER BY score." />
+    <MESSAGE value="Sélection des codes des followed&#10;prend également en compte la query.&#10;Il faut traiter la pagination, les méthodes de trie et les follows de follows" />
+    <MESSAGE value="Sélection des codes des followed&#10;Ne récupère plus els codes des non follow, pas encore de limit et offset en fonction de la page" />
+    <MESSAGE value="Sélection des codes des followed&#10;Récupère tous les codes des followers directe du compte connecté, marche avec la pagination. Follow de follow ne marche pas encore." />
+    <option name="LAST_COMMIT_MESSAGE" value="Sélection des codes des followed&#10;Récupère tous les codes des followers directe du compte connecté, marche avec la pagination. Follow de follow ne marche pas encore." />
+  </component>
+</project>
