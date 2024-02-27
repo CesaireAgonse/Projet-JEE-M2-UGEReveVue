@@ -1,7 +1,7 @@
 <template>
-  <div class="post" @click="review()">
+  <div class="post">
     <div class="post-header">
-      <div class="post-header-info">
+      <div class="post-header-info" @click="user()">
         <img class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
         <div class="post-author-info">
           <h2>{{ post.userInformation.username }}</h2>
@@ -10,9 +10,10 @@
       <p class="post-date">{{ post.date }}</p>
       <div class="post-actions"></div>
     </div>
-    <h2 class="post-title">{{ post.title }}</h2>
-    <pre>{{ post.content }}</pre>
-
+    <div @click="review()">
+      <h2 class="post-title">{{ post.title }}</h2>
+      <pre>{{ post.content }}</pre>
+    </div>
     <div class="post-footer">
       <div class="post-votes">
         <button class="post-button" @click="like">
@@ -73,7 +74,10 @@ export default {
     },
     review(){
       router.push('/reviews/' + this.post.id)
-    }
+    },
+    user(){
+      router.push('/profile/' + this.post.userInformation.username)
+    },
   }
 }
 </script>
