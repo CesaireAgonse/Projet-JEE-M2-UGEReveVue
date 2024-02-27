@@ -1,6 +1,6 @@
 <template>
   <div class="post"  v-if="post.unitContent !== null && post.unitContent !== ''">
-    <pre class="post-code language-java"><code>{{ post.unitContent }}</code></pre>
+    <pre><code class="language-java">{{ post.unitContent }}</code></pre>
     <div class="row">
       <div>
         <p>Total: {{post.testResultsInformation.testsTotalCount}}</p>
@@ -10,7 +10,7 @@
       </div>
       <div class="failures">
         <p>Echecs: </p>
-        <pre>{{post.testResultsInformation.failures}}</pre>
+        <pre><code class="language-java">{{post.testResultsInformation.failures}}</code></pre>
       </div>
     </div>
   </div>
@@ -21,6 +21,9 @@ import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import Prism from 'prismjs';
+import "prismjs/themes/prism-tomorrow.css"
+import 'prismjs/components/prism-java'
 
 library.add(fas, far, fab)
 dom.watch();
@@ -30,6 +33,14 @@ export default {
       type: Object,
       required: true
     }
+  },
+  methods: {
+    highlightCode() {
+      Prism.highlightAll();
+    }
+  },
+  mounted(){
+    this.highlightCode();
   }
 }
 </script>

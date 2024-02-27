@@ -14,7 +14,7 @@
     <div @click="code()">
       <h2 class="post-title">{{ post.title }}</h2>
       <p class="post-description">{{ post.description }}</p>
-      <pre class="post-code language-java"><code>{{ post.javaContent }}</code></pre>
+      <pre><code class="language-java">{{ post.javaContent }}</code></pre>
     </div>
 
     <div class="post-footer">
@@ -48,6 +48,9 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { postService } from "@/services/post.service";
 import router from "@/router";
+import Prism from 'prismjs';
+import "prismjs/themes/prism-tomorrow.css"
+import 'prismjs/components/prism-java'
 
 library.add(fas, far, fab)
 dom.watch();
@@ -80,12 +83,19 @@ export default {
     },
     user(){
       router.push('/profile/' + this.post.userInformation.username)
+    },
+    highlightCode() {
+      Prism.highlightAll();
     }
+  },
+  mounted(){
+    this.highlightCode();
   }
 }
 </script>
 
 <style scoped>
+
 .post {
   background-color: #282828;
   border-radius: 10px;
@@ -134,15 +144,6 @@ export default {
 .post-description {
   font-size: 16px;
   margin-bottom: 15px;
-  text-align: left;
-}
-
-.post-code {
-  background-color: #0c0808;
-  border-radius: 8px;
-  padding: 15px;
-  font-family: 'Courier New', Courier, monospace;
-  white-space: pre-wrap;
   text-align: left;
 }
 

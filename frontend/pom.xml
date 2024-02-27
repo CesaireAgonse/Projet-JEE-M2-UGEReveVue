@@ -34,6 +34,7 @@
                         <configuration>
                             <arguments>install
                                 axios
+                                prismjs
                                 vue
                                 vue-router
                                 vue-transition-css
