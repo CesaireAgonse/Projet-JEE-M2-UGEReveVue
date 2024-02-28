@@ -1,15 +1,21 @@
 package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Comment;
+import fr.uge.revevue.information.CommentInformation;
+import fr.uge.revevue.information.CommentPageInformation;
 import fr.uge.revevue.repository.CommentRepository;
 import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class CommentService {
+    private static int LIMIT_COMMENT_PAGE = 5;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -35,5 +41,14 @@ public class CommentService {
         var comment = new Comment(content, user, post);
         comment.setCodeSelection(codeSelection);
         commentRepository.save(comment);
+    }
+    @Transactional
+    public CommentPageInformation getComments(long postId, int page){
+        if (page < 0){
+            page = 0;
+        }
+        Pageable pageable = PageRequest.of(page, LIMIT_COMMENT_PAGE);
+        var comments = commentRepository.findByPostId(pageable, postId).stream().map(CommentInformation::from).toList();
+        return new CommentPageInformation(comments, page);
     }
 }

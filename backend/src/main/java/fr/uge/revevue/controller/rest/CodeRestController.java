@@ -110,6 +110,4 @@ public class CodeRestController {
         }
         return ResponseEntity.ok(new FilterInformation(codes, sortBy, query, pageNumber));
     }
-
-
 }

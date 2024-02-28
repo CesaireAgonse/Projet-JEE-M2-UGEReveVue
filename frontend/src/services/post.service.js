@@ -12,10 +12,22 @@ let review = (postId, content) => {
     return Axios.post('/api/v1/posts/review/' + postId, content)
 }
 
+let comments = (postId, pageNumber) => {
+    return Axios.get('/api/v1/posts/comments/' + postId + "/?pageNumber=" + pageNumber)
+}
+
+let reviews = (postId, pageNumber) => {
+    return Axios.get('/api/v1/posts/reviews/' + postId + "/?pageNumber=" + pageNumber)
+}
+
+
+
 export const postService = {
     vote,
     comment,
-    review
+    review,
+    comments,
+    reviews
 }
 
 

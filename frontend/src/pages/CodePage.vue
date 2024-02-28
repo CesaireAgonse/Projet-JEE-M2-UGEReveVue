@@ -11,9 +11,17 @@
       <CodeTestVisual :post="post" v-if="post != null"></CodeTestVisual>
       <div class="comments" v-if="post != null">
         <h2>Commentaires:</h2>
-        <p v-for="comment in post.comments" :key="comment">
+        <p v-for="comment in commentsPage" :key="comment">
           <CommentVisual  :comment="comment"></CommentVisual>
         </p>
+        <div class="row">
+          <button v-if="pageNumber > 0" class="basic-button prevButton" @click="commentsPrev">
+              <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <button class="basic-button nextButton" @click="commentsNext">
+              <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
         <div class="row">
           <textarea v-model="contentTextarea" placeholder="Entrez votre texte ici"></textarea>
           <div class="send-button" @click="comment()">
@@ -24,9 +32,17 @@
     </div>
     <div class="reviews" v-if="post != null">
       <h2>Reviews:</h2>
-      <p v-for="review in post.reviews" :key="review">
+      <p v-for="review in reviewsPage" :key="review">
         <ReviewVisual  :post="review"></ReviewVisual>
       </p>
+      <div class="row">
+        <button v-if="pageReviewNumber > 0" class="basic-button prevButton" @click="reviewsPrev">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button class="basic-button nextButton" @click="reviewsNext">
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
       <div class="row">
         <textarea v-model="reviewTextarea" placeholder="Entrez votre texte ici"></textarea>
         <div class="send-button" @click="review()">
@@ -56,13 +72,19 @@ export default {
   components: {CodeVisual, CodeTestVisual, CommentVisual, ReviewVisual},
   mounted() {
     document.title = "Code"
+    this.comments()
+    this.reviews()
     this.code()
   },
   data() {
     return {
       post: null,
       contentTextarea: '',
-      reviewTextarea:''
+      reviewTextarea:'',
+      commentsPage:null,
+      pageNumber:0,
+      reviewsPage:null,
+      pageReviewNumber:0
     }
   },
   methods : {
@@ -76,12 +98,44 @@ export default {
       router.push("/")
     },
     comment(){
-      postService.comment(this.$route.params.id, {content:this.contentTextarea, codeSelection:null})
-      this.contentTextarea = ''
+      postService.comment(this.$route.params.id, {content:this.contentTextarea, codeSelection:null}).then(() => {
+        this.contentTextarea = ''
+        this.comments()
+      })
     },
     review(){
-      postService.review(this.$route.params.id, {content:this.reviewTextarea})
-      this.reviewTextarea = ''
+      postService.review(this.$route.params.id, {content:this.reviewTextarea}).then(() => {
+        this.reviewTextarea = ''
+        this.reviews()
+      })
+    },
+    comments(){
+      postService.comments(this.$route.params.id, this.pageNumber).then(res => {
+        this.commentsPage = res.data.comments
+        this.pageNumber = res.data.pageNumber
+      })
+    },
+    commentsPrev(){
+      this.pageNumber -= 1
+      this.comments()
+    },
+    commentsNext(){
+      this.pageNumber += 1
+      this.comments()
+    },
+    reviews(){
+      postService.reviews(this.$route.params.id, this.pageReviewNumber).then(res => {
+        this.reviewsPage = res.data.reviews
+        this.pageReviewNumber = res.data.pageNumber
+      })
+    },
+    reviewsPrev(){
+      this.pageReviewNumber -= 1
+      this.reviews()
+    },
+    reviewsNext(){
+      this.pageReviewNumber += 1
+      this.reviews()
     }
   }
 }
@@ -135,6 +189,14 @@ textarea{
   padding: 10px;
   border: 2px solid #ccc;
   border-radius: 10px;
+}
+
+.prevButton{
+  margin-bottom: 10px;
+}
+
+.nextButton{
+  margin-bottom: 10px;
 }
 
 </style>
