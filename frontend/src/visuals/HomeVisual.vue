@@ -7,7 +7,7 @@
           <h1 class="create-message">Bienvenue sur UGEReveVue</h1>
         </div>
         <div v-if="!(isLoginModalVisible || isSignupModalVisible)" class="search-bar" :style="{ top: searchBarTop }">
-          <input class="bar" type="text" placeholder="Rechercher..." />
+          <input class="bar" v-model="query" type="text" placeholder="Rechercher..." @keyup.enter="handleSearch"/>
         </div>
         <div v-if="imageUp" class="chevron-down" @click="scrollImageUp">
           <i class="fa-solid fa-chevron-down fa-beat-fade fa-2xl"></i>
@@ -36,9 +36,17 @@
         </div>
       </div>
     </transition>
-    <button class="basic-button create-button" :style="{ transform: createButton }" @click="showCodeModal">Poster un code</button>
     <div class="code-visual" :style="{ transform: listCode }">
+      <div class="header-button">
+        <button class="basic-button" @click="showCodeModal">Poster un code</button>
+        <button class="basic-button" @click="newest">Les plus récents</button>
+        <button class="basic-button" @click="relevance">Les mieux notés</button>
+      </div>
       <div v-for="post in posts" :key="post"><CodeVisual  :post="post"/></div>
+      <div class="footer-button">
+        <button v-if="pageNumber > 0" class="basic-button" @click="prev">Page précédente</button>
+        <button class="basic-button" @click="next">Page suivante</button>
+      </div>
     </div>
   </div>
 </template>
@@ -87,11 +95,23 @@ export default {
       authUser: "",
       listCode:'',
       createButton:'',
+      footerButton:'',
       imageUp: true,
       showDropdown: false,
+      query: '',
+      sortBy: '',
+      pageNumber: 0
     };
   },
   methods: {
+    scrollDown(){
+      this.imageTransform = 'translateY(-92%)';
+      this.searchBarTop = '15%';
+      this.welcomeMessageTop = '-90%';
+      this.listCode = 'translate(-50%, -300px)'
+      this.createButton = 'translate(38%, 75%)'
+      this.imageUp = false;
+    },
     scrollImageUp() {
       if (this.imageTransform === 'translateY(-92%)') {
         this.imageTransform = '';
@@ -101,12 +121,7 @@ export default {
         this.createButton = 'translate(-175%, 3000%)'
         this.imageUp = true;
       } else {
-        this.imageTransform = 'translateY(-92%)';
-        this.searchBarTop = '15%';
-        this.welcomeMessageTop = '-90%';
-        this.listCode = 'translate(-50%, -300px)'
-        this.createButton = 'translate(-175%, 175%)'
-        this.imageUp = false;
+        this.scrollDown()
       }
     },
     showLoginModal() {
@@ -130,6 +145,37 @@ export default {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
     },
+    handleSearch() {
+      this.$emit('query', this.query);
+      this.query = ""
+      this.scrollDown()
+    },
+    newest(){
+      if (this.sortBy === "newest"){
+        this.sortBy = ""
+      }
+      else {
+        this.sortBy="newest"
+      }
+      this.$emit('sortBy', this.sortBy);
+    },
+    relevance(){
+      if (this.sortBy === "relevance"){
+        this.sortBy = ""
+      }
+      else {
+        this.sortBy="relevance"
+      }
+      this.$emit('sortBy', this.sortBy);
+    },
+    prev(){
+      this.pageNumber -= 1
+      this.$emit('pageNumber', this.pageNumber);
+    },
+    next(){
+      this.pageNumber += 1
+      this.$emit('pageNumber', this.pageNumber);
+    }
   }
 };
 
@@ -177,12 +223,15 @@ input::placeholder {
   color: white;
 }
 
-.create-button {
-  position: absolute;
-  top: calc(20%);
-  transform: translate(-175%, 3000%);
-  transition: all 1s ease;
-  width: 10%;
+.header-button {
+  float: left;
+  position: fixed;
+  margin-top: -50px;
+}
+
+.footer-button {
+  float: left;
+  position: fixed;
 }
 
 

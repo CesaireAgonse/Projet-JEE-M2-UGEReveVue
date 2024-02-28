@@ -7,6 +7,7 @@ import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
 import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.information.FilterInformation;
+import fr.uge.revevue.information.ReviewInformation;
 import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -32,16 +34,16 @@ public class CodeRestController {
     private final VoteService voteService;
 
     @Autowired
-    public CodeRestController(CodeService codeService, UserService userService, VoteService voteService){
+    public CodeRestController(CodeService codeService, UserService userService, VoteService voteService) {
         this.userService = userService;
         this.codeService = codeService;
         this.voteService = voteService;
     }
 
     @GetMapping("/{codeId}")
-    public ResponseEntity<CodeInformation> code(@PathVariable("codeId") @Valid long codeId)  throws IOException {
+    public ResponseEntity<CodeInformation> code(@PathVariable("codeId") @Valid long codeId) throws IOException {
         var code = codeService.getInformation(codeId);
-        if (code == null){
+        if (code == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(code);
@@ -55,7 +57,7 @@ public class CodeRestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Void> post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result)  throws IOException {
+    public ResponseEntity<Void> post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result) throws IOException {
         codeService.create(userService.currentUser().getId(),
                 codeForm.getTitle(),
                 codeForm.getDescription(),
@@ -65,14 +67,49 @@ public class CodeRestController {
     }
 
 
+//    @GetMapping("/filter")
+//    public ResponseEntity<FilterInformation> filter(@RequestParam(value = "q", required = false, defaultValue = "") String query,
+//                                                    @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+//        if (pageNumber == null || pageNumber < 0) {
+//            pageNumber = 0;
+//        }
+//        var codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
+//        return ResponseEntity.ok(new FilterInformation(codes.stream().toList(), pageNumber));
+//    }
+
+
     @GetMapping("/filter")
-    public ResponseEntity<FilterInformation> filter(@RequestParam(value = "q", required = false, defaultValue = "")String query,
-                                                    @RequestParam(value = "pageNumber", required = false)Integer pageNumber) {
+    public ResponseEntity<FilterInformation> filter(@RequestParam(value = "sortBy", required = false)String sortBy,
+                           @RequestParam(value = "q", required = false, defaultValue = "")String query,
+                           @RequestParam(value = "pageNumber", required = false)Integer pageNumber) {
+        var user = userService.currentUser();
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;
         }
-        var codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
-        return ResponseEntity.ok(new FilterInformation(codes.stream().toList(), pageNumber));
+        List<CodeInformation> codes;
+
+        switch (sortBy != null ? sortBy : "") {
+            // Display all codes by newest
+            case "newest" -> {
+                codes = codeService.findWithKeywordByNewest(query, pageNumber, CodeService.LIMIT);
+            }
+            // Display all codes by relevance
+            case "relevance"-> {
+                codes = codeService.findWithKeywordByScore(query, pageNumber, CodeService.LIMIT);
+            }
+            default -> {
+                if(user != null) {
+                    // Display codes from follows
+                    codes = codeService.getCodeFromFollowed(user, query, pageNumber, CodeService.LIMIT);
+                }
+                else {
+                    // Display all codes
+                    codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
+                }
+            }
+        }
+        return ResponseEntity.ok(new FilterInformation(codes, sortBy, query, pageNumber));
     }
+
 
 }

@@ -1,4 +1,4 @@
-<template>
+ <template>
   <CodeForm v-if="isCodeModalVisible" @close-modal="hideCodeModal" @refresh-filter="filter" :isCodeModalVisible="isCodeModalVisible"></CodeForm>
   <LoginForm v-if="isLoginModalVisible" @close-modal="hideLoginModal" :isLoginModalVisible="isLoginModalVisible" @connect="connect"/>
   <SignupForm v-if="isSignupModalVisible" @close-modal="hideSignupModal" :isSignupModalVisible="isSignupModalVisible" />
@@ -6,6 +6,9 @@
             @show-signup-modal="showSignupModal" :isSignupModalVisible="isSignupModalVisible"
             @show-code-modal="showCodeModal" :isCodeModalVisible="isCodeModalVisible"
             @disconnect="disconnect"
+              @query="handleQuery"
+              @sortBy="handleSortBy"
+              @pageNumber="handlePageNumber"
             :isLogged="isLogged" :posts="posts"/>
 </template>
 
@@ -35,14 +38,19 @@ export default {
       isSignupModalVisible: false,
       isCodeModalVisible: false,
       posts:null,
+      sortBy:"",
+      q:"",
+      pageNumber:0
     };
   },
   methods: {
     filter(){
-      codeService.filter().then(res => {
+      codeService.filter(this.sortBy, this.q, this.pageNumber).then(res => {
         this.posts = res.data.codes
+        this.sortBy = res.data.sortBy
+        this.q = res.data.q
+        this.pageNumber = res.data.pageNumber
       })
-      console.log("Refresh")
     },
     connect(){
       this.isLogged = true;
@@ -68,6 +76,18 @@ export default {
     hideCodeModal() {
       this.isCodeModalVisible = false;
     },
+    handleQuery(query){
+      this.q = query
+      this.filter()
+    },
+    handleSortBy(sortBy){
+      this.sortBy = sortBy
+      this.filter()
+    },
+    handlePageNumber(pageNumber){
+      this.pageNumber = pageNumber
+      this.filter()
+    }
   }
 };
 </script>

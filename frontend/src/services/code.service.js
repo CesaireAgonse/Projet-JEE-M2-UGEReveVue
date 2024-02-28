@@ -11,8 +11,8 @@ let get = (codeId) => {
     return Axios.get('/api/v1/codes/' + codeId)
 }
 
-let filter = () => {
-    return Axios.get('/api/v1/codes/filter')
+let filter = (sortyBy, q, pageNumber) => {
+    return Axios.get('/api/v1/codes/filter/?sortBy=' + sortyBy + '&q=' + q + "&pageNumber=" + pageNumber)
 }
 
 export const codeService = {
