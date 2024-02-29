@@ -16,7 +16,9 @@
                     <a th:if="${auth != null}" th:href="'codes/create'" class="button basic right">Post Code</a>
                 </div>
                 <div>
-                    <p class="result left" th:text="${codes.size() == 1 ? '1 result' : codes.size() + ' results'}"></p>
+                    <p class="result left" th:text="${codes.size() == 0 ? '0 result' : codes.size() + ' results'} +
+                    ${sortBy != null ? ' from ' + sortBy : ''} +
+                    ${auth != null ? ' from followed' : ''}"></p>
                     <form th:action="@{/}" method="get">
                         <button class="right button other order" th:name="sortBy" th:value="relevance">Relevance</button>
                         <button class="right button other order" th:name="sortBy" th:value="newest">Newest</button>
