@@ -135,7 +135,8 @@ export default {
     },
     logout(){
       authenticationService.logout().then(() => {
-        authenticationService.removeToken()
+        authenticationService.removeToken('bearer')
+        authenticationService.removeToken('refresh')
         this.$emit('disconnect');
       }).catch(err => console.log(err))
     },

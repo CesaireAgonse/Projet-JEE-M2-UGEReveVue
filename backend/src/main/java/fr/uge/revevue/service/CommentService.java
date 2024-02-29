@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 public class CommentService {
-    private static int LIMIT_COMMENT_PAGE = 5;
+    private static int LIMIT_COMMENT_PAGE = 3;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;

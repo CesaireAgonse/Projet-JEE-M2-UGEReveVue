@@ -10,6 +10,7 @@
       <p class="post-date">{{ comment.date }}</p>
       <div class="post-actions"></div>
     </div>
+    <pre v-if="comment.codeSelection !== null && comment.codeSelection !== ''" class="select-code"><code class="language-java">{{ comment.codeSelection }}</code></pre>
     <pre><div v-html="markdownToHtml(comment.content)"></div></pre>
   </div>
 </template>
@@ -21,10 +22,16 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import router from "@/router";
 import MarkdownIt from "markdown-it";
+import Prism from 'prismjs';
+import "prismjs/themes/prism-tomorrow.css"
+import 'prismjs/components/prism-java'
 
 library.add(fas, far, fab)
 dom.watch();
 export default {
+  mounted() {
+    this.highlightCode();
+  },
   props: {
     comment: {
       type: Object,
@@ -38,6 +45,9 @@ export default {
     markdownToHtml(markdown) {
       const md = new MarkdownIt();
       return md.render(markdown);
+    },
+    highlightCode() {
+      Prism.highlightAll();
     }
   }
 }
@@ -77,6 +87,10 @@ export default {
   height: 30px;
   border-radius: 50%;
   margin-right: 10px;
+}
+
+.select-code{
+  font-size: 75%;
 }
 
 </style>

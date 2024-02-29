@@ -14,7 +14,7 @@
     <div @click="code()">
       <h2 class="post-title">{{ post.title }}</h2>
       <p class="post-description">{{ post.description }}</p>
-      <pre><code class="language-java">{{ post.javaContent }}</code></pre>
+      <pre @mouseup="handleSelection"><code class="language-java">{{ post.javaContent }}</code></pre>
     </div>
 
     <div class="post-footer">
@@ -86,6 +86,12 @@ export default {
     },
     highlightCode() {
       Prism.highlightAll();
+    },
+    handleSelection() {
+      const selection = window.getSelection();
+      if (selection.toString().length > 0) {
+        this.$emit("code-selected", selection.toString());
+      }
     }
   },
   mounted(){
@@ -177,4 +183,5 @@ export default {
   font-size: 20px;
   margin-right: 5px;
 }
+
 </style>

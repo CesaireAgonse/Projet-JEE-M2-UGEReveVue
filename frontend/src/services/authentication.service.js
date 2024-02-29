@@ -14,8 +14,8 @@ let addToken = (name, token) => {
     localStorage.setItem(name, token)
 }
 
-let removeToken = () => {
-    localStorage.removeItem('bearer')
+let removeToken = (name) => {
+    localStorage.removeItem(name)
 }
 
 let getToken = (name) => {

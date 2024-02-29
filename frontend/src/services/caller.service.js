@@ -17,7 +17,7 @@ Axios.interceptors.response.use(response => response, async error => {
     const originalRequest = config;
     if ((status === 401 || status === 403) && !refresh) {
         refresh = true;
-        authenticationService.removeToken()
+        authenticationService.removeToken('bearer')
         await Axios.post("api/v1/refresh", { refresh: localStorage.getItem("refresh")}).then(res =>
         {
             if (res.status === 200){

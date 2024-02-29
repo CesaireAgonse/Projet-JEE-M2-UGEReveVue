@@ -7,7 +7,7 @@
       </i>
     </button>
     <div class="row">
-      <CodeVisual :post="post" v-if="post != null"></CodeVisual>
+      <CodeVisual :post="post" v-if="post != null" @code-selected="updateSelectedCode"></CodeVisual>
       <CodeTestVisual :post="post" v-if="post != null"></CodeTestVisual>
       <div class="comments" v-if="post != null">
         <h2>Commentaires:</h2>
@@ -22,6 +22,7 @@
               <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
+        <pre v-if="selectedCode !== ''" class="select-code"><code class="language-java">{{ selectedCode }}</code></pre>
         <div class="row">
           <textarea v-model="contentTextarea" placeholder="Entrez votre texte ici"></textarea>
           <div class="send-button" @click="comment()">
@@ -59,12 +60,15 @@ import CommentVisual from "@/visuals/CommentVisual.vue";
 import CodeTestVisual from "@/visuals/CodeTestVisual.vue";
 import ReviewVisual from "@/visuals/ReviewVisual.vue";
 import { codeService } from "@/services/code.service";
-import {postService } from "@/services/post.service";
+import { postService } from "@/services/post.service";
 import router from "@/router";
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import Prism from 'prismjs';
+import "prismjs/themes/prism-tomorrow.css"
+import 'prismjs/components/prism-java'
 library.add(fas, far, fab)
 dom.watch();
 
@@ -81,6 +85,7 @@ export default {
       post: null,
       contentTextarea: '',
       reviewTextarea:'',
+      selectedCode:'',
       commentsPage:null,
       pageNumber:0,
       reviewsPage:null,
@@ -98,7 +103,7 @@ export default {
       router.push("/")
     },
     comment(){
-      postService.comment(this.$route.params.id, {content:this.contentTextarea, codeSelection:null}).then(() => {
+      postService.comment(this.$route.params.id, {content:this.contentTextarea, codeSelection:this.selectedCode}).then(() => {
         this.contentTextarea = ''
         this.comments()
       })
@@ -113,6 +118,7 @@ export default {
       postService.comments(this.$route.params.id, this.pageNumber).then(res => {
         this.commentsPage = res.data.comments
         this.pageNumber = res.data.pageNumber
+        this.selectedCode = ""
       })
     },
     commentsPrev(){
@@ -136,6 +142,12 @@ export default {
     reviewsNext(){
       this.pageReviewNumber += 1
       this.reviews()
+    },
+    highlightCode() {
+      Prism.highlightAll();
+    },
+    updateSelectedCode(code) {
+      this.selectedCode = code;
     }
   }
 }
@@ -197,6 +209,9 @@ textarea{
 
 .nextButton{
   margin-bottom: 10px;
+}
+.select-code{
+  font-size: 75%;
 }
 
 </style>

@@ -32,7 +32,7 @@ public class CodeService {
     private UserRepository userRepository;
     private EntityManager em;
     private EntityManagerFactory emf;
-    public final static int LIMIT = 3;
+    public final static int LIMIT = 10;
 
     public CodeService(){}
 

@@ -67,6 +67,13 @@ dom.watch();
 
 export default {
   components: {CommentVisual, ReviewVisual},
+  watch: {
+    '$route.params.id': function() {
+      this.comments()
+      this.reviews()
+      this.code()
+    }
+  },
   mounted() {
     document.title = "Code"
     this.comments()
