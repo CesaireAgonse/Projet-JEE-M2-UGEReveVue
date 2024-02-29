@@ -4,6 +4,7 @@ import fr.uge.revevue.information.AuthenticationInformation;
 import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.security.JwtService;
+import fr.uge.revevue.security.RefreshToken;
 import fr.uge.revevue.service.AuthenticationService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,9 @@ public class AuthenticationRestController {
     }
 
     @PostMapping("/refresh")
-    public Map<String, String> refresh(@RequestBody Map<String, String> token){
-        return authenticationService.refresh(token);
+    public Map<String, String> refresh(@RequestBody @Valid RefreshToken token){
+        System.out.println(token);
+        return authenticationService.refresh(Map.of("refresh", token.refresh()));
     }
 
     @PostMapping("/logout")
