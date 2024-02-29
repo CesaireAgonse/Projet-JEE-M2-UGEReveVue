@@ -12,7 +12,7 @@
     </div>
     <div @click="review()">
       <h2 class="post-title">{{ post.title }}</h2>
-      <pre>{{ post.content }}</pre>
+      <pre><div v-html="markdownToHtml(post.content)"></div></pre>
     </div>
     <div class="post-footer">
       <div class="post-votes">
@@ -45,6 +45,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { postService } from "@/services/post.service";
 import router from "@/router";
+import MarkdownIt from "markdown-it";
 
 library.add(fas, far, fab)
 dom.watch();
@@ -78,6 +79,10 @@ export default {
     user(){
       router.push('/profile/' + this.post.userInformation.username)
     },
+    markdownToHtml(markdown) {
+      const md = new MarkdownIt();
+      return md.render(markdown);
+    }
   }
 }
 </script>

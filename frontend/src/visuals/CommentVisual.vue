@@ -10,7 +10,7 @@
       <p class="post-date">{{ comment.date }}</p>
       <div class="post-actions"></div>
     </div>
-    <pre> {{comment.content}}</pre>
+    <pre><div v-html="markdownToHtml(comment.content)"></div></pre>
   </div>
 </template>
 
@@ -20,6 +20,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import router from "@/router";
+import MarkdownIt from "markdown-it";
 
 library.add(fas, far, fab)
 dom.watch();
@@ -33,6 +34,10 @@ export default {
   methods: {
     user() {
       router.push('/profile/' + this.comment.userInformation.username)
+    },
+    markdownToHtml(markdown) {
+      const md = new MarkdownIt();
+      return md.render(markdown);
     }
   }
 }

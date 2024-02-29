@@ -35,6 +35,7 @@
                             <arguments>install
                                 axios
                                 prismjs
+                                markdown-it
                                 vue
                                 vue-router
                                 vue-transition-css
@@ -46,16 +47,6 @@
                                 --save</arguments>
                         </configuration>
                     </execution>
-<!--                    <execution>-->
-<!--                        <id>npm build</id>-->
-<!--                        <goals>-->
-<!--                            <goal>npm</goal>-->
-<!--                        </goals>-->
-<!--                        <phase>generate-resources</phase>-->
-<!--                        <configuration>-->
-<!--                            <arguments>run build</arguments>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
                 </executions>
             </plugin>
         </plugins>
