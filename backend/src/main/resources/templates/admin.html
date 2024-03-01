@@ -24,7 +24,6 @@
                         <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
                     </form>
                 </div>
-                <p>la liste de tout ses post plus tard ...</p>
                 <div th:each="code : ${usersMap.get(user)}">
                     <div th:replace="codes/codePreview :: codePreview">
                 </div>
