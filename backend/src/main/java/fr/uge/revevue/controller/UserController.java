@@ -21,12 +21,14 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/password")
     public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm, Model model){
         model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
         return "users/password";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/password")
     public String password(@ModelAttribute("passwordForm") @Valid PasswordForm passwordForm, BindingResult result, Model model){
         var user = userService.currentUser();
@@ -50,17 +52,22 @@ public class UserController {
         return "redirect:/users/" + userInformation.username();
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/users/{username}")
     public String information(@PathVariable String username, Model model){
         var userInformation = userService.getInformation(username);
         if (userInformation == null){
             return "redirect:/";
         }
-        model.addAttribute("auth", userService.getInformation(userService.currentUser().getUsername()));
+        var user = userService.currentUser();
+        if (user != null){
+            model.addAttribute("auth", userService.getInformation(user.getUsername()));
+        }
         model.addAttribute("user", userInformation);
         return "users/profile";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("users/follow/{username}")
     public String follow(@PathVariable String username){
         if (!userService.isExisted(username)){
@@ -70,6 +77,7 @@ public class UserController {
         return "redirect:/users/" + username;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("users/unfollow/{username}")
     public String unfollow(@PathVariable String username){
         if (!userService.isExisted(username)){

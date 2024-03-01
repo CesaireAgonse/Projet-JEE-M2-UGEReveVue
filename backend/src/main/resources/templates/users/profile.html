@@ -8,17 +8,17 @@
     </head>
     <body>
         <div th:replace="navbar :: navbar"></div>
-        <div th:if="${auth != null}" class="main">
+        <div class="main">
             <div class="container limit profile-header">
                 <h1 class="username" th:text="${user.username()}"></h1>
                 <p th:if="${user.isAdmin()}" th:text="'is admin :^)'"></p>
                 <p th:text="${user.followed().size()} + ' followed'"></p>
-                <a th:if="${user.username().equals(auth.username())}" href="/password" class="button basic">Change Your Password</a>
-                <form th:if="${!user.username().equals(auth.username()) && !auth.allFollowedName().contains(user.username())}"
+                <a th:if="${auth != null && user.username().equals(auth.username())}" href="/password" class="button basic">Change Your Password</a>
+                <form th:if="${auth != null && !user.username().equals(auth.username()) && !auth.allFollowedName().contains(user.username())}"
                       th:action="@{/users/follow/{username}(username=${user.username()})}" th:method="post">
                     <button type="submit" class="button basic">Follow</button>
                 </form>
-                <form th:if="${!user.username().equals(auth.username()) && auth.allFollowedName().contains(user.username())}"
+                <form th:if="${auth != null &&  !user.username().equals(auth.username()) && auth.allFollowedName().contains(user.username())}"
                       th:action="@{/users/unfollow/{username}(username=${user.username()})}" th:method="post">
                     <button type="submit" class="button basic">Unfollow</button>
                 </form>

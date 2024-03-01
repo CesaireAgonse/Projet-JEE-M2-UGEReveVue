@@ -40,10 +40,14 @@ public class SecurityConfig {
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/css/**", "/prism/**", "/script/**", "/h2-console/**").permitAll()
-                .antMatchers("/","/signup", "/login", "/refresh").permitAll()   // Client léger
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/api/v1/signup", "/api/v1/login", "/api/v1/refresh", "/api/v1/codes/filter").permitAll()  // Client lourd
-                .anyRequest().authenticated()
+                // Pas besoin puisqu'on utilise les PreAuthorize pour gérer la sécurité
+//                .antMatchers("/","/signup", "/login", "/refresh").permitAll()   // Client léger
+//                .antMatchers("/codes/{codeId}", "/reviews/{reviewId}").permitAll()
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("/api/v1/signup", "/api/v1/login", "/api/v1/refresh", "/api/v1/codes/filter/**").permitAll()  // Client lourd
+//                .antMatchers("api/v1/codes/{codeId}", "api/v1/posts/comments/{postId}",
+//                        "api/v1/posts/reviews/{postId}/", "api/v1/reviews/{reviewId}").permitAll()
+//                .anyRequest().authenticated()
                 .and().logout().deleteCookies("bearer", "refresh");
         return http.build();
     }

@@ -15,7 +15,7 @@
                         <div th:replace="comments/comment :: commentFragment(comment=${comment})"></div>
                     </div>
                 </div>
-                <div class="edit-zone">
+                <div th:if="${auth != null}" class="edit-zone">
                     <button class="button other" onclick='selectedCode()'>Get Selected Code</button>
                     <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
                         <input type="hidden" id="codeSelection" name="codeSelection" th:field="*{codeSelection}">
@@ -36,7 +36,7 @@
                         <div th:replace="reviews/review :: reviewFragment(review=${review})"></div>
                     </div>
                 </div>
-                <div class="edit-zone">
+                <div th:if="${auth != null}"  class="edit-zone">
                     <form th:action="@{/codes/review/{codeId}(codeId=${code.id()})}" th:object="${reviewForm}" method="post">
                         <textarea class="review" id="contentReview" name="contentReview" th:field="*{content}" required></textarea>
                         <button type="submit" class="button basic">Review</button>

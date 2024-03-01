@@ -8,6 +8,7 @@ import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -34,8 +35,9 @@ public class HomeController {
         this.codeService = codeService;
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/")
-    public String homePage(@RequestParam(value = "sortBy", required = false)String sortBy,
+    public String homePage(@RequestParam(value = "sortBy", required = false, defaultValue = "")String sortBy,
                            @RequestParam(value = "q", required = false, defaultValue = "")String query,
                            @RequestParam(value = "pageNumber", required = false)Integer pageNumber,
                            Model model) {

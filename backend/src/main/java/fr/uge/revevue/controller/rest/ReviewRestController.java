@@ -7,6 +7,7 @@ import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class ReviewRestController {
         this.reviewService = reviewService;
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewInformation> review(@PathVariable("reviewId") @Valid long reviewId){
         var review = reviewService.getInformation(reviewId);
