@@ -8,8 +8,9 @@
             <h2>{{ post.userInformation.username }}</h2>
           </div>
         </div>
-        <p class="post-date">{{ post.date }}</p>
-        <div class="post-actions"></div>
+        <div>
+          <p class="post-date">{{ post.date }}</p>
+        </div>
       </div>
     <div @click="code()">
       <h2 class="post-title">{{ post.title }}</h2>
@@ -27,6 +28,9 @@
           <i class="fa-regular fa-thumbs-down fa-beat" style="color: #f44e4e"></i>
         </button>
       </div>
+      <button class="post-button" @click="del">
+        <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
+      </button>
       <div  class="post-votes">
         <button class="post-button">
           <i class="fa-regular fa-comment fa-bounce" style="color: #74C0FC"></i>
@@ -46,6 +50,7 @@ import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import { codeService } from "@/services/code.service";
 import { postService } from "@/services/post.service";
 import router from "@/router";
 import Prism from 'prismjs';
@@ -92,6 +97,9 @@ export default {
       if (selection.toString().length > 0) {
         this.$emit("code-selected", selection.toString());
       }
+    },
+    del(){
+      codeService.del(this.post.id)
     }
   },
   mounted(){

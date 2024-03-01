@@ -31,4 +31,11 @@ public class ReviewRestController {
         }
         return ResponseEntity.ok(review);
     }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("/delete/{reviewId}")
+    public ResponseEntity<Void> reviewDeleted(@PathVariable("reviewId") @Valid long reviewId) {
+        reviewService.delete(reviewId);
+        return ResponseEntity.noContent().build();
+    }
 }
