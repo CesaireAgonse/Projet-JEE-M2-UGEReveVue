@@ -6,6 +6,7 @@ import fr.uge.revevue.entity.User;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.CodeInformation;
+import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.repository.CodeRepository;
 import fr.uge.revevue.repository.UserRepository;
 import fr.uge.revevue.repository.PostRepository;
@@ -13,6 +14,7 @@ import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -145,5 +147,31 @@ public class CodeService {
         }
         codeRepository.delete(code.get());
         return CodeInformation.from(code.get());
+    }
+
+    @Transactional
+    public List<CodeInformation> getAllCodeFromUser(User user){
+        //Objects.requireNonNull(user);
+        List<CodeInformation> codes = new ArrayList<>();
+        var realUser = userRepository.findByUsername(user.getUsername());
+        var codesFromUser = codeRepository.findAllByUserId(realUser.get().getId());
+
+        for (var code : codesFromUser){
+            codes.add(CodeInformation.from(code));
+        }
+
+        return codes;
+    }
+
+    @Transactional
+    public HashMap<UserInformation, List<CodeInformation>> getAllCodeFromUsers(){
+
+        var users = userRepository.findAll().stream().toList();
+        var usersMap = new HashMap<UserInformation, List<CodeInformation>>();
+        for (var user : users){
+            var codesFromUser = this.getAllCodeFromUser(user);
+            usersMap.put(UserInformation.from(user), codesFromUser);
+        }
+        return usersMap;
     }
 }

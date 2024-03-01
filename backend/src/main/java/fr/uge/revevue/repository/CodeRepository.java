@@ -1,6 +1,7 @@
 package fr.uge.revevue.repository;
 
 import fr.uge.revevue.entity.Code;
+import fr.uge.revevue.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,4 +21,6 @@ public interface CodeRepository  extends CrudRepository<Code, Long> {
     int countByUserIdAndTitleContainingIgnoreCaseOrUserIdAndDescriptionContainingIgnoreCaseOrUserIdAndUserUsernameContainingIgnoreCase(long userIdTitle, String titleKeyword, long userIdDescription, String descriptionKeyword, long userIdUsername, String userUsernameKeyword);
     
     List<Code> findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByScoreDesc(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
+
+    List<Code> findAllByUserId(long userId);
 }
