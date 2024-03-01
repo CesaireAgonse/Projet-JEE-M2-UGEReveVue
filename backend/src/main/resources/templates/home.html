@@ -17,8 +17,8 @@
                 </div>
                 <div>
                     <p class="result left" th:text="${codes.size() == 0 ? '0 result' : codes.size() + ' results'} +
-                    ${sortBy != null ? ' sorted by ' + sortBy : ''} +
-                    ${auth != null ? ' from followed' : ''}"></p>
+                    ${sortBy != '' ? ' sorted by ' + sortBy : ''} +
+                    ${auth != null && sortBy == '' ? ' from followed' : ''}"></p>
                     <form th:action="@{/}" method="get">
                         <button class="right button other order" th:name="sortBy" th:value="relevance">Relevance</button>
                         <button class="right button other order" th:name="sortBy" th:value="newest">Newest</button>
