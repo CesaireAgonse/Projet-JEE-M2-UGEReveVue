@@ -9,6 +9,7 @@ import fr.uge.revevue.service.AuthenticationService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
+@PreAuthorize("permitAll()")
 @RequestMapping("api/v1")
 public class AuthenticationRestController {
     private final AuthenticationService authenticationService;

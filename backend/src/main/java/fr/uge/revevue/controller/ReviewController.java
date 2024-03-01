@@ -9,6 +9,7 @@ import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;
 import fr.uge.revevue.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,12 +35,16 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/reviews/{reviewId}")
     public String review(@PathVariable("reviewId") @Valid long reviewId,
                        @ModelAttribute("commentForm") CommentForm commentForm,
                        @ModelAttribute("reviewForm") ReviewForm reviewForm,
                        Model model){
-        model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
+        var user = userService.currentUser();
+        if (user != null){
+            model.addAttribute("auth", SimpleUserInformation.from(user));
+        }
         var review = reviewService.getInformation(reviewId);
         if (review == null){
             throw new IllegalStateException("review not found");
@@ -48,6 +53,7 @@ public class ReviewController {
         return "reviews/reviewReview";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/reviews/vote/{reviewId}")
     public String reviewVoted(@PathVariable("reviewId") @Valid Long reviewId,
                               @RequestParam("voteType")Vote.VoteType voteType,
@@ -59,6 +65,7 @@ public class ReviewController {
         return "redirect:/";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/reviews/comment/{reviewId}")
     public String reviewCommented(@PathVariable("reviewId") @Valid long reviewId,
                                   @ModelAttribute("commentForm") @Valid CommentForm commentForm,
@@ -70,6 +77,7 @@ public class ReviewController {
         return "redirect:/reviews/" + reviewId;
     }
 
+    @PreAuthorize("permitAll()")
     @PostMapping("/reviews/review/{reviewId}")
     public String reviewReviewed(@PathVariable("reviewId") @Valid long reviewId,
                                  @ModelAttribute("reviewForm") @Valid ReviewForm reviewForm,

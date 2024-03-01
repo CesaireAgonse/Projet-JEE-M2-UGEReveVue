@@ -40,6 +40,7 @@ public class CodeRestController {
         this.voteService = voteService;
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/{codeId}")
     public ResponseEntity<CodeInformation> code(@PathVariable("codeId") @Valid long codeId) throws IOException {
         var code = codeService.getInformation(codeId);
@@ -56,6 +57,7 @@ public class CodeRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
     public ResponseEntity<Void> post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result) throws IOException {
         codeService.create(userService.currentUser().getId(),
@@ -66,18 +68,7 @@ public class CodeRestController {
         return ResponseEntity.noContent().build();
     }
 
-
-//    @GetMapping("/filter")
-//    public ResponseEntity<FilterInformation> filter(@RequestParam(value = "q", required = false, defaultValue = "") String query,
-//                                                    @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
-//        if (pageNumber == null || pageNumber < 0) {
-//            pageNumber = 0;
-//        }
-//        var codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
-//        return ResponseEntity.ok(new FilterInformation(codes.stream().toList(), pageNumber));
-//    }
-
-
+    @PreAuthorize("permitAll()")
     @GetMapping("/filter")
     public ResponseEntity<FilterInformation> filter(@RequestParam(value = "sortBy", required = false)String sortBy,
                            @RequestParam(value = "q", required = false, defaultValue = "")String query,

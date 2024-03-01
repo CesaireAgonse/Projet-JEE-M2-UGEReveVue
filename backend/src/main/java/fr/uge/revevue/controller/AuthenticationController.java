@@ -7,6 +7,7 @@ import fr.uge.revevue.form.SignupForm;
 import fr.uge.revevue.service.AuthenticationService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,7 @@ import javax.validation.Valid;
 import java.util.Map;
 
 @Controller
+@PreAuthorize("permitAll()")
 public class AuthenticationController {
     private final UserService userService;
     private final CookieService cookieService;

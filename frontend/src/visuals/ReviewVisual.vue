@@ -24,6 +24,9 @@
           <i class="fa-regular fa-thumbs-down fa-beat" style="color: #f44e4e"></i>
         </button>
       </div>
+      <button class="post-button" @click="del">
+        <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
+      </button>
       <div  class="post-votes">
         <button class="post-button">
           <i class="fa-regular fa-comment fa-bounce" style="color: #74C0FC"></i>
@@ -43,6 +46,7 @@ import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import { reviewService } from "@/services/review.service";
 import { postService } from "@/services/post.service";
 import router from "@/router";
 import MarkdownIt from "markdown-it";
@@ -82,6 +86,9 @@ export default {
     markdownToHtml(markdown) {
       const md = new MarkdownIt();
       return md.render(markdown);
+    },
+    del(){
+      reviewService.del(this.post.id)
     }
   }
 }

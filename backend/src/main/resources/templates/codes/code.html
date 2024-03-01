@@ -21,7 +21,7 @@
                         <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
                     </form>
                 </div>
-                <form th:if="${auth.isAdmin()}" name="delete" id="delete" th:data-code-id="${code.id()}">
+                <form th:if="${auth != null && auth.isAdmin()}" name="delete" id="delete" th:data-code-id="${code.id()}">
                     <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
                 </form>
             </div>
@@ -34,8 +34,8 @@
                     <p th:text="'Success: ' + ${code.testResultsInformation.testsSucceededCount}"></p>
                     <p th:text="'Failed: ' + ${code.testResultsInformation. testsFailedCount}"></p>
                     <p th:text="'Time: ' + ${code.testResultsInformation.testsTotalTime}"></p>
-                    <p>Failures :</p>
-                    <pre><code id="codeBlock" class="failure language-java java-code" th:text="${code.testResultsInformation.failures}"></code></pre>
+                    <p th:if="${code.testResultsInformation.failures != ''}" >Failures :</p>
+                    <pre th:if="${code.testResultsInformation.failures != ''}"><code id="codeBlock" class="failure language-java java-code" th:text="${code.testResultsInformation.failures}"></code></pre>
                 </div>
 
             </div>

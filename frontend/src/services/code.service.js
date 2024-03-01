@@ -15,10 +15,15 @@ let filter = (sortyBy, q, pageNumber) => {
     return Axios.get('/api/v1/codes/filter/?sortBy=' + sortyBy + '&q=' + q + "&pageNumber=" + pageNumber)
 }
 
+let del = (codeId) => {
+    return Axios.delete('/api/v1/codes/delete/' + codeId)
+}
+
 export const codeService = {
     create,
     filter,
-    get
+    get,
+    del
 }
 
 

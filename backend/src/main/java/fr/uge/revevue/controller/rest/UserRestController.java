@@ -36,7 +36,7 @@ public class UserRestController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/password")
     public ResponseEntity<Void> password(@RequestBody @Valid UpdatePasswordInformation updatePasswordInformation, BindingResult result){
         if (result.hasErrors()){
@@ -46,6 +46,7 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/{username}")
     public ResponseEntity<UserInformation> information(@PathVariable String username){
         var userInformation = userService.getInformation(username);
@@ -55,6 +56,7 @@ public class UserRestController {
         return ResponseEntity.ok(userInformation);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/follow/{username}")
     public ResponseEntity<Void> follow(@PathVariable String username){
         if (!userService.isExisted(username)){
@@ -64,6 +66,7 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/unfollow/{username}")
     public ResponseEntity<Void> unfollow(@PathVariable String username){
         if (!userService.isExisted(username)){
@@ -73,6 +76,7 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public ResponseEntity<UserInformation> profile(){
         return ResponseEntity.ok(userService.getInformation(userService.currentUser().getUsername()));

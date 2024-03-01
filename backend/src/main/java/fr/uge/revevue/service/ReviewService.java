@@ -60,4 +60,14 @@ public class ReviewService {
         var reviews = reviewRepository.findByPostId(pageable, postId).stream().map(ReviewInformation::from).toList();
         return new ReviewPageInformation(reviews, page);
     }
+
+    @Transactional
+    public ReviewInformation delete (long reviewId){
+        var review = reviewRepository.findById(reviewId);
+        if(review.isEmpty()){
+            throw new IllegalArgumentException("Review not found");
+        }
+        reviewRepository.delete(review.get());
+        return ReviewInformation.from(review.get());
+    }
 }

@@ -8,6 +8,7 @@ import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,12 +35,14 @@ public class CodeController {
         this.reviewService = reviewService;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/codes/create")
     public String post(@ModelAttribute("codeForm") CodeForm codeForm, Model model){
         model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
         return "codes/create";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/create")
     public String post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result, Model model)  throws IOException {
         if (result.hasErrors()){
@@ -67,12 +70,16 @@ public class CodeController {
         return "redirect:/";
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/codes/{codeId}")
     public String code(@PathVariable("codeId") @Valid long codeId,
                        @ModelAttribute("commentForm") CommentForm commentForm,
                        @ModelAttribute("reviewForm") ReviewForm reviewForm,
                        Model model){
-        model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
+        var user = userService.currentUser();
+        if (user != null){
+            model.addAttribute("auth", SimpleUserInformation.from(user));
+        }
         var code = codeService.getInformation(codeId);
         if (code == null){
             throw new IllegalStateException("code not found");
@@ -81,6 +88,7 @@ public class CodeController {
         return "codes/codeReview";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/vote/{codeId}")
     public String codeVoted(@PathVariable("codeId") @Valid long codeId,
                             @RequestParam("voteType") Vote.VoteType voteType,
@@ -92,6 +100,7 @@ public class CodeController {
         return "redirect:/";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/comment/{codeId}")
     public String codeCommented(@PathVariable("codeId") @Valid long codeId,
                                 @ModelAttribute("commentForm") @Valid CommentForm commentForm,
@@ -103,6 +112,7 @@ public class CodeController {
         return "redirect:/codes/" + codeId;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/review/{codeId}")
     public String codeReviewed(@PathVariable("codeId") @Valid long codeId,
                                @ModelAttribute("reviewForm") @Valid ReviewForm reviewForm,

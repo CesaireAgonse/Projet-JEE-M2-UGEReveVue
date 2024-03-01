@@ -17,6 +17,9 @@
                         <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
                     </form>
                 </div>
+                <form th:if="${auth != null && auth.isAdmin()}" name="delete" id="delete" th:data-code-id="${review.id()}">
+                    <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
+                </form>
             </div>
             <a th:href="'/reviews/'+${review.id()}">
                 <div class ="content">
@@ -25,4 +28,66 @@
             </a>
         </div>
     </div>
+    <script src="/prism/prism.js"></script>
+    <script>
+
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form');
+                const codeId = form.getAttribute('data-code-id');
+                const voteType = this.value;
+                console.log("delete id " + codeId);
+                fetch('../api/v1/reviews/delete/' + codeId , {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to delete code');
+                        }
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            return response.json();
+                        } else {
+                            return null;
+                        }
+                    })
+                    .then(data => {
+                        if (data !== null) {
+                            console.log('Review deleted successfully:', data);
+                        } else {
+                            console.log('Review deleted successfully, no JSON data returned');
+                        }
+                        showNotification('Review deleted.');
+                        window.location.href = '/';
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        function showNotification(message, type = 'success') {
+            if (!('Notification' in window)) {
+                console.error('This browser does not support notifications.');
+                return;
+            }
+
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        displayNotification();
+                    }
+                });
+            } else {
+                displayNotification();
+            }
+
+            function displayNotification() {
+                const notification = new Notification('Notification', {
+                    body: message,
+                    icon: ''
+                });
+            }
+        }
+
+    </script>
+
 </div>

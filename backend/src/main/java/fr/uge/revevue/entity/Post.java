@@ -23,7 +23,7 @@ public abstract class Post {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     protected Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     public Set<Review> reviews = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
