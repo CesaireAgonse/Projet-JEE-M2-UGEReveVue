@@ -14,7 +14,7 @@
                 <p class="text-title left">Moderation page</p>
             </div>
         </div>
-        <div th:each="user : ${users}">
+        <div th:each="user : ${usersMap.keySet()}">
             <div class="container limit home">
                 <div class="main-info">
                     <h2 class ="title">
@@ -25,6 +25,9 @@
                     </form>
                 </div>
                 <p>la liste de tout ses post plus tard ...</p>
+                <div th:each="code : ${usersMap.get(user)}">
+                    <div th:replace="codes/codePreview :: codePreview">
+                </div>
             </div>
         </div>
     </div>

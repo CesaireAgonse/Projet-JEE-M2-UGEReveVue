@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     <p class="result left" th:text="${codes.size() == 0 ? '0 result' : codes.size() + ' results'} +
-                    ${sortBy != null ? ' from ' + sortBy : ''} +
+                    ${sortBy != null ? ' sorted by ' + sortBy : ''} +
                     ${auth != null ? ' from followed' : ''}"></p>
                     <form th:action="@{/}" method="get">
                         <button class="right button other order" th:name="sortBy" th:value="relevance">Relevance</button>
@@ -28,19 +28,7 @@
                 </div>
             </div>
             <div th:each="code : ${codes}">
-                 <div class="container limit home">
-                     <p class="stats left" th:text="'score: ' + ${code.score()}"></p>
-                     <p class="stats left" th:text="'reviews: '+ ${code.reviews().size()}"></p>
-                     <p class="stats left" th:text="'comments: ' + ${code.comments().size()} "></p>
-                     <div class ="author right">
-                         <a th:href="'/users/' + ${code.userInformation().username()}" th:text="${code.userInformation().username()}"></a>
-                     </div>
-                     <a th:href="'/codes/' + ${code.id()}">
-                         <h2 class ="title" th:text="${code.title()}"></h2>
-                         <p class ="description" th:text="${code.description()}"></p>
-                         <p class="date right" th:text="${code.date()}"></p>
-                     </a>
-                 </div>
+                <div th:replace="codes/codePreview :: codePreview"></div>
             </div>
             <div th:replace="footer :: footer"></div>
         </div>
