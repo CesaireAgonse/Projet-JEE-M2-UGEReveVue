@@ -1,4 +1,5 @@
 <template  v-if="username !== null">
+  <PasswordForm v-if="isPasswordModalVisible" @close-modal="hidePasswordModal" :isPasswordModalVisible="isPasswordModalVisible"/>
   <button class="basic-button left" @click="home">
     <i>
       <i class="fa-solid fa-arrow-left"></i>
@@ -12,8 +13,9 @@
         <h1 class="left">{{ username }}</h1>
         <p class="left"> {{nbFollowed}} <i class="fa-solid fa-user-group"></i></p>
         <p class="left">{{ "Ceci est une description de profile" }}</p>
-        <button class="basic-button button-profile left" @click="follow">Follow</button>
-        <button class="basic-button button-profile left" @click="unfollow">Unfollow</button>
+        <button v-if="auth != null && auth.username !== username" class="basic-button button-profile left" @click="follow">Follow</button>
+        <button v-if="auth != null && auth.username !== username" class="basic-button button-profile left" @click="unfollow">Unfollow</button>
+        <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="showPasswordModal">Modifier son mot de passe</button>
       </div>
     </div>
   </div>
@@ -22,15 +24,18 @@
 <script>
 
 import {userService} from "@/services/user.service";
+import {authenticationService} from "@/services/authentication.service";
 import router from "@/router";
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import PasswordForm from "@/components/PasswordForm.vue";
 library.add(fas, far, fab)
 dom.watch();
 
 export default {
+  components: {PasswordForm},
   mounted() {
     document.title = "Profile"
     userService.user(this.$route.params.name).then(res => {
@@ -41,7 +46,9 @@ export default {
   data() {
     return {
       username: null,
-      nbFollowed: 0
+      nbFollowed: 0,
+      auth: authenticationService.getAuth(),
+      isPasswordModalVisible: false
     };
   },
   methods : {
@@ -53,6 +60,12 @@ export default {
     },
     unfollow() {
       userService.unfollow(this.username)
+    },
+    showPasswordModal() {
+      this.isPasswordModalVisible = true;
+    },
+    hidePasswordModal() {
+      this.isPasswordModalVisible = false;
     }
   }
 }

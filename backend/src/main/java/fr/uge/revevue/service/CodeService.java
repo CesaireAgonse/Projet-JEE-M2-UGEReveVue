@@ -108,9 +108,6 @@ public class CodeService {
     @Transactional
     public List<CodeInformation> getCodeFromFollowed(User user, String keyword, int offset, int limit) {
         List<CodeInformation> codes = new ArrayList<>();
-        if (user == null) {
-            return codes;
-        }
         List<User> usersAlreadySeen = new ArrayList<>();
         List<User> followed = userRepository.findFollowedById(user.getId());
         var queueFollow = new ArrayDeque<>(followed);

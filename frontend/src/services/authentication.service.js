@@ -1,4 +1,5 @@
 import Axios from "@/services/caller.service";
+import {jwtDecode} from "jwt-decode";
 let signup = (credentials) => {
     return Axios.post('/api/v1/signup', credentials)
 }
@@ -27,6 +28,17 @@ let isLogged = () => {
     return !!token
 }
 
+let getAuth = () => {
+    if (isLogged()){
+        let token = jwtDecode(localStorage.getItem('bearer'))
+        return {
+            username : token.sub,
+            role: token.role.typeRole
+        }
+    }
+    return null;
+}
+
 let getTokenInformation = () => {
     if (isLogged()) {
         return 0
@@ -41,6 +53,7 @@ export const authenticationService = {
     removeToken,
     getToken,
     isLogged,
+    getAuth,
     getTokenInformation
 }
 

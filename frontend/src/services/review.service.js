@@ -8,7 +8,6 @@ let del = (reviewId) => {
     return Axios.delete('/api/v1/reviews/delete/' + reviewId)
 }
 
-
 export const reviewService = {
     get,
     del
