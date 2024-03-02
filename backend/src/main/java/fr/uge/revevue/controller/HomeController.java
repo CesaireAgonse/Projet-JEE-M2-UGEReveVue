@@ -53,20 +53,20 @@ public class HomeController {
         switch (sortBy != null ? sortBy : "") {
             // Display all codes by newest
             case "newest" -> {
-                codes = codeService.findWithKeywordByNewest(query, pageNumber, LIMIT);
+                codes = codeService.findWithKeywordByNewest(query, pageNumber, CodeService.LIMIT);
             }
             // Display all codes by relevance
             case "relevance"-> {
-                codes = codeService.findWithKeywordByScore(query, pageNumber, LIMIT);
+                codes = codeService.findWithKeywordByScore(query, pageNumber, CodeService.LIMIT);
             }
             default -> {
                 if(user != null) {
                     // Display codes from follows
-                    codes = codeService.getCodeFromFollowed(user, query, pageNumber, LIMIT);
+                    codes = codeService.getCodeFromFollowed(user, query, pageNumber, CodeService.LIMIT);
                 }
                 else {
                     // Display all codes
-                    codes = codeService.findWithKeyword(query, pageNumber, LIMIT);
+                    codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
                 }
             }
         }
