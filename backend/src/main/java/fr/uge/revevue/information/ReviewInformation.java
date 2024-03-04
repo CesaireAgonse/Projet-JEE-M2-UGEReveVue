@@ -1,5 +1,6 @@
 package fr.uge.revevue.information;
 
+import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Review;
 import fr.uge.revevue.entity.Vote;
 
@@ -11,6 +12,8 @@ import java.util.stream.Collectors;
 
 public record ReviewInformation(
         long id,
+        long idPost,
+        boolean postIsCode,
         SimpleUserInformation userInformation,
         Vote.VoteType voteType,
         String title,
@@ -23,8 +26,11 @@ public record ReviewInformation(
 
     public static ReviewInformation from(Review review){
         Objects.requireNonNull(review, "[ReviewInformation] review is null");
+        var postIsCode = review.getPost() instanceof Code ;
         return new ReviewInformation(
                 review.getId(),
+                review.getPost().getId(),
+                postIsCode,
                 SimpleUserInformation.from(review.getUser()),
                 review.getVoteUser(),
                 review.getTitle(),

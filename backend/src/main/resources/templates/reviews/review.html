@@ -17,7 +17,10 @@
                         <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
                     </form>
                 </div>
-                <form th:if="${auth != null && auth.isAdmin()}" name="delete" id="delete" th:data-code-id="${review.id()}">
+                <form th:if="${auth != null && auth.isAdmin()}" name="delete" id="delete"
+                      th:data-code-id="${review.id()}"
+                      th:data-post-id="${review.idPost()}"
+                      th:data-post-type="${review.postIsCode()}">
                     <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
                 </form>
             </div>
@@ -35,6 +38,8 @@
             button.addEventListener('click', function() {
                 const form = this.closest('form');
                 const codeId = form.getAttribute('data-code-id');
+                const postId = form.getAttribute('data-post-id');
+                const postType = form.getAttribute('data-post-type');
                 const voteType = this.value;
                 console.log("delete id " + codeId);
                 fetch('../api/v1/reviews/delete/' + codeId , {
@@ -58,7 +63,12 @@
                             console.log('Review deleted successfully, no JSON data returned');
                         }
                         showNotification('Review deleted.');
-                        window.location.href = '/';
+                        if (postType == 'true') {
+                            window.location.href = '/codes/' + postId;
+                        } else {
+                            window.location.href = '/reviews/' + postId;
+                        }
+
                     })
                     .catch(error => console.error('Error:', error));
             });
