@@ -2,6 +2,7 @@ package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.entity.Review;
+import fr.uge.revevue.entity.User;
 import fr.uge.revevue.information.*;
 import fr.uge.revevue.repository.CommentRepository;
 import fr.uge.revevue.repository.PostRepository;
@@ -12,6 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class ReviewService {
@@ -69,5 +73,31 @@ public class ReviewService {
         }
         reviewRepository.delete(review.get());
         return ReviewInformation.from(review.get());
+    }
+
+    @Transactional
+    public List<ReviewInformation> getAllReviewFromUser(User user){
+        //Objects.requireNonNull(user);
+        List<ReviewInformation> reviews = new ArrayList<>();
+        var realUser = userRepository.findByUsername(user.getUsername());
+        var reviewsFromUser = reviewRepository.findAllByUserId(realUser.get().getId());
+
+        for (var review : reviewsFromUser){
+            reviews.add(ReviewInformation.from(review));
+        }
+
+        return reviews;
+    }
+
+    @Transactional
+    public HashMap<UserInformation, List<ReviewInformation>> getAllReviewFromUsers(){
+
+        var users = userRepository.findAll().stream().toList();
+        var usersMap = new HashMap<UserInformation, List<ReviewInformation>>();
+        for (var user : users){
+            var reviewsFromUser = this.getAllReviewFromUser(user);
+            usersMap.put(UserInformation.from(user), reviewsFromUser);
+        }
+        return usersMap;
     }
 }

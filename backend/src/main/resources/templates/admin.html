@@ -14,7 +14,7 @@
                 <p class="text-title left">Moderation page</p>
             </div>
         </div>
-        <div th:each="user : ${usersMap.keySet()}">
+        <div th:each="user : ${usersSet}">
             <div class="container limit home">
                 <div class="main-info">
                     <h2 class ="title">
@@ -24,8 +24,13 @@
                         <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
                     </form>
                 </div>
-                <div th:each="code : ${usersMap.get(user)}">
+                <h2>Codes : </h2>
+                <div th:each="code : ${codesMap.get(user)}">
                     <div th:replace="codes/codePreview :: codePreview">
+                </div>
+                <h2>Reviews : </h2>
+                <div th:each="review : ${reviewsMap.get(user)}">
+                    <div th:replace="reviews/reviewPreview :: reviewPreview">
                 </div>
             </div>
         </div>
