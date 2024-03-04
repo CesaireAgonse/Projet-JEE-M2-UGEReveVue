@@ -8,20 +8,7 @@
             <a th:href="'/users/' + ${comment.userInformation().username()}" th:text="${comment.userInformation().username()}"></a>
         </div>
         <pre><code th:text="${comment.codeSelection()}"></code></pre>
-        <p class="markdown-content message" th:text="${comment.content()}"></p>
+        <p class="markdown message" th:text="${comment.content()}"></p>
         <p class="date right" th:text="${comment.date()}"></p>
     </div>
-    <script src="/markdown-it/markdown-it.min.js"></script>
-    <script>
-        // Récupérez tous les éléments avec la classe 'markdown-content'
-        var markdownElements = document.querySelectorAll('.markdown-content');
-
-        // Initialisez Markdown-it
-        var md = window.markdownit();
-
-        // Convertissez chaque élément Markdown en HTML
-        markdownElements.forEach(function(element) {
-            element.innerHTML = md.render(element.innerText);
-        });
-    </script>
 </div>

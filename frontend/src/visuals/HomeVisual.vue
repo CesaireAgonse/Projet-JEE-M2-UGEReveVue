@@ -141,7 +141,7 @@ export default {
       }).catch(err => console.log(err))
     },
     profile(){
-      router.push('/profile')
+      router.push('/profile/' + authenticationService.getAuth().username)
     },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;

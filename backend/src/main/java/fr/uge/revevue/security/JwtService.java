@@ -79,7 +79,8 @@ public class JwtService {
     private String createToken(User user, long expirationTime){
         var claims = Map.of(
                 Claims.EXPIRATION, new Date(System.currentTimeMillis() + expirationTime),
-                Claims.SUBJECT, user.getUsername()
+                Claims.SUBJECT, user.getUsername(),
+               "role", user.getRole()
         );
         return Jwts.builder()
                 .setIssuedAt(new Date(System.currentTimeMillis()))

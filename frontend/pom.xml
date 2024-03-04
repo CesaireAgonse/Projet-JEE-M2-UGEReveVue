@@ -35,6 +35,7 @@
                             <arguments>install
                                 axios
                                 prismjs
+                                jwt-decode
                                 markdown-it
                                 vue
                                 vue-router
