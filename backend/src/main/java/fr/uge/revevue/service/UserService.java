@@ -1,8 +1,10 @@
 package fr.uge.revevue.service;
 
+import fr.uge.revevue.entity.Post;
 import fr.uge.revevue.information.SimpleUserInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.entity.User;
+import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,19 +16,22 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
 public class UserService implements UserDetailsService{
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PostRepository postRepository;
 
     @Autowired
     public UserService(UserRepository userRepository,
-                       BCryptPasswordEncoder bCryptPasswordEncoder
-    ){
+                       BCryptPasswordEncoder bCryptPasswordEncoder,
+                       PostRepository postRepository){
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.postRepository = postRepository;
     }
 
     @Transactional
@@ -129,6 +134,13 @@ public class UserService implements UserDetailsService{
             throw new IllegalArgumentException("User not found");
         }
         var user = userOptional.get();
+
+        //supression de tout les posts de l'User
+        Set<Post> userPosts = postRepository.findByUserId(codeId);
+        for (Post post : userPosts) {
+            postRepository.delete(post);
+        }
+
         userRepository.delete(user);
         return UserInformation.from(user);
     }
