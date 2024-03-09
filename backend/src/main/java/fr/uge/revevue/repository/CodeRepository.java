@@ -23,4 +23,6 @@ public interface CodeRepository  extends CrudRepository<Code, Long> {
     List<Code> findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByScoreDesc(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
 
     List<Code> findAllByUserId(long userId);
+
+    long countByUserId(long userId);
 }

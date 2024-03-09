@@ -1,10 +1,8 @@
 package fr.uge.revevue.service;
 
-import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.entity.Review;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.information.*;
-import fr.uge.revevue.repository.CommentRepository;
 import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.ReviewRepository;
 import fr.uge.revevue.repository.UserRepository;
@@ -87,6 +85,12 @@ public class ReviewService {
         }
 
         return reviews;
+    }
+
+    @Transactional
+    public long countReviewsFromUser(UserInformation user){
+        var realUser = userRepository.findByUsername(user.username());
+        return reviewRepository.countByUserId(realUser.get().getId());
     }
 
     @Transactional

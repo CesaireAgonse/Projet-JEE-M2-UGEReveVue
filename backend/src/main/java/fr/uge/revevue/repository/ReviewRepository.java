@@ -15,4 +15,6 @@ public interface ReviewRepository extends CrudRepository<Review,Long> {
     List<Review> findByPostId(Pageable pageable, long postId);
 
     List<Review> findAllByUserId(long userId);
+
+    long countByUserId(long userId);
 }

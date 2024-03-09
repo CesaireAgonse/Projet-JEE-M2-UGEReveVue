@@ -7,6 +7,8 @@ import fr.uge.revevue.entity.User;
 import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -121,6 +123,12 @@ public class UserService implements UserDetailsService{
     @Transactional
     public List<UserInformation> getAllUser(){
         return userRepository.findAll().stream().map(UserInformation::from).toList();
+    }
+
+    @Transactional
+    public List<UserInformation> getSomeUsers(int offset, int limit){
+        Pageable page = PageRequest.of(offset, limit);
+        return userRepository.findAll(page).stream().map(UserInformation::from).toList();
     }
 
     public boolean matchesPassword(String rawPassword, String encodedPassword){

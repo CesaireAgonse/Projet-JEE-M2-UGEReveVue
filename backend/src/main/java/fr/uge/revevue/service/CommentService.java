@@ -3,6 +3,7 @@ package fr.uge.revevue.service;
 import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.information.CommentInformation;
 import fr.uge.revevue.information.CommentPageInformation;
+import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.repository.CommentRepository;
 import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.UserRepository;
@@ -50,5 +51,11 @@ public class CommentService {
         Pageable pageable = PageRequest.of(page, LIMIT_COMMENT_PAGE);
         var comments = commentRepository.findByPostId(pageable, postId).stream().map(CommentInformation::from).toList();
         return new CommentPageInformation(comments, page);
+    }
+
+    @Transactional
+    public long countCommentsFromUser(UserInformation user){
+        var realUser = userRepository.findByUsername(user.username());
+        return commentRepository.countByUserId(realUser.get().getId());
     }
 }

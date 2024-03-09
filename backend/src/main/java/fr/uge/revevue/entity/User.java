@@ -30,7 +30,8 @@ public class User implements UserDetails {
     @OneToOne
     private Role role;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "user_followed",
             joinColumns = @JoinColumn(name = "user_id"),

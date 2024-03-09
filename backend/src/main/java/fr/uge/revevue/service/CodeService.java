@@ -3,18 +3,14 @@ package fr.uge.revevue.service;
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.TestResults;
 import fr.uge.revevue.entity.User;
-import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.CodeInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.repository.CodeRepository;
 import fr.uge.revevue.repository.UserRepository;
-import fr.uge.revevue.repository.PostRepository;
-import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,9 +19,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class CodeService {
@@ -158,6 +152,12 @@ public class CodeService {
         }
 
         return codes;
+    }
+
+    @Transactional
+    public long countCodesFromUser(UserInformation user){
+        var realUser = userRepository.findByUsername(user.username());
+        return codeRepository.countByUserId(realUser.get().getId());
     }
 
     @Transactional

@@ -13,9 +13,10 @@
             <div>
                 <p class="text-title left">Moderation page</p>
             </div>
+            <p class="result left" th:text="${users.size() == 0 ? '0 users WTF !?' : users.size() + ' registered users'} "></p>
         </div>
-        <div th:each="user : ${users}">
-            <div class="container limit home">
+        <div class="container limit home">
+            <div th:each="user : ${users}">
                 <div class="main-info">
                     <h2 class ="title">
                         <a th:href="'/users/' + ${user.username()}" th:text="${user.username()}"></a>
@@ -23,6 +24,10 @@
                     <form name="delete" id="delete" th:data-user-id="${user.id()}">
                         <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
                     </form>
+                    <p class="stats left" th:text="'followed: ' + ${user.followed.size()}"></p>
+                    <p class="stats left" th:text="'codes: ' + ${codesByUser.get(user)}"></p>
+                    <p class="stats left" th:text="'reviews: ' + ${reviewsByUser.get(user)}"></p>
+                    <p class="stats left" th:text="'comments: ' + ${commentsByUser.get(user)}"></p>
                 </div>
                 <!--
                 <h2>Codes : </h2>
@@ -35,6 +40,10 @@
                 </div>
                 -->
             </div>
+            <form th:action="@{/admin}" method="get">
+                <button class="left button other" th:if="${pageNumber} > 0" type="submit" th:name="pageNumber" th:value="${pageNumber-1}">Previous Page</button>
+                <button class="right button other" type="submit" th:name="pageNumber" th:value="${pageNumber+1}">Next Page</button>
+            </form>
         </div>
     </div>
 </body>
