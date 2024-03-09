@@ -7,8 +7,74 @@
         <div class ="author">
             <a th:href="'/users/' + ${comment.userInformation().username()}" th:text="${comment.userInformation().username()}"></a>
         </div>
+        <form th:if="${auth != null && auth.isAdmin()}" name="delete" id="delete"
+              th:data-comment-id="${comment.id()}">
+            <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
+        </form>
         <pre><code th:text="${comment.codeSelection()}"></code></pre>
         <p class="markdown message" th:text="${comment.content()}"></p>
         <p class="date right" th:text="${comment.date()}"></p>
     </div>
+    <script>
+        const commentElement = document.querySelector('.language-java')
+        const commentContent = codeElement.getAttribute('data-code');
+        commentElement.textContent = commentContent;
+
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form');
+                const commentId = form.getAttribute('data-comment-id');
+                console.log("delete id " + commentId);
+                fetch('../api/v1/comments/delete/' + commentId , {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to delete comment');
+                        }
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            return response.json();
+                        } else {
+                            return null;
+                        }
+                    })
+                    .then(data => {
+                        if (data !== null) {
+                            console.log('Comment deleted successfully:', data);
+                        } else {
+                            console.log('Comment deleted successfully, no JSON data returned');
+                        }
+                        showNotification('Comment deleted.');
+                        window.location.reload();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        function showNotification(message, type = 'success') {
+            if (!('Notification' in window)) {
+                console.error('This browser does not support notifications.');
+                return;
+            }
+
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        displayNotification();
+                    }
+                });
+            } else {
+                displayNotification();
+            }
+
+            function displayNotification() {
+                const notification = new Notification('Notification', {
+                    body: message,
+                    icon: ''
+                });
+            }
+        }
+
+    </script>
 </div>

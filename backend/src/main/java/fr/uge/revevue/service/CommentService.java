@@ -3,6 +3,7 @@ package fr.uge.revevue.service;
 import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.information.CommentInformation;
 import fr.uge.revevue.information.CommentPageInformation;
+import fr.uge.revevue.information.ReviewInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.repository.CommentRepository;
 import fr.uge.revevue.repository.PostRepository;
@@ -57,5 +58,15 @@ public class CommentService {
     public long countCommentsFromUser(UserInformation user){
         var realUser = userRepository.findByUsername(user.username());
         return commentRepository.countByUserId(realUser.get().getId());
+    }
+
+    @Transactional
+    public CommentInformation delete (long reviewId){
+        var comment = commentRepository.findById(reviewId);
+        if(comment.isEmpty()){
+            throw new IllegalArgumentException("Comment not found");
+        }
+        commentRepository.delete(comment.get());
+        return CommentInformation.from(comment.get());
     }
 }
