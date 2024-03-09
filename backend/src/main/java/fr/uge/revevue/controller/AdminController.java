@@ -35,15 +35,18 @@ public class AdminController {
         }
         model.addAttribute("auth", SimpleUserInformation.from(user));
 
+        /*
         var codesMap = codeService.getAllCodeFromUsers();
         model.addAttribute("codesMap", codesMap);
         var reviewsMap = reviewService.getAllReviewFromUsers();
         model.addAttribute("reviewsMap", reviewsMap);
+        */
 
-        var usersSet = new HashSet<>();
-        usersSet.addAll(codesMap.keySet());
-        usersSet.addAll(reviewsMap.keySet());
-        model.addAttribute("usersSet", usersSet);
+
+        var usersList = userService.getAllUser();
+        //usersSet.addAll(codesMap.keySet());
+        //usersSet.addAll(reviewsMap.keySet());
+        model.addAttribute("users", usersList);
         return "/admin";
     }
 }
