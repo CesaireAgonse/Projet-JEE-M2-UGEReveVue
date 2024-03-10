@@ -1,9 +1,9 @@
 <div th:fragment="footer" class="footer">
     <link rel="stylesheet" href="/css/style.css"/>
     <form th:action="@{/}" method="get">
-        <input type="hidden" th:name="sortBy" th:value="${sortBy}"/>
-        <input type="hidden" th:name="q" th:value="${q}"/>
-        <button class="left button other" th:if="${pageNumber} > 0" type="submit" th:name="pageNumber" th:value="${pageNumber-1}">Previous Page</button>
-        <button class="right button other" type="submit" th:name="pageNumber" th:value="${pageNumber+1}">Next Page</button>
+        <input type="hidden" th:name="sortBy" th:value="${filter.sortBy}"/>
+        <input type="hidden" th:name="q" th:value="${filter.q}"/>
+        <button class="left button other" th:if="${filter.pageNumber} > 0" type="submit" th:name="pageNumber" th:value="${(filter.pageNumber)-1}">Previous Page</button>
+        <button class="right button other" type="submit" th:name="pageNumber" th:value="${(filter.pageNumber)+1}">Next Page</button>
     </form>
 </div>

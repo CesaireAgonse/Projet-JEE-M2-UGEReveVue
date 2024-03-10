@@ -16,18 +16,18 @@
                     <a th:if="${auth != null}" th:href="'codes/create'" class="button basic right">Post Code</a>
                 </div>
                 <div>
-                    <p class="result left" th:text="${codes.size() == 0 ? '0 result' : codes.size() + ' results'} +
-                    ${sortBy != '' ? ' sorted by ' + sortBy : ''} +
-                    ${auth != null && sortBy == '' ? ' from followed' : ''}"></p>
+                    <p class="result left" th:text="${filter.codes.size() == 0 ? '0 result' : filter.codes.size() + ' results'} +
+                    ${filter.sortBy != '' ? ' sorted by ' + filter.sortBy : ''} +
+                    ${auth != null && filter.sortBy == '' ? ' from followed' : ''}"></p>
                     <form th:action="@{/}" method="get">
                         <button class="right button other order" th:name="sortBy" th:value="relevance">Relevance</button>
                         <button class="right button other order" th:name="sortBy" th:value="newest">Newest</button>
-                        <input type="hidden" th:name="q" th:value="${q}"/>
-                        <input type="hidden" th:name="pageNumber" th:value="${pageNumber}"/>
+                        <input type="hidden" th:name="q" th:value="${filter.q}"/>
+                        <input type="hidden" th:name="pageNumber" th:value="${filter.pageNumber}"/>
                     </form>
                 </div>
             </div>
-            <div th:each="code : ${codes}">
+            <div th:each="code : ${filter.codes}">
                 <div th:replace="codes/codePreview :: codePreview"></div>
             </div>
             <div th:replace="footer :: footer"></div>

@@ -5,12 +5,15 @@ import fr.uge.revevue.entity.TestResults;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.CodeInformation;
+import fr.uge.revevue.information.FilterInformation;
 import fr.uge.revevue.information.UserInformation;
 import fr.uge.revevue.repository.CodeRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +29,7 @@ public class CodeService {
 
     private CodeRepository codeRepository;
     private UserRepository userRepository;
+    private UserService userService;
     private EntityManager em;
     private EntityManagerFactory emf;
     public final static int LIMIT = 10;
@@ -33,11 +37,12 @@ public class CodeService {
     public CodeService(){}
 
     @Autowired
-    public CodeService(CodeRepository codeRepository, UserRepository userRepository, EntityManager em, EntityManagerFactory emf) {
+    public CodeService(CodeRepository codeRepository, UserRepository userRepository, EntityManager em, EntityManagerFactory emf, UserService userService) {
         this.codeRepository = codeRepository;
         this.em = em;
         this.emf = emf;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
     @Transactional
     public void create(long id, String title, String description, MultipartFile javaContent, MultipartFile unitContent) throws IOException {
@@ -129,6 +134,41 @@ public class CodeService {
         }
         return codes;
     }
+
+    @Transactional
+    public FilterInformation filter(String sortBy, String query, Integer pageNumber){
+        var user = userService.currentUser();
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        List<CodeInformation> codes;
+        switch (sortBy != null ? sortBy : "") {
+            // Display all codes by newest
+            case "newest" -> {
+                codes = findWithKeywordByNewest(query, pageNumber, CodeService.LIMIT);
+            }
+            // Display all codes by relevance
+            case "relevance"-> {
+                codes = findWithKeywordByScore(query, pageNumber, CodeService.LIMIT);
+            }
+            default -> {
+                if(user != null) {
+                    // Display codes from follows
+                    codes = getCodeFromFollowed(user, query, pageNumber, CodeService.LIMIT);
+                }
+                else {
+                    // Display all codes
+                    codes = findWithKeyword(query, pageNumber, CodeService.LIMIT);
+                }
+            }
+        }
+        return new FilterInformation(codes, sortBy, query, pageNumber);
+    }
+
+
+
+
+
 
     @Transactional
     public CodeInformation delete (long codeId){

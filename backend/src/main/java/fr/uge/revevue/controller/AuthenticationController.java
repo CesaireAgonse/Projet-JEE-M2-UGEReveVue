@@ -61,9 +61,7 @@ public class AuthenticationController {
         }
         authenticationService.signup(signupForm.getUsername(), signupForm.getPassword());
         var tokens = authenticationService.login(signupForm.getUsername(), signupForm.getPassword());
-        if (tokens != null){
-            cookieService.addAllCookiesFromTokens(tokens, response);
-        }
+        cookieService.addAllCookiesFromTokens(tokens, response);
         return "redirect:/";
     }
 
@@ -92,9 +90,7 @@ public class AuthenticationController {
             return "users/login";
         }
         var tokens = authenticationService.login(loginForm.getUsername(), loginForm.getPassword());
-        if (tokens != null){
-            cookieService.addAllCookiesFromTokens(tokens, response);
-        }
+        cookieService.addAllCookiesFromTokens(tokens, response);
         return "redirect:/";
     }
 

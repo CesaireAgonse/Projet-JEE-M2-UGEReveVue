@@ -73,7 +73,7 @@ public class ReviewController {
         if (result.hasErrors()){
             return "redirect:/reviews/" + reviewId;
         }
-        commentService.postCommented(userService.currentUser().getId(),reviewId,commentForm.getContent(), commentForm.getCodeSelection());
+        commentService.postCommented(userService.currentUser().getId(), reviewId, commentForm.getContent(), commentForm.getCodeSelection());
         return "redirect:/reviews/" + reviewId;
     }
 
@@ -85,7 +85,7 @@ public class ReviewController {
         if (result.hasErrors()){
             return "redirect:/reviews/" + reviewId;
         }
-        reviewService.create(userService.currentUser().getId(),reviewId,reviewForm.getContent());
+        reviewService.create(userService.currentUser().getId(), reviewId, reviewForm.getContent());
         return "redirect:/reviews/" + reviewId;
     }
 }

@@ -25,9 +25,8 @@ import java.util.List;
 
 @Controller
 public class HomeController {
-    private final static int LIMIT = 3;
-    UserService userService;
-    CodeService codeService;
+    private final UserService userService;
+    private final CodeService codeService;
 
     @Autowired
     public HomeController(CodeService codeService, UserService userService){
@@ -37,44 +36,15 @@ public class HomeController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/")
-    public String homePage(@RequestParam(value = "sortBy", required = false, defaultValue = "")String sortBy,
-                           @RequestParam(value = "q", required = false, defaultValue = "")String query,
-                           @RequestParam(value = "pageNumber", required = false)Integer pageNumber,
+    public String homePage(@RequestParam(value = "sortBy", required = false, defaultValue = "") String sortBy,
+                           @RequestParam(value = "q", required = false, defaultValue = "") String query,
+                           @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                            Model model) {
         var user = userService.currentUser();
         if (user != null){
             model.addAttribute("auth", SimpleUserInformation.from(user));
         }
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
-        }
-        List<CodeInformation> codes;
-
-        switch (sortBy != null ? sortBy : "") {
-            // Display all codes by newest
-            case "newest" -> {
-                codes = codeService.findWithKeywordByNewest(query, pageNumber, CodeService.LIMIT);
-            }
-            // Display all codes by relevance
-            case "relevance"-> {
-                codes = codeService.findWithKeywordByScore(query, pageNumber, CodeService.LIMIT);
-            }
-            default -> {
-                if(user != null) {
-                    // Display codes from follows
-                    codes = codeService.getCodeFromFollowed(user, query, pageNumber, CodeService.LIMIT);
-                }
-                else {
-                    // Display all codes
-                    codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
-                }
-            }
-        }
-
-        model.addAttribute("codes", codes);
-        model.addAttribute("sortBy", sortBy);
-        model.addAttribute("q", query);
-        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("filter", codeService.filter(sortBy, query, pageNumber));
         return "home";
     }
 }
