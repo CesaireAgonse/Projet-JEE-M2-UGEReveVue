@@ -29,13 +29,6 @@ public class UserRestController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<Void> delete(@PathVariable("userId") @Valid long userId) {
-        userService.delete(userId);
-        return ResponseEntity.noContent().build();
-    }
-
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/password")
     public ResponseEntity<Void> password(@RequestBody @Valid UpdatePasswordInformation updatePasswordInformation, BindingResult result){
@@ -76,10 +69,10 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/profile")
-    public ResponseEntity<UserInformation> profile(){
-        return ResponseEntity.ok(userService.getInformation(userService.currentUser().getUsername()));
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<Void> delete(@PathVariable("userId") @Valid long userId) {
+        userService.delete(userId);
+        return ResponseEntity.noContent().build();
     }
-
 }
