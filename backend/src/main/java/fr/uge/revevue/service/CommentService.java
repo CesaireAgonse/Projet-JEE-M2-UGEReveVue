@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -68,5 +69,15 @@ public class CommentService {
         }
         commentRepository.delete(comment.get());
         return CommentInformation.from(comment.get());
+    }
+
+    @Transactional
+    public List<CommentInformation> getAllCommentsFromUserId(long userId){
+        List<CommentInformation> comments = new ArrayList<>();
+        var commentsFromUser = commentRepository.findAllByUserId(userId);
+        for (var comment : commentsFromUser){
+            comments.add(CommentInformation.from(comment));
+        }
+        return comments;
     }
 }

@@ -46,17 +46,8 @@ public class AdminController {
             pageNumber = 0;
         }
         model.addAttribute("pageNumber", pageNumber);
-        /*
-        var codesMap = codeService.getAllCodeFromUsers();
-        model.addAttribute("codesMap", codesMap);
-        var reviewsMap = reviewService.getAllReviewFromUsers();
-        model.addAttribute("reviewsMap", reviewsMap);
-        */
-
 
         var usersList = userService.getSomeUsers(pageNumber, LIMIT);
-        //usersSet.addAll(codesMap.keySet());
-        //usersSet.addAll(reviewsMap.keySet());
         model.addAttribute("users", usersList);
 
         var codesByUser = new HashMap<UserInformation, Long>();

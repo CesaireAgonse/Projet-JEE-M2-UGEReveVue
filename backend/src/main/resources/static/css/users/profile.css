@@ -20,3 +20,16 @@
     margin-bottom: 5px;
     color: #555;
 }
+
+.stats-profil {
+    text-align: justify;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+
+.stats-profil-item {
+    text-align: center;
+    display : inline-block;
+    margin: 0 10px;
+}
