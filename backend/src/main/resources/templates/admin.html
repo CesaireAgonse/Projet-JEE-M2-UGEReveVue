@@ -32,7 +32,7 @@
             </div>
             <form th:action="@{/admin}" method="get">
                 <button class="left button other" th:if="${pageNumber} > 0" type="submit" th:name="pageNumber" th:value="${pageNumber-1}">Previous Page</button>
-                <button class="right button other" type="submit" th:name="pageNumber" th:value="${pageNumber+1}">Next Page</button>
+                <button class="right button other" th:if="${pageNumber} < ${maxPageNumber}" type="submit" th:name="pageNumber" th:value="${pageNumber+1}">Next Page</button>
             </form>
         </div>
     </div>

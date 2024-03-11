@@ -47,8 +47,11 @@ public class AdminController {
         }
         model.addAttribute("pageNumber", pageNumber);
 
-        var usersList = userService.getSomeUsers(pageNumber, LIMIT);
+        var userInfoPage = userService.getSomeUsersForAdminPage(pageNumber, LIMIT);
+        var usersList = userInfoPage.users();
+        var maxPageNumber = userInfoPage.maxPageNumber();
         model.addAttribute("users", usersList);
+        model.addAttribute("maxPageNumber", maxPageNumber);
 
         var codesByUser = new HashMap<UserInformation, Long>();
         var reviewsByUser = new HashMap<UserInformation, Long>();
