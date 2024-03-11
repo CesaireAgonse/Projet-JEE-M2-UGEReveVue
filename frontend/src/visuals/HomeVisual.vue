@@ -100,7 +100,8 @@ export default {
       showDropdown: false,
       query: '',
       sortBy: '',
-      pageNumber: 0
+      pageNumber: 0,
+      scroll:'hidden'
     };
   },
   methods: {
@@ -111,6 +112,7 @@ export default {
       this.listCode = 'translate(-50%, -300px)'
       this.createButton = 'translate(38%, 75%)'
       this.imageUp = false;
+      document.body.style.overflowY = "auto"
     },
     scrollImageUp() {
       if (this.imageTransform === 'translateY(-92%)') {
@@ -120,6 +122,7 @@ export default {
         this.listCode = 'translate(-50%, 650px)'
         this.createButton = 'translate(-175%, 3000%)'
         this.imageUp = true;
+        document.body.style.overflowY = "hidden"
       } else {
         this.scrollDown()
       }
@@ -298,7 +301,8 @@ input::placeholder {
 }
 
 body {
-  background-color: #282828;
+  overflow: hidden;
+  background-color: #333333;
 }
 
 .chevron-down{
@@ -349,18 +353,4 @@ body {
   border-bottom: none;
 }
 
-.post-create-code {
-  background-color: #282828;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
-  padding: 20px;
-  margin-bottom: 20px;
-  max-width: calc(33.3333% - 40px); /* 1/3 de la largeur de l'écran moins la marge et le padding */
-  position: absolute;
-  top: calc(50% + 20px); /* Positionnez-le au milieu de la barre de recherche */
-  left: 50%;
-  transform: translate(-50%, 550%);
-  transition: all 1s ease;
-  width: 50%;
-}
 </style>

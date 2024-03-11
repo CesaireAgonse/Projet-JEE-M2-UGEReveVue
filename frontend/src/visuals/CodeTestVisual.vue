@@ -71,6 +71,9 @@ export default {
   text-align: left;
   padding-left: 50px;
 }
+pre {
+  max-height: 800px;
+}
 
 
 </style>

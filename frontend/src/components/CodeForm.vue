@@ -55,7 +55,9 @@ export default {
       formData.append('title', this.title);
       formData.append('description', this.description);
       formData.append('javaFile', javaFile);
-      formData.append('unitFile', unitFile);
+      if (unitFile != null){
+        formData.append('unitFile', unitFile);
+      }
       codeService.create(formData).then(() => {
         this.hideCodeModal();
       });

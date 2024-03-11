@@ -1,6 +1,5 @@
 <template>
   <div class="post">
-
       <div class="post-header">
         <div class="post-header-info" @click="user()">
           <img class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
@@ -190,6 +189,10 @@ export default {
 .fa-comment {
   font-size: 20px;
   margin-right: 5px;
+}
+
+pre {
+  max-height: 800px;
 }
 
 </style>
