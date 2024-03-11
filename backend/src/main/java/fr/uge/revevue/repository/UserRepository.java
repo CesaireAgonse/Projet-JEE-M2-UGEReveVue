@@ -24,6 +24,9 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Query("SELECT u.followed FROM User u WHERE u.id= :userId AND u NOT IN :users")
     List<User> findFollowedByIdFilterUsers(long userId, List<User> users);
+    
+    @Query("SELECT u FROM User u WHERE u NOT IN :users")
+    List<User> findUserFilterUsers(List<User> users);
 
     boolean existsByUsername(String username);
 

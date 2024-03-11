@@ -12,8 +12,6 @@ import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -102,8 +100,14 @@ public class CodeService {
         query.setParameter("username", user.getUsername());
         query.setFirstResult(offset);
         query.setMaxResults(limit);
-        List<CodeInformation> codes = query.getResultList().stream().map(CodeInformation::from).toList();
-        return codes;
+        return query.getResultList().stream().map(CodeInformation::from).toList();
+    }
+    
+    ArrayDeque<User> addNonFollowToQueueFollow(ArrayDeque<User> queueFollow, List<User> usersAlreadySeen) {
+        System.out.println("Pas de follow");
+        var nonFollowers = userRepository.findUserFilterUsers(usersAlreadySeen);
+        queueFollow.addAll(nonFollowers);
+        return queueFollow;
     }
 
     @Transactional
@@ -114,9 +118,18 @@ public class CodeService {
         var queueFollow = new ArrayDeque<>(followed);
         var totalCodesAlreadyDisplayed = offset * limit;
         var codesCurrentPageDisplayed = 0;
+        var foundAllFollows = false;
+        if(queueFollow.isEmpty()) {
+            queueFollow = addNonFollowToQueueFollow(queueFollow, usersAlreadySeen);
+            foundAllFollows = true;
+        }
         while(!queueFollow.isEmpty() && codesCurrentPageDisplayed < limit) {
             var follow = queueFollow.pollFirst();
             queueFollow.addAll(userRepository.findFollowedByIdFilterUsers(follow.getId(), usersAlreadySeen));
+            if(queueFollow.isEmpty() && !foundAllFollows) {
+                queueFollow = addNonFollowToQueueFollow(queueFollow, usersAlreadySeen);
+                foundAllFollows = true;
+            }
             if (!usersAlreadySeen.contains(follow)) {
                 var nbCodesFollow = codeRepository.countByUserIdAndTitleContainingIgnoreCaseOrUserIdAndDescriptionContainingIgnoreCaseOrUserIdAndUserUsernameContainingIgnoreCase(follow.getId(), keyword, follow.getId(), keyword, follow.getId(), keyword);
                 if (totalCodesAlreadyDisplayed >= nbCodesFollow) {
@@ -142,6 +155,11 @@ public class CodeService {
             pageNumber = 0;
         }
         List<CodeInformation> codes;
+        var count = codeRepository.countByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(query, query, query);
+        int maxPageNumber = (count - 1) / CodeService.LIMIT;
+        System.out.println("count = " + count);
+        System.out.println("CodeService.LIMIT = " + CodeService.LIMIT);
+        System.out.println("MAX PAGE = " + maxPageNumber);
         switch (sortBy != null ? sortBy : "") {
             // Display all codes by newest
             case "newest" -> {
@@ -162,13 +180,8 @@ public class CodeService {
                 }
             }
         }
-        return new FilterInformation(codes, sortBy, query, pageNumber);
+        return new FilterInformation(codes, sortBy, query, pageNumber, maxPageNumber);
     }
-
-
-
-
-
 
     @Transactional
     public CodeInformation delete (long codeId){

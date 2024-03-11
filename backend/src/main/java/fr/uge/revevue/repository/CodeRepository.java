@@ -11,17 +11,16 @@ import java.util.List;
 
 @Repository
 public interface CodeRepository  extends CrudRepository<Code, Long> {
-
-    List<Code> findAll(Pageable pageable);
-
     List<Code> findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCase(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
     
     List<Code> findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByDateDesc(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
     
+    List<Code> findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByScoreDesc(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
+    
     int countByUserIdAndTitleContainingIgnoreCaseOrUserIdAndDescriptionContainingIgnoreCaseOrUserIdAndUserUsernameContainingIgnoreCase(long userIdTitle, String titleKeyword, long userIdDescription, String descriptionKeyword, long userIdUsername, String userUsernameKeyword);
     
-    List<Code> findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByScoreDesc(Pageable pageable, String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
-
+    int countByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
+    
     List<Code> findAllByUserId(long userId);
 
     long countByUserId(long userId);
