@@ -12,7 +12,12 @@
             <div class="container limit profile-header">
                 <h1 class="username" th:text="${user.username()}"></h1>
                 <p th:if="${user.isAdmin()}" th:text="'is admin :^)'"></p>
-                <p th:text="${user.followed().size()} + ' followed'"></p>
+                <div class="stats-profil">
+                    <p class="stats-profil-item" th:text="${user.followed().size()} + ' followed'"></p>
+                    <p class="stats-profil-item" th:text="${codesFromUser.size()} + ' codes'"></p>
+                    <p class="stats-profil-item" th:text="${reviewsFromUser.size()} + ' reviews'"></p>
+                    <p class="stats-profil-item" th:text="${commentsFromUser.size()} + ' comments'"></p>
+                </div>
                 <a th:if="${auth != null && user.username().equals(auth.username())}" href="/password" class="button basic">Change Your Password</a>
                 <form th:if="${auth != null && !user.username().equals(auth.username()) && !auth.allFollowedName().contains(user.username())}"
                       th:action="@{/users/follow/{username}(username=${user.username()})}" th:method="post">
@@ -31,6 +36,24 @@
                         <a th:href="${followed.username()}" th:text="${followed.username()}"/>
                     </li>
                 </ul>
+            </div>
+            <div class="container limit">
+                <h2 class="content-title" >Codes:</h2>
+                <div th:each="code : ${codesFromUser}">
+                    <div th:replace="codes/codePreview :: codePreview"></div>
+                </div>
+            </div>
+            <div class="container limit">
+                <h2 class="content-title" >Reviews:</h2>
+                <div th:each="review : ${reviewsFromUser}">
+                    <div th:replace="reviews/reviewPreview :: reviewPreview"></div>
+                </div>
+            </div>
+            <div class="container limit">
+                <h2 class="content-title" >Comments:</h2>
+                <div th:each="comment : ${commentsFromUser}">
+                    <div th:replace="comments/commentPreview :: commentPreview"></div>
+                </div>
             </div>
         </div>
     </body>

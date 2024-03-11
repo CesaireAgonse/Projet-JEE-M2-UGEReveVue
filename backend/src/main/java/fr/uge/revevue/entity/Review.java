@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "Reviews")
 public class Review extends Post{
 
-    @ManyToOne(fetch= FetchType.LAZY)
+    @ManyToOne(fetch= FetchType.EAGER)
     private Post post;
 
     @NotBlank

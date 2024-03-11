@@ -29,16 +29,6 @@
                     <p class="stats left" th:text="'reviews: ' + ${reviewsByUser.get(user)}"></p>
                     <p class="stats left" th:text="'comments: ' + ${commentsByUser.get(user)}"></p>
                 </div>
-                <!--
-                <h2>Codes : </h2>
-                <div th:each="code : ${codesMap.get(user)}">
-                    <div th:replace="codes/codePreview :: codePreview">
-                </div>
-                <h2>Reviews : </h2>
-                <div th:each="review : ${reviewsMap.get(user)}">
-                    <div th:replace="reviews/reviewPreview :: reviewPreview">
-                </div>
-                -->
             </div>
             <form th:action="@{/admin}" method="get">
                 <button class="left button other" th:if="${pageNumber} > 0" type="submit" th:name="pageNumber" th:value="${pageNumber-1}">Previous Page</button>

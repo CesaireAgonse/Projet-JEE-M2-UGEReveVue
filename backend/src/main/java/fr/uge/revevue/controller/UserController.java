@@ -2,6 +2,9 @@ package fr.uge.revevue.controller;
 
 import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.information.SimpleUserInformation;
+import fr.uge.revevue.service.CodeService;
+import fr.uge.revevue.service.CommentService;
+import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +18,16 @@ import javax.validation.Valid;
 @Controller
 public class UserController {
     private final UserService userService;
+    private final CodeService codeService;
+    private final ReviewService reviewService;
+    private final CommentService commentService;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, CodeService codeService, ReviewService reviewService, CommentService commentService){
         this.userService = userService;
+        this.codeService = codeService;
+        this.reviewService = reviewService;
+        this.commentService = commentService;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -64,6 +73,13 @@ public class UserController {
             model.addAttribute("auth", userService.getInformation(user.getUsername()));
         }
         model.addAttribute("user", userInformation);
+
+        var codesFromUser = codeService.getAllCodesFromUserId(userInformation.id());
+        var reviewsFromUser = reviewService.getAllReviewsFromUserId(userInformation.id());
+        var commentsFromUser = commentService.getAllCommentsFromUserId(userInformation.id());
+        model.addAttribute("codesFromUser", codesFromUser);
+        model.addAttribute("reviewsFromUser", reviewsFromUser);
+        model.addAttribute("commentsFromUser", commentsFromUser);
         return "users/profile";
     }
 

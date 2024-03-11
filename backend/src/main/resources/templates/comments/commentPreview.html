@@ -1,0 +1,6 @@
+<div th:fragment="commentPreview" class="container limit home">
+    <a class ="title" th:if="${comment.postIsCode() == true}" th:href="'/codes/' + ${comment.idPost()}"> from this code</a>
+    <a class ="title" th:unless="${comment.postIsCode() == true}" th:href="'/reviews/' + ${comment.idPost()}"> from this review</a>
+    <p class ="description" th:text="${comment.content()}"></p>
+    <p class="date right" th:text="${comment.date()}"></p>
+</div>

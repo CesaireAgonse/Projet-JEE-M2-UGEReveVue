@@ -181,16 +181,12 @@ public class CodeService {
     }
 
     @Transactional
-    public List<CodeInformation> getAllCodeFromUser(User user){
-        //Objects.requireNonNull(user);
+    public List<CodeInformation> getAllCodesFromUserId(long userId){
         List<CodeInformation> codes = new ArrayList<>();
-        var realUser = userRepository.findByUsername(user.getUsername());
-        var codesFromUser = codeRepository.findAllByUserId(realUser.get().getId());
-
+        var codesFromUser = codeRepository.findAllByUserId(userId);
         for (var code : codesFromUser){
             codes.add(CodeInformation.from(code));
         }
-
         return codes;
     }
 
@@ -200,15 +196,4 @@ public class CodeService {
         return codeRepository.countByUserId(realUser.get().getId());
     }
 
-    @Transactional
-    public HashMap<UserInformation, List<CodeInformation>> getAllCodeFromUsers(){
-
-        var users = userRepository.findAll().stream().toList();
-        var usersMap = new HashMap<UserInformation, List<CodeInformation>>();
-        for (var user : users){
-            var codesFromUser = this.getAllCodeFromUser(user);
-            usersMap.put(UserInformation.from(user), codesFromUser);
-        }
-        return usersMap;
-    }
 }

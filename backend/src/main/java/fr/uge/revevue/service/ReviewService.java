@@ -74,16 +74,12 @@ public class ReviewService {
     }
 
     @Transactional
-    public List<ReviewInformation> getAllReviewFromUser(User user){
-        //Objects.requireNonNull(user);
+    public List<ReviewInformation> getAllReviewsFromUserId(long userId){
         List<ReviewInformation> reviews = new ArrayList<>();
-        var realUser = userRepository.findByUsername(user.getUsername());
-        var reviewsFromUser = reviewRepository.findAllByUserId(realUser.get().getId());
-
+        var reviewsFromUser = reviewRepository.findAllByUserId(userId);
         for (var review : reviewsFromUser){
             reviews.add(ReviewInformation.from(review));
         }
-
         return reviews;
     }
 
@@ -93,15 +89,4 @@ public class ReviewService {
         return reviewRepository.countByUserId(realUser.get().getId());
     }
 
-    @Transactional
-    public HashMap<UserInformation, List<ReviewInformation>> getAllReviewFromUsers(){
-
-        var users = userRepository.findAll().stream().toList();
-        var usersMap = new HashMap<UserInformation, List<ReviewInformation>>();
-        for (var user : users){
-            var reviewsFromUser = this.getAllReviewFromUser(user);
-            usersMap.put(UserInformation.from(user), reviewsFromUser);
-        }
-        return usersMap;
-    }
 }
