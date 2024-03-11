@@ -1,7 +1,7 @@
  <template>
   <CodeForm v-if="isCodeModalVisible" @close-modal="hideCodeModal" @refresh-filter="filter" :isCodeModalVisible="isCodeModalVisible"></CodeForm>
   <LoginForm v-if="isLoginModalVisible" @close-modal="hideLoginModal" :isLoginModalVisible="isLoginModalVisible" @connect="connect"/>
-  <SignupForm v-if="isSignupModalVisible" @close-modal="hideSignupModal" :isSignupModalVisible="isSignupModalVisible" />
+  <SignupForm v-if="isSignupModalVisible" @close-modal="hideSignupModal" :isSignupModalVisible="isSignupModalVisible" @connect="connect"/>
   <HomeVisual @show-login-modal="showLoginModal" :isLoginModalVisible="isLoginModalVisible"
             @show-signup-modal="showSignupModal" :isSignupModalVisible="isSignupModalVisible"
             @show-code-modal="showCodeModal" :isCodeModalVisible="isCodeModalVisible"
@@ -9,7 +9,7 @@
               @query="handleQuery"
               @sortBy="handleSortBy"
               @pageNumber="handlePageNumber"
-            :isLogged="isLogged" :posts="posts"/>
+            :isLogged="isLogged" :posts="posts" :totalPage="totalPage" :sortBy="sortBy" :search="q"/>
 </template>
 
 <script>
@@ -40,7 +40,8 @@ export default {
       posts:null,
       sortBy:"",
       q:"",
-      pageNumber:0
+      pageNumber:0,
+      totalPage:0
     };
   },
   methods: {
@@ -50,6 +51,7 @@ export default {
         this.sortBy = res.data.sortBy
         this.q = res.data.q
         this.pageNumber = res.data.pageNumber
+        this.totalPage = res.data.maxPageNumber
       })
     },
     connect(){

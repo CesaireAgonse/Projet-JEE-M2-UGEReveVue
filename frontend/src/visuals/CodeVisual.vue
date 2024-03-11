@@ -27,9 +27,9 @@
           <i class="fa-regular fa-thumbs-down fa-beat" style="color: #f44e4e"></i>
         </button>
       </div>
-      <button class="post-button" @click="del">
-        <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
-      </button>
+        <button v-if="auth !== null && auth.role === 'ADMIN'" class="post-button" @click="del">
+          <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
+        </button>
       <div  class="post-votes">
         <button class="post-button">
           <i class="fa-regular fa-comment fa-bounce" style="color: #74C0FC"></i>
@@ -55,6 +55,7 @@ import router from "@/router";
 import Prism from 'prismjs';
 import "prismjs/themes/prism-tomorrow.css"
 import 'prismjs/components/prism-java'
+import {authenticationService} from "@/services/authentication.service";
 
 library.add(fas, far, fab)
 dom.watch();
@@ -68,19 +69,24 @@ export default {
   },
   data() {
     return {
-      score:this.post.score,
+      auth: authenticationService.getAuth(),
+      score:this.post.score
     }
   },
   methods: {
     like() {
-      postService.vote(this.post.id, "UpVote").then(res => {
-        this.score=res.data
-      })
+      if (this.auth != null){
+        postService.vote(this.post.id, "UpVote").then(res => {
+          this.score=res.data
+        })
+      }
     },
     dislike() {
-      postService.vote(this.post.id, "DownVote").then(res => {
-        this.score=res.data
-      })
+      if (this.auth != null) {
+        postService.vote(this.post.id, "DownVote").then(res => {
+          this.score = res.data
+        })
+      }
     },
     code(){
       router.push('/codes/' + this.post.id)
@@ -103,6 +109,7 @@ export default {
   },
   mounted(){
     this.highlightCode();
+    console.log(this.auth)
   }
 }
 </script>

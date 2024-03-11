@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends CrudRepository<Comment,Long> {
 
-    List<Comment> findByPostId(Pageable pageable, long postId);
+    List<Comment> findByPostIdOrderByDateDesc(Pageable pageable, long postId);
 
     long countByUserId(long userId);
 

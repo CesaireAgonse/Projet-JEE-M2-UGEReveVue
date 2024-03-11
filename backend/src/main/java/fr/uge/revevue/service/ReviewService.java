@@ -59,7 +59,7 @@ public class ReviewService {
             page = 0;
         }
         Pageable pageable = PageRequest.of(page, LIMIT_REVIEW_PAGE);
-        var reviews = reviewRepository.findByPostId(pageable, postId).stream().map(ReviewInformation::from).toList();
+        var reviews = reviewRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(ReviewInformation::from).toList();
         return new ReviewPageInformation(reviews, page);
     }
 

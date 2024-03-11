@@ -22,11 +22,13 @@
               <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
-        <pre v-if="selectedCode !== ''" class="select-code"><code class="language-java">{{ selectedCode }}</code></pre>
-        <div class="row">
-          <textarea v-model="contentTextarea" placeholder="Entrez votre texte ici"></textarea>
-          <div class="send-button" @click="comment()">
-            <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
+        <div v-if="auth != null">
+          <pre v-if="selectedCode !== ''" class="select-code"><code class="language-java">{{ selectedCode }}</code></pre>
+          <div class="row">
+            <textarea v-model="contentTextarea" placeholder="Entrez votre texte ici"></textarea>
+            <div class="send-button" @click="comment()">
+              <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -44,10 +46,12 @@
             <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
-      <div class="row">
-        <textarea v-model="reviewTextarea" placeholder="Entrez votre texte ici"></textarea>
-        <div class="send-button" @click="review()">
-          <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
+      <div v-if="auth != null">
+        <div class="row">
+          <textarea v-model="reviewTextarea" placeholder="Entrez votre texte ici"></textarea>
+          <div class="send-button" @click="review()">
+            <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
+          </div>
         </div>
       </div>
     </div>
@@ -69,6 +73,7 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 import Prism from 'prismjs';
 import "prismjs/themes/prism-tomorrow.css"
 import 'prismjs/components/prism-java'
+import {authenticationService} from "@/services/authentication.service";
 library.add(fas, far, fab)
 dom.watch();
 
@@ -89,7 +94,8 @@ export default {
       commentsPage:null,
       pageNumber:0,
       reviewsPage:null,
-      pageReviewNumber:0
+      pageReviewNumber:0,
+      auth: authenticationService.getAuth()
     }
   },
   methods : {

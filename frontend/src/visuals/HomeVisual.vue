@@ -37,15 +37,19 @@
       </div>
     </transition>
     <div class="code-visual" :style="{ transform: listCode }">
+      <h1 v-if="search !== ''" class="result">Resultats pour '{{ search }}'</h1>
+      <h1 v-if="search === ''" class="result">Resultats pour tous les codes</h1>
       <div class="header-button">
-        <button class="basic-button" @click="showCodeModal">Poster un code</button>
-        <button class="basic-button" @click="newest">Les plus récents</button>
-        <button class="basic-button" @click="relevance">Les mieux notés</button>
+        <button v-if="isLogged" class="basic-button" @click="showCodeModal">Poster un code</button>
+        <button v-if="sortBy !== 'newest'" class="basic-button" @click="newest">Les plus récents</button>
+        <button v-if="sortBy === 'newest'" class="select-button" @click="newest">Les plus récents</button>
+        <button v-if="sortBy !== 'relevance'" class="basic-button" @click="relevance">Les mieux notés</button>
+        <button v-if="sortBy === 'relevance'" class="select-button" @click="relevance">Les mieux notés</button>
       </div>
-      <div v-for="post in posts" :key="post"><CodeVisual  :post="post"/></div>
+      <div v-for="post in posts" :key="post"><CodeVisual :post="post"/></div>
       <div class="footer-button">
         <button v-if="pageNumber > 0" class="basic-button" @click="prev">Page précédente</button>
-        <button class="basic-button" @click="next">Page suivante</button>
+        <button v-if="pageNumber < totalPage" class="basic-button" @click="next">Page suivante</button>
       </div>
     </div>
   </div>
@@ -84,6 +88,12 @@ export default {
       type:Boolean
     },
     posts:{
+      type:Object
+    },
+    totalPage:{
+      type:Object
+    },
+    search:{
       type:Object
     }
   },
@@ -190,7 +200,6 @@ input::placeholder {
   color: #ccc;
 }
 
-
 .image-container {
   overflow: hidden;
   position: relative;
@@ -230,14 +239,14 @@ input::placeholder {
 .header-button {
   float: left;
   position: fixed;
-  margin-top: -50px;
+  margin-top: -30px;
 }
 
 .footer-button {
   float: left;
   position: fixed;
+  padding-bottom: 30px;
 }
-
 
 .search-bar {
   position: absolute;
@@ -353,4 +362,26 @@ body {
   border-bottom: none;
 }
 
+.select-button{
+  border: 1px solid #fff;
+  background-color: #fff;
+  color: black;
+  padding: 8px 12px;
+  border-radius: 20px;
+  margin-left: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+/*
+.select-button:hover {
+  color: #fff;
+  background-color: transparent;
+}
+*/
+.result{
+  float: left;
+  position: fixed;
+  margin-top: -75px;
+}
 </style>

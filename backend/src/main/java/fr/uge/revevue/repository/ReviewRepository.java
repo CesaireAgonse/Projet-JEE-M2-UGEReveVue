@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends CrudRepository<Review,Long> {
 
-    List<Review> findByPostId(Pageable pageable, long postId);
+    List<Review> findByPostIdOrderByDateDesc(Pageable pageable, long postId);
 
     List<Review> findAllByUserId(long userId);
 

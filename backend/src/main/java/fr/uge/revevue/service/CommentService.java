@@ -51,7 +51,7 @@ public class CommentService {
             page = 0;
         }
         Pageable pageable = PageRequest.of(page, LIMIT_COMMENT_PAGE);
-        var comments = commentRepository.findByPostId(pageable, postId).stream().map(CommentInformation::from).toList();
+        var comments = commentRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(CommentInformation::from).toList();
         return new CommentPageInformation(comments, page);
     }
 
