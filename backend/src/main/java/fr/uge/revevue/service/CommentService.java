@@ -51,9 +51,11 @@ public class CommentService {
         if (page < 0){
             page = 0;
         }
+        var count = commentRepository.countByPostId(postId);
+        int maxPageNumber = (int) ((count - 1) / LIMIT_COMMENT_PAGE);
         Pageable pageable = PageRequest.of(page, LIMIT_COMMENT_PAGE);
         var comments = commentRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(CommentInformation::from).toList();
-        return new CommentPageInformation(comments, page, 0);
+        return new CommentPageInformation(comments, page, maxPageNumber);
     }
 
     @Transactional

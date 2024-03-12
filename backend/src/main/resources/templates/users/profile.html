@@ -79,7 +79,7 @@
                     <input type="hidden" name="codePageNumber" th:value="${pagingInfo.codePageNumber}" />
                     <input type="hidden" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber}" />
                     <input type="hidden" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber}" />
-                    <button class="left button other" th:if="${commentsFromUser.pageNumber() > 0}" type="submit" name="pagingInfo.commentPageNumber" th:value="${pagingInfo.commentPageNumber - 1}">Previous Page</button>
+                    <button class="left button other" th:if="${commentsFromUser.pageNumber() > 0}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber - 1}">Previous Page</button>
                     <button class="right button other" th:if="${commentsFromUser.pageNumber() < commentsFromUser.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber + 1}">Next Page</button>
                 </form>
             </div>

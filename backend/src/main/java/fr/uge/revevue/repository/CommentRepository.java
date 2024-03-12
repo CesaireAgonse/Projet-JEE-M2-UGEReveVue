@@ -14,7 +14,9 @@ public interface CommentRepository extends CrudRepository<Comment,Long> {
 
     long countByUserId(long userId);
 
-    List<Comment> findAllByUserId(long usserId);
+    long countByPostId(long postId);
 
-    List<Comment> findAllByUserId(long usserId, Pageable page);
+    List<Comment> findAllByUserId(long userId);
+
+    List<Comment> findAllByUserId(long userId, Pageable page);
 }

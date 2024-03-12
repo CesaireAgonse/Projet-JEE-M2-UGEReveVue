@@ -60,9 +60,11 @@ public class ReviewService {
         if (page < 0){
             page = 0;
         }
+        var count = reviewRepository.countByPostId(postId);
+        int maxPageNumber = (int) ((count - 1) / LIMIT_REVIEW_PAGE);
         Pageable pageable = PageRequest.of(page, LIMIT_REVIEW_PAGE);
         var reviews = reviewRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(ReviewInformation::from).toList();
-        return new ReviewPageInformation(reviews, page, 0);
+        return new ReviewPageInformation(reviews, page, maxPageNumber);
     }
 
     @Transactional
