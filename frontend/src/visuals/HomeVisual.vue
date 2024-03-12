@@ -40,13 +40,14 @@
       <h1 v-if="search !== ''" class="result">Resultats pour '{{ search }}'</h1>
       <h1 v-if="search === ''" class="result">Resultats pour tous les codes</h1>
       <div class="header-button">
-        <button v-if="isLogged" class="basic-button" @click="showCodeModal">Poster un code</button>
-        <button v-if="sortBy !== 'newest'" class="basic-button" @click="newest">Les plus récents</button>
-        <button v-if="sortBy === 'newest'" class="select-button" @click="newest">Les plus récents</button>
-        <button v-if="sortBy !== 'relevance'" class="basic-button" @click="relevance">Les mieux notés</button>
-        <button v-if="sortBy === 'relevance'" class="select-button" @click="relevance">Les mieux notés</button>
+        <button v-if="isLogged" class="special-button left" @click="showCodeModal"><i class="fas fa-plus fa-flip"></i> Ajouter un code</button>
+        <button v-if="sortBy !== 'newest'" class="basic-button right" @click="newest">Les plus récents</button>
+        <button v-if="sortBy === 'newest'" class="select-button right" @click="newest">Les plus récents</button>
+        <button v-if="sortBy !== 'relevance'" class="basic-button right" @click="relevance">Les mieux notés</button>
+        <button v-if="sortBy === 'relevance'" class="select-button right" @click="relevance">Les mieux notés</button>
       </div>
-      <div v-for="post in posts" :key="post"><CodeVisual :post="post"/></div>
+      <div style="padding: 10px"></div>
+      <div v-for="post in posts" :key="post"><CodeVisual :post="post" @refresh="refresh"/></div>
       <div class="footer-button">
         <button v-if="pageNumber > 0" class="basic-button" @click="prev">Page précédente</button>
         <button v-if="pageNumber < totalPage" class="basic-button" @click="next">Page suivante</button>
@@ -189,6 +190,9 @@ export default {
     next(){
       this.pageNumber += 1
       this.$emit('pageNumber', this.pageNumber);
+    },
+    refresh(){
+      this.$emit('refresh')
     }
   }
 };
@@ -305,6 +309,10 @@ input::placeholder {
   background-color: #fff;
 }
 
+.basic-button{
+  margin-top: 14px;
+}
+
 .slide-up{
   background: #333333;
 }
@@ -370,7 +378,7 @@ body {
   border-radius: 20px;
   margin-left: 20px;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 14px;
   margin-right: 10px;
 }
 /*
@@ -384,4 +392,31 @@ body {
   position: fixed;
   margin-top: -75px;
 }
+
+.special-button {
+  background-color: transparent;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 5%; /* Utilise un border-radius pour donner une forme circulaire */
+  margin-left: 20px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-right: 10px;
+  font-size: 20px; /* Ajuste la taille de la police */
+  border: 1px solid #fff;
+}
+
+.special-button:hover {
+  color: black;
+  background-color: #fff; /* Changement de couleur au survol */
+}
+
+.left{
+  float: left;
+}
+.right{
+  float: left;
+}
+
+
 </style>

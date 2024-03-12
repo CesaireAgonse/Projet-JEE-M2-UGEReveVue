@@ -33,7 +33,7 @@
         </button>
         <p style="padding-right: 7px">{{post.comments.length }}</p>
         <button class="post-button" >
-          <i class="fa-regular fa-pen-to-square fa-2xs" style="color: #74C0FC"></i>
+          <i class="fa-regular fa-pen-to-square fa-2xs fa-bounce" style="color: #74C0FC"></i>
         </button>
         <p>{{post.reviews.length }}</p>
       </div>

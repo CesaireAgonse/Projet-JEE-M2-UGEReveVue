@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1/reviews")
-public class ReviewRestController {
+public class  ReviewRestController {
     private final ReviewService reviewService;
     @Autowired
     public ReviewRestController(ReviewService reviewService) {

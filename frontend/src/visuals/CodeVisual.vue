@@ -19,12 +19,18 @@
 
     <div class="post-footer">
       <div class="post-votes">
-        <button class="post-button" @click="like">
+        <button v-if="auth === null || vote !== 'UpVote'" class="post-button" @click="like">
           <i class="fa-regular fa-thumbs-up fa-beat" style="color: #00ffb3"></i>
         </button>
+        <button v-if="auth !== null && vote === 'UpVote'" class="post-button" @click="like">
+          <i class="fa-solid fa-thumbs-up fa-beat" style="color: #00ffb3"></i>
+        </button>
         <p style="padding-right: 7px">{{ this.score }}</p>
-        <button class="post-button" @click="dislike">
+        <button v-if="auth === null || vote !== 'DownVote'" class="post-button" @click="dislike">
           <i class="fa-regular fa-thumbs-down fa-beat" style="color: #f44e4e"></i>
+        </button>
+        <button v-if="auth !== null && vote === 'DownVote'" class="post-button" @click="dislike">
+          <i class="fa-solid fa-thumbs-down fa-beat" style="color: #f44e4e"></i>
         </button>
       </div>
         <button v-if="auth !== null && auth.role === 'ADMIN'" class="post-button" @click="del">
@@ -36,7 +42,7 @@
         </button>
         <p style="padding-right: 7px">{{post.comments.length }}</p>
         <button class="post-button" >
-          <i class="fa-regular fa-pen-to-square fa-2xs" style="color: #74C0FC"></i>
+          <i class="fa-regular fa-pen-to-square fa-2xs fa-bounce" style="color: #74C0FC"></i>
         </button>
         <p>{{post.reviews.length }}</p>
       </div>
@@ -70,21 +76,23 @@ export default {
   data() {
     return {
       auth: authenticationService.getAuth(),
-      score:this.post.score
+      score:this.post.score,
+      vote:this.post.voteType
+
     }
   },
   methods: {
     like() {
       if (this.auth != null){
-        postService.vote(this.post.id, "UpVote").then(res => {
-          this.score=res.data
+        postService.vote(this.post.id, "UpVote").then(() => {
+          this.$emit("refresh")
         })
       }
     },
     dislike() {
       if (this.auth != null) {
-        postService.vote(this.post.id, "DownVote").then(res => {
-          this.score = res.data
+        postService.vote(this.post.id, "DownVote").then(() => {
+          this.$emit("refresh")
         })
       }
     },
@@ -105,6 +113,7 @@ export default {
     },
     del(){
       codeService.del(this.post.id)
+      this.$emit("refresh")
     }
   },
   mounted(){

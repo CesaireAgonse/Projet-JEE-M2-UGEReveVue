@@ -9,6 +9,7 @@
               @query="handleQuery"
               @sortBy="handleSortBy"
               @pageNumber="handlePageNumber"
+              @refresh="filter"
             :isLogged="isLogged" :posts="posts" :totalPage="totalPage" :sortBy="sortBy" :search="q"/>
 </template>
 
@@ -56,9 +57,11 @@ export default {
     },
     connect(){
       this.isLogged = true;
+      this.filter()
     },
     disconnect(){
       this.isLogged = false;
+      this.filter()
     },
     showLoginModal() {
       this.isLoginModalVisible = true;
