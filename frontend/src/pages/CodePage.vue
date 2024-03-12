@@ -7,7 +7,7 @@
       </i>
     </button>
     <div class="row">
-      <CodeVisual :post="post" v-if="post != null" @code-selected="updateSelectedCode"></CodeVisual>
+      <CodeVisual :post="post" v-if="post != null" @code-selected="updateSelectedCode" @refresh="refresh"></CodeVisual>
       <CodeTestVisual :post="post" v-if="post != null"></CodeTestVisual>
       <div class="comments" v-if="post != null">
         <h2>Commentaires:</h2>
@@ -23,6 +23,7 @@
           </button>
         </div>
         <div v-if="auth != null">
+          <div v-if="selectedCode !== ''" class="basic-button cross-button right" @click="removeSelection"> <i class="fa-solid fa-xmark"></i></div>
           <pre v-if="selectedCode !== ''" class="select-code"><code class="language-java">{{ selectedCode }}</code></pre>
           <div class="row">
             <textarea v-model="contentTextarea" placeholder="Entrez votre texte ici"></textarea>
@@ -36,7 +37,7 @@
     <div class="reviews" v-if="post != null">
       <h2>Reviews:</h2>
       <p v-for="review in reviewsPage" :key="review">
-        <ReviewVisual  :post="review"></ReviewVisual>
+        <ReviewVisual  :post="review" @refresh="refresh"></ReviewVisual>
       </p>
       <div class="row">
         <button v-if="pageReviewNumber > 0" class="basic-button prevButton" @click="reviewsPrev">
@@ -102,7 +103,6 @@ export default {
     code(){
       codeService.get(this.$route.params.id).then(res => {
         this.post = res.data
-        console.log(this.post)
       })
     },
     home(){
@@ -154,6 +154,12 @@ export default {
     },
     updateSelectedCode(code) {
       this.selectedCode = code;
+    },
+    removeSelection(){
+      this.selectedCode = ''
+    },
+    refresh(){
+      this.code()
     }
   }
 }
@@ -192,6 +198,11 @@ export default {
   float:left;
 }
 
+.right {
+  float:right;
+}
+
+
 textarea{
   height: 80px;
   width: 80%;
@@ -209,6 +220,11 @@ textarea{
   border-radius: 10px;
 }
 
+.send-button:hover{
+  background: #707070;
+  color: black;
+}
+
 .prevButton{
   margin-bottom: 10px;
 }
@@ -218,6 +234,10 @@ textarea{
 }
 .select-code{
   font-size: 75%;
+}
+
+.cross-button{
+  max-width: 20px;
 }
 
 </style>

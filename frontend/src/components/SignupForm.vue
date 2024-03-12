@@ -121,7 +121,7 @@ input {
 
 button {
   padding: 10px 20px;
-  margin: 0px 35% 10px;
+  margin: 10px 35% 10px;
   background-color: rgba(255, 255, 255, 0.2);;
   color: #fff;
   border: 1px solid #fff;
