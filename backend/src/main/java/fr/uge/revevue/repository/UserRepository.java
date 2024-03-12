@@ -22,6 +22,12 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query("SELECT u.followed FROM User u WHERE u.id= :userId ")
     List<User> findFollowedById(long userId);
 
+    @Query("SELECT u.followed FROM User u WHERE u.id= :userId ")
+    List<User> findFollowedById(long userId, Pageable page);
+
+    @Query("SELECT u.followed FROM User u WHERE u.id= :userId ")
+    long countFollowedById(long userId);
+
     @Query("SELECT u.followed FROM User u WHERE u.id= :userId AND u NOT IN :users")
     List<User> findFollowedByIdFilterUsers(long userId, List<User> users);
     

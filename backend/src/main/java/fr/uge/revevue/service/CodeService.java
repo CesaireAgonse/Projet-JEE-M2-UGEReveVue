@@ -31,7 +31,7 @@ public class CodeService {
     private UserService userService;
     private EntityManager em;
     private EntityManagerFactory emf;
-    public final static int LIMIT = 2;
+    public final static int LIMIT = 4;
 
     public CodeService(){}
 

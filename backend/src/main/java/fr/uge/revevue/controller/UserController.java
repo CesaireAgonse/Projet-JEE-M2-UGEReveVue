@@ -1,6 +1,7 @@
 package fr.uge.revevue.controller;
 
 import fr.uge.revevue.form.PasswordForm;
+import fr.uge.revevue.information.PagingInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.CommentService;
@@ -64,9 +65,10 @@ public class UserController {
     @PreAuthorize("permitAll()")
     @GetMapping("/users/{username}")
     public String information(@PathVariable String username,
-                              @RequestParam(value = "codePageNumber", required = false)Integer codePageNumber,
-                              @RequestParam(value = "reviewPageNumber", required = false)Integer reviewPageNumber,
-                              @RequestParam(value = "commentPageNumber", required = false)Integer commentPageNumber,
+                              @RequestParam(value = "codePageNumber", required = false) Integer codePageNumber,
+                              @RequestParam(value = "reviewPageNumber", required = false) Integer reviewPageNumber,
+                              @RequestParam(value = "commentPageNumber", required = false) Integer commentPageNumber,
+                              @RequestParam(value = "followedPageNumber", required = false) Integer followedPageNumber,
                               Model model){
         var userInformation = userService.getInformation(username);
         if (userInformation == null){
@@ -78,25 +80,18 @@ public class UserController {
         }
         model.addAttribute("user", userInformation);
 
-        if(codePageNumber == null || codePageNumber < 0) {
-            codePageNumber = 0;
-        }
-        if(reviewPageNumber == null || reviewPageNumber < 0) {
-            reviewPageNumber = 0;
-        }
-        if(commentPageNumber == null || commentPageNumber < 0) {
-            commentPageNumber = 0;
-        }
-        model.addAttribute("codePageNumber", codePageNumber);
-        model.addAttribute("reviewPageNumber", reviewPageNumber);
-        model.addAttribute("commentPageNumber", commentPageNumber);
+        PagingInformation pagingInfo = new PagingInformation(codePageNumber, reviewPageNumber, commentPageNumber, followedPageNumber);
+        pagingInfo = pagingInfo.setDefaultsIfNull();
+        model.addAttribute("pagingInfo", pagingInfo);
 
-        var codesFromUser = codeService.getCodePageFromUserId(userInformation.id(), codePageNumber);
+        var followedsFromUser = userService.getFollowedPageFromUserId(userInformation.id(), pagingInfo.followedPageNumber());
+        var codesFromUser = codeService.getCodePageFromUserId(userInformation.id(), pagingInfo.codePageNumber());
         var codesNumberFromUser = codeService.countCodesFromUser(userInformation);
-        var reviewsFromUser = reviewService.getReviewPageFromUserId(userInformation.id(), reviewPageNumber);
+        var reviewsFromUser = reviewService.getReviewPageFromUserId(userInformation.id(), pagingInfo.reviewPageNumber());
         var reviewsNumberFromUser = reviewService.countReviewsFromUser(userInformation);
-        var commentsFromUser = commentService.getCommentPageFromUserId(userInformation.id(), commentPageNumber);
+        var commentsFromUser = commentService.getCommentPageFromUserId(userInformation.id(), pagingInfo.commentPageNumber());
         var commentsNumberFromUser = commentService.countCommentsFromUser(userInformation);
+        model.addAttribute("followedsFromUser", followedsFromUser);
         model.addAttribute("codesFromUser", codesFromUser);
         model.addAttribute("codesNumberFromUser", codesNumberFromUser);
         model.addAttribute("reviewsFromUser", reviewsFromUser);

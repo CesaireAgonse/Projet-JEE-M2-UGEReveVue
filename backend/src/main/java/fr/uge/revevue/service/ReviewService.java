@@ -19,7 +19,7 @@ import java.util.List;
 
 @Service
 public class ReviewService {
-    private static int LIMIT_REVIEW_PAGE = 2;
+    private static int LIMIT_REVIEW_PAGE = 4;
     private final ReviewRepository reviewRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;

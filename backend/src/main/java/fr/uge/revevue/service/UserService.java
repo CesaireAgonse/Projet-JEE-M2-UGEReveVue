@@ -1,6 +1,7 @@
 package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Post;
+import fr.uge.revevue.information.review.ReviewInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.entity.User;
@@ -24,6 +25,8 @@ import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsService{
+
+    private static int LIMIT_FOLLOWED_PAGE = 10;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PostRepository postRepository;
@@ -137,6 +140,15 @@ public class UserService implements UserDetailsService{
         var count = userRepository.count();
         int maxPageNumber = (int) ((count - 1) / limit);
         return new UserPageInformation(getSomeUsers(offset, limit),  offset, maxPageNumber);
+    }
+
+    @Transactional
+    public UserPageInformation getFollowedPageFromUserId(long userId, int offset){
+        var count = userRepository.findFollowedById(userId).size();
+        int maxPageNumber = (int) ((count - 1) / LIMIT_FOLLOWED_PAGE);
+        Pageable page = PageRequest.of(offset, LIMIT_FOLLOWED_PAGE);
+        var followedInformations = userRepository.findFollowedById(userId, page).stream().map(UserInformation::from).toList();
+        return new UserPageInformation(followedInformations, offset, maxPageNumber);
     }
 
     public boolean matchesPassword(String rawPassword, String encodedPassword){
