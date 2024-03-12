@@ -63,7 +63,11 @@ public class UserController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/users/{username}")
-    public String information(@PathVariable String username, Model model){
+    public String information(@PathVariable String username,
+                              @RequestParam(value = "codePageNumber", required = false)Integer codePageNumber,
+                              @RequestParam(value = "reviewPageNumber", required = false)Integer reviewPageNumber,
+                              @RequestParam(value = "commentPageNumber", required = false)Integer commentPageNumber,
+                              Model model){
         var userInformation = userService.getInformation(username);
         if (userInformation == null){
             return "redirect:/";
@@ -74,12 +78,31 @@ public class UserController {
         }
         model.addAttribute("user", userInformation);
 
-        var codesFromUser = codeService.getAllCodesFromUserId(userInformation.id());
-        var reviewsFromUser = reviewService.getAllReviewsFromUserId(userInformation.id());
-        var commentsFromUser = commentService.getAllCommentsFromUserId(userInformation.id());
+        if(codePageNumber == null || codePageNumber < 0) {
+            codePageNumber = 0;
+        }
+        if(reviewPageNumber == null || reviewPageNumber < 0) {
+            reviewPageNumber = 0;
+        }
+        if(commentPageNumber == null || commentPageNumber < 0) {
+            commentPageNumber = 0;
+        }
+        model.addAttribute("codePageNumber", codePageNumber);
+        model.addAttribute("reviewPageNumber", reviewPageNumber);
+        model.addAttribute("commentPageNumber", commentPageNumber);
+
+        var codesFromUser = codeService.getCodePageFromUserId(userInformation.id(), codePageNumber);
+        var codesNumberFromUser = codeService.countCodesFromUser(userInformation);
+        var reviewsFromUser = reviewService.getReviewPageFromUserId(userInformation.id(), reviewPageNumber);
+        var reviewsNumberFromUser = reviewService.countReviewsFromUser(userInformation);
+        var commentsFromUser = commentService.getCommentPageFromUserId(userInformation.id(), commentPageNumber);
+        var commentsNumberFromUser = commentService.countCommentsFromUser(userInformation);
         model.addAttribute("codesFromUser", codesFromUser);
+        model.addAttribute("codesNumberFromUser", codesNumberFromUser);
         model.addAttribute("reviewsFromUser", reviewsFromUser);
+        model.addAttribute("reviewsNumberFromUser", reviewsNumberFromUser);
         model.addAttribute("commentsFromUser", commentsFromUser);
+        model.addAttribute("commentsNumberFromUser", commentsNumberFromUser);
         return "users/profile";
     }
 

@@ -5,6 +5,7 @@ import fr.uge.revevue.entity.TestResults;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.code.CodeInformation;
+import fr.uge.revevue.information.code.CodePageInformation;
 import fr.uge.revevue.information.code.FilterInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.repository.CodeRepository;
@@ -30,7 +31,7 @@ public class CodeService {
     private UserService userService;
     private EntityManager em;
     private EntityManagerFactory emf;
-    public final static int LIMIT = 10;
+    public final static int LIMIT = 2;
 
     public CodeService(){}
 
@@ -201,6 +202,15 @@ public class CodeService {
             codes.add(CodeInformation.from(code));
         }
         return codes;
+    }
+
+    @Transactional
+    public CodePageInformation getCodePageFromUserId(long userId, int offset){
+        var count = codeRepository.countByUserId(userId);
+        int maxPageNumber = (int) ((count - 1) / LIMIT);
+        Pageable page = PageRequest.of(offset, LIMIT);
+        var codeInformations = codeRepository.findAllByUserId(userId, page).stream().map(CodeInformation::from).toList();
+        return new CodePageInformation(codeInformations, offset, maxPageNumber);
     }
 
     @Transactional

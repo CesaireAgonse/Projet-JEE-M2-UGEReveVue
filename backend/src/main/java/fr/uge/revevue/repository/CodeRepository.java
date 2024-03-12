@@ -23,5 +23,7 @@ public interface CodeRepository  extends CrudRepository<Code, Long> {
     
     List<Code> findAllByUserId(long userId);
 
+    List<Code> findAllByUserId(long userId, Pageable page);
+
     long countByUserId(long userId);
 }

@@ -3,6 +3,8 @@ package fr.uge.revevue.service;
 import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.information.comment.CommentInformation;
 import fr.uge.revevue.information.comment.CommentPageInformation;
+import fr.uge.revevue.information.review.ReviewInformation;
+import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.repository.CommentRepository;
 import fr.uge.revevue.repository.PostRepository;
@@ -51,7 +53,7 @@ public class CommentService {
         }
         Pageable pageable = PageRequest.of(page, LIMIT_COMMENT_PAGE);
         var comments = commentRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(CommentInformation::from).toList();
-        return new CommentPageInformation(comments, page);
+        return new CommentPageInformation(comments, page, 0);
     }
 
     @Transactional
@@ -78,5 +80,14 @@ public class CommentService {
             comments.add(CommentInformation.from(comment));
         }
         return comments;
+    }
+
+    @Transactional
+    public CommentPageInformation getCommentPageFromUserId(long userId, int offset){
+        var count = commentRepository.countByUserId(userId);
+        int maxPageNumber = (int) ((count - 1) / LIMIT_COMMENT_PAGE);
+        Pageable page = PageRequest.of(offset, LIMIT_COMMENT_PAGE);
+        var commentInformations = commentRepository.findAllByUserId(userId, page).stream().map(CommentInformation::from).toList();
+        return new CommentPageInformation(commentInformations, offset, maxPageNumber);
     }
 }

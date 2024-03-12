@@ -1,6 +1,8 @@
 package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Review;
+import fr.uge.revevue.information.code.CodeInformation;
+import fr.uge.revevue.information.code.CodePageInformation;
 import fr.uge.revevue.information.review.ReviewInformation;
 import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.UserInformation;
@@ -17,7 +19,7 @@ import java.util.List;
 
 @Service
 public class ReviewService {
-    private static int LIMIT_REVIEW_PAGE = 5;
+    private static int LIMIT_REVIEW_PAGE = 2;
     private final ReviewRepository reviewRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -60,7 +62,7 @@ public class ReviewService {
         }
         Pageable pageable = PageRequest.of(page, LIMIT_REVIEW_PAGE);
         var reviews = reviewRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(ReviewInformation::from).toList();
-        return new ReviewPageInformation(reviews, page);
+        return new ReviewPageInformation(reviews, page, 0);
     }
 
     @Transactional
@@ -81,6 +83,15 @@ public class ReviewService {
             reviews.add(ReviewInformation.from(review));
         }
         return reviews;
+    }
+
+    @Transactional
+    public ReviewPageInformation getReviewPageFromUserId(long userId, int offset){
+        var count = reviewRepository.countByUserId(userId);
+        int maxPageNumber = (int) ((count - 1) / LIMIT_REVIEW_PAGE);
+        Pageable page = PageRequest.of(offset, LIMIT_REVIEW_PAGE);
+        var reviewInformations = reviewRepository.findAllByUserId(userId, page).stream().map(ReviewInformation::from).toList();
+        return new ReviewPageInformation(reviewInformations, offset, maxPageNumber);
     }
 
     @Transactional
