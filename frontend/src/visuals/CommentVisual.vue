@@ -90,6 +90,7 @@ export default {
 }
 
 .select-code{
+  max-height: 100px;
   font-size: 75%;
 }
 

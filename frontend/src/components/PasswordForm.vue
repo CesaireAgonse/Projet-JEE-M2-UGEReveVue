@@ -8,6 +8,7 @@
           <input type="password" id="currentPassword" v-model="currentPassword" placeholder="Mot de passe actuel" required>
           <input type="password" id="newPassword" v-model="newPassword" placeholder="Nouveau mot de passe" required>
           <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Confirmation du nouveau mot de passe" required>
+          <span v-if="newPassword !== confirmPassword" class="error-message">Les mots de passe ne correspondent pas.</span>
           <button type="submit">Confirmer</button>
         </form>
       </div>
@@ -95,26 +96,24 @@ form {
 }
 
 .label {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 }
 
 
 input {
   padding: 10px;
-  margin-bottom: 30px;
   border-radius: 5px;
   border: 1px solid #fff;
   outline: none;
   background-color: rgba(200, 200, 200, 0.2);
   color: #ffffff;
   font-size: large;
-  margin-right: 5%;
-  margin-left: 5%;
+  margin: 15px 5%;
 }
 
 button {
   padding: 10px 20px;
-  margin: 0px 35% 10px;
+  margin: 10px 35% 10px;
   background-color: rgba(255, 255, 255, 0.2);;
   color: #fff;
   border: 1px solid #fff;
@@ -129,4 +128,9 @@ button:hover {
   color: #000;
 }
 
+.error-message {
+  color: #ff4d4d; /* Red color */
+  font-size: small;
+  padding-bottom: 10px;
+}
 </style>

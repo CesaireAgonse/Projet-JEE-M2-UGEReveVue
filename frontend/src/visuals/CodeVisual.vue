@@ -16,20 +16,19 @@
       <p class="post-description">{{ post.description }}</p>
       <pre @mouseup="handleSelection"><code class="language-java">{{ post.javaContent }}</code></pre>
     </div>
-
     <div class="post-footer">
       <div class="post-votes">
-        <button v-if="auth === null || vote !== 'UpVote'" class="post-button" @click="like">
+        <button v-if="auth === null || post.voteType !== 'UpVote'" class="post-button" @click="like">
           <i class="fa-regular fa-thumbs-up fa-beat" style="color: #00ffb3"></i>
         </button>
-        <button v-if="auth !== null && vote === 'UpVote'" class="post-button" @click="like">
+        <button v-if="auth !== null && post.voteType === 'UpVote'" class="post-button" @click="like">
           <i class="fa-solid fa-thumbs-up fa-beat" style="color: #00ffb3"></i>
         </button>
-        <p style="padding-right: 7px">{{ this.score }}</p>
-        <button v-if="auth === null || vote !== 'DownVote'" class="post-button" @click="dislike">
+        <p style="padding-right: 7px">{{ post.score }}</p>
+        <button v-if="auth === null || post.voteType !== 'DownVote'" class="post-button" @click="dislike">
           <i class="fa-regular fa-thumbs-down fa-beat" style="color: #f44e4e"></i>
         </button>
-        <button v-if="auth !== null && vote === 'DownVote'" class="post-button" @click="dislike">
+        <button v-if="auth !== null && post.voteType === 'DownVote'" class="post-button" @click="dislike">
           <i class="fa-solid fa-thumbs-down fa-beat" style="color: #f44e4e"></i>
         </button>
       </div>
@@ -75,10 +74,7 @@ export default {
   },
   data() {
     return {
-      auth: authenticationService.getAuth(),
-      score:this.post.score,
-      vote:this.post.voteType
-
+      auth: authenticationService.getAuth()
     }
   },
   methods: {
@@ -112,8 +108,11 @@ export default {
       }
     },
     del(){
-      codeService.del(this.post.id)
-      this.$emit("refresh")
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce code ?")){
+        codeService.del(this.post.id)
+        router.push('/')
+        this.$emit("refresh")
+      }
     }
   },
   mounted(){
@@ -128,10 +127,10 @@ export default {
 .post {
   background-color: #282828;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   padding: 20px;
   margin: 20px;
-  width: calc(33.3333% - 40px); /* 1/3 de la largeur de l'écran moins la marge et le padding */
+  width: calc(33.3333% - 40px);
 }
 
 .post-header {
@@ -188,7 +187,7 @@ export default {
 }
 
 .post-button {
-  background-color: transparent; /* Green */
+  background-color: transparent;
   border: none;
   color: white;
   text-align: center;
@@ -210,5 +209,4 @@ export default {
 pre {
   max-height: 800px;
 }
-
 </style>

@@ -32,7 +32,7 @@
     <div class="reviews" v-if="post != null">
       <h2>Reviews:</h2>
       <p v-for="review in reviewsPage" :key="review">
-        <ReviewVisual  :post="review"></ReviewVisual>
+        <ReviewVisual  :post="review" @refresh="refresh"></ReviewVisual>
       </p>
       <div class="row">
         <button v-if="pageReviewNumber > 0" class="basic-button prevButton" @click="reviewsPrev">
@@ -139,6 +139,9 @@ export default {
     },
     reviewsNext(){
       this.pageReviewNumber += 1
+      this.reviews()
+    },
+    refresh(){
       this.reviews()
     }
   }

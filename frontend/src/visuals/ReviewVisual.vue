@@ -24,7 +24,7 @@
           <i class="fa-regular fa-thumbs-down fa-beat" style="color: #f44e4e"></i>
         </button>
       </div>
-      <button class="post-button" @click="del">
+      <button v-if="auth !== null && auth.role === 'ADMIN'" class="post-button" @click="del">
         <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
       </button>
       <div  class="post-votes">
@@ -50,6 +50,7 @@ import { reviewService } from "@/services/review.service";
 import { postService } from "@/services/post.service";
 import router from "@/router";
 import MarkdownIt from "markdown-it";
+import {authenticationService} from "@/services/authentication.service";
 
 library.add(fas, far, fab)
 dom.watch();
@@ -63,6 +64,7 @@ export default {
   },
   data() {
     return {
+      auth: authenticationService.getAuth(),
       score:this.post.score,
     }
   },
@@ -88,7 +90,10 @@ export default {
       return md.render(markdown);
     },
     del(){
-      reviewService.del(this.post.id)
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce code ?")){
+        reviewService.del(this.post.id)
+        this.$emit("refresh")
+      }
     }
   }
 }
