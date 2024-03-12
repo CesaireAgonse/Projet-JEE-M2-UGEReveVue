@@ -1,20 +1,18 @@
 package fr.uge.revevue.controller.rest;
 
 import fr.uge.revevue.form.CodeForm;
-import fr.uge.revevue.information.CodeInformation;
-import fr.uge.revevue.information.FilterInformation;
+import fr.uge.revevue.information.code.CodeInformation;
+import fr.uge.revevue.information.code.FilterInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
 import fr.uge.revevue.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/codes")

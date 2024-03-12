@@ -1,10 +1,10 @@
 package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Post;
-import fr.uge.revevue.information.SimpleUserInformation;
-import fr.uge.revevue.information.UserInformation;
+import fr.uge.revevue.information.user.SimpleUserInformation;
+import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.entity.User;
-import fr.uge.revevue.information.UserInformationPage;
+import fr.uge.revevue.information.user.UserPageInformation;
 import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,10 +133,10 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
-    public UserInformationPage getSomeUsersForAdminPage(int offset, int limit){
+    public UserPageInformation getSomeUsersForAdminPage(int offset, int limit){
         var count = userRepository.count();
         int maxPageNumber = (int) ((count - 1) / limit);
-        return new UserInformationPage(getSomeUsers(offset, limit),  offset, maxPageNumber);
+        return new UserPageInformation(getSomeUsers(offset, limit),  offset, maxPageNumber);
     }
 
     public boolean matchesPassword(String rawPassword, String encodedPassword){

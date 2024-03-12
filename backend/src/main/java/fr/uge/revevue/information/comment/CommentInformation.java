@@ -1,7 +1,8 @@
-package fr.uge.revevue.information;
+package fr.uge.revevue.information.comment;
 
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Comment;
+import fr.uge.revevue.information.user.SimpleUserInformation;
 
 import java.util.Date;
 import java.util.Objects;

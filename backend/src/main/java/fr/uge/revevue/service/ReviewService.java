@@ -1,8 +1,9 @@
 package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Review;
-import fr.uge.revevue.entity.User;
-import fr.uge.revevue.information.*;
+import fr.uge.revevue.information.review.ReviewInformation;
+import fr.uge.revevue.information.review.ReviewPageInformation;
+import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.ReviewRepository;
 import fr.uge.revevue.repository.UserRepository;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service

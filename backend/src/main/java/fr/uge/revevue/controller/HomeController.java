@@ -1,27 +1,14 @@
 package fr.uge.revevue.controller;
 
-import fr.uge.revevue.entity.Code;
-import fr.uge.revevue.entity.User;
-import fr.uge.revevue.information.SimpleUserInformation;
-import fr.uge.revevue.information.CodeInformation;
-import fr.uge.revevue.information.UserInformation;
+import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Controller
 public class HomeController {

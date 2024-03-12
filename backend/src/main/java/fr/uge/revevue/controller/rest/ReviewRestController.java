@@ -1,14 +1,10 @@
 package fr.uge.revevue.controller.rest;
 
-import fr.uge.revevue.form.CommentForm;
-import fr.uge.revevue.form.ReviewForm;
-import fr.uge.revevue.information.ReviewInformation;
-import fr.uge.revevue.information.SimpleUserInformation;
+import fr.uge.revevue.information.review.ReviewInformation;
 import fr.uge.revevue.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

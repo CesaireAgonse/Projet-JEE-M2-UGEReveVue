@@ -1,10 +1,9 @@
 package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Comment;
-import fr.uge.revevue.information.CommentInformation;
-import fr.uge.revevue.information.CommentPageInformation;
-import fr.uge.revevue.information.ReviewInformation;
-import fr.uge.revevue.information.UserInformation;
+import fr.uge.revevue.information.comment.CommentInformation;
+import fr.uge.revevue.information.comment.CommentPageInformation;
+import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.repository.CommentRepository;
 import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.UserRepository;

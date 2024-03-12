@@ -1,4 +1,4 @@
-package fr.uge.revevue.information;
+package fr.uge.revevue.information.user;
 
 import java.util.Objects;
 import java.util.Set;

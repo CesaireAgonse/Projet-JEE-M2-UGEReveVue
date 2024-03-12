@@ -1,7 +1,7 @@
 package fr.uge.revevue.controller;
 
-import fr.uge.revevue.information.SimpleUserInformation;
-import fr.uge.revevue.information.UserInformation;
+import fr.uge.revevue.information.user.SimpleUserInformation;
+import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;

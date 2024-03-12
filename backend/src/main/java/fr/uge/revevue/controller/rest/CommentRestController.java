@@ -1,8 +1,6 @@
 package fr.uge.revevue.controller.rest;
 
-import fr.uge.revevue.information.ReviewInformation;
 import fr.uge.revevue.service.CommentService;
-import fr.uge.revevue.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

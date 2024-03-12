@@ -2,7 +2,7 @@ package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Role;
 import fr.uge.revevue.entity.User;
-import fr.uge.revevue.information.SimpleUserInformation;
+import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.repository.RoleRepository;
 import fr.uge.revevue.repository.UserRepository;
 import fr.uge.revevue.security.JwtService;

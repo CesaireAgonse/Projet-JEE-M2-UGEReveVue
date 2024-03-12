@@ -3,7 +3,8 @@ package fr.uge.revevue.controller.rest;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
-import fr.uge.revevue.information.*;
+import fr.uge.revevue.information.comment.CommentPageInformation;
+import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/posts")
@@ -72,7 +72,7 @@ public class PostRestController {
     @PreAuthorize("permitAll()")
     @GetMapping("/reviews/{postId}")
     public ResponseEntity<ReviewPageInformation> reviews(@PathVariable("postId") @Valid long postId,
-                                                          @RequestParam(value = "pageNumber", required = false) int pageNumber) {
+                                                         @RequestParam(value = "pageNumber", required = false) int pageNumber) {
         return ResponseEntity.ok(reviewService.getReviews(postId, pageNumber));
     }
 }

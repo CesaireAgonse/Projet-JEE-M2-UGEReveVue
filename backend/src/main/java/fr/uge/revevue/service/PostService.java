@@ -2,7 +2,7 @@
 
 import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.entity.Review;
-import fr.uge.revevue.information.ReviewInformation;
+import fr.uge.revevue.information.review.ReviewInformation;
 import fr.uge.revevue.repository.PostRepository;
 import org.springframework.stereotype.Service;
 

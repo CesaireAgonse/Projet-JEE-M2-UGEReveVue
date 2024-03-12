@@ -1,11 +1,13 @@
-package fr.uge.revevue.information;
+package fr.uge.revevue.information.code;
 
 import fr.uge.revevue.entity.Code;
-import fr.uge.revevue.entity.Post;
 import fr.uge.revevue.entity.Vote;
+import fr.uge.revevue.information.comment.CommentInformation;
+import fr.uge.revevue.information.review.ReviewInformation;
+import fr.uge.revevue.information.user.SimpleUserInformation;
+import fr.uge.revevue.information.UnitTestResultInformation;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public record CodeInformation(
         long id,

@@ -1,4 +1,4 @@
-package fr.uge.revevue.information;
+package fr.uge.revevue.information.code;
 
 import java.util.List;
 
