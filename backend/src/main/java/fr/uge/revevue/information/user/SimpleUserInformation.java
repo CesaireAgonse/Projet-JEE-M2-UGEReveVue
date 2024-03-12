@@ -1,4 +1,4 @@
-package fr.uge.revevue.information;
+package fr.uge.revevue.information.user;
 
 import fr.uge.revevue.entity.Role;
 import fr.uge.revevue.entity.User;

@@ -1,7 +1,7 @@
 package fr.uge.revevue.controller;
 
 import fr.uge.revevue.form.PasswordForm;
-import fr.uge.revevue.information.SimpleUserInformation;
+import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.CommentService;
 import fr.uge.revevue.service.ReviewService;
