@@ -15,11 +15,16 @@
     </div>
     <div class="container limit">
         <div th:replace="reviews/review :: reviewFragment(review=${review})"></div>
-        <div th:each="comment:${review.comments()}">
+        <div th:each="comment:${commentsFromPost.comments()}">
             <div class="container comment">
                 <div th:replace="comments/comment :: commentFragment(comment=${comment})"></div>
             </div>
         </div>
+        <form th:action="@{'/reviews/' + ${review.id()}}" method="get">
+            <input type="hidden" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber}" />
+            <button class="left button other" th:if="${commentsFromPost.pageNumber() > 0}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber - 1}">Previous Page</button>
+            <button class="right button other" th:if="${commentsFromPost.pageNumber() < commentsFromPost.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber + 1}">Next Page</button>
+        </form>
         <div th:if="${auth != null}" class="edit-zone">
             <form th:action="@{/reviews/comment/{reviewId}(reviewId=${review.id()})}" th:object="${commentForm}" method="post">
                 <textarea id="content" name="content" th:field="*{content}" required></textarea>
@@ -28,8 +33,8 @@
         </div>
     </div>
     <div class="container limit">
-        <h2 th:text="${review.reviews().size() == 1 ? '1 Review' : review.reviews().size() + ' Reviews'}"></h2>
-        <div th:each="review:${review.reviews()}">
+        <h2 th:text="${reviewsFromPost.reviews().size() == 1 ? '1 Review' : reviewsFromPost.reviews().size() + ' Reviews'}"></h2>
+        <div th:each="review:${reviewsFromPost.reviews()}">
             <div class="container review-post">
                 <div>
                     <p class="stats left" th:text="'reviews: '+ ${review.reviews().size()}"></p>
@@ -38,6 +43,11 @@
                 <div th:replace="reviews/review :: reviewFragment(review=${review})"></div>
             </div>
         </div>
+        <form th:action="@{'/reviews/' + ${review.id()}}" method="get">
+            <input type="hidden" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber}" />
+            <button class="left button other" th:if="${reviewsFromPost.pageNumber() > 0}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber - 1}">Previous Page</button>
+            <button class="right button other" th:if="${reviewsFromPost.pageNumber() < reviewsFromPost.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber + 1}">Next Page</button>
+        </form>
         <div th:if="${auth != null}" class="edit-zone">
             <form th:action="@{/reviews/review/{reviewId}(reviewId=${review.id()})}" th:object="${reviewForm}" method="post">
                 <textarea class="review" id="contentReview" name="contentReview" th:field="*{content}" required></textarea>

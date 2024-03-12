@@ -3,6 +3,7 @@ package fr.uge.revevue.controller;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
+import fr.uge.revevue.information.PagingInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.CommentService;
 import fr.uge.revevue.service.ReviewService;
@@ -38,9 +39,11 @@ public class ReviewController {
     @PreAuthorize("permitAll()")
     @GetMapping("/reviews/{reviewId}")
     public String review(@PathVariable("reviewId") @Valid long reviewId,
-                       @ModelAttribute("commentForm") CommentForm commentForm,
-                       @ModelAttribute("reviewForm") ReviewForm reviewForm,
-                       Model model){
+                         @ModelAttribute("commentForm") CommentForm commentForm,
+                         @ModelAttribute("reviewForm") ReviewForm reviewForm,
+                         @RequestParam(value = "reviewPageNumber", required = false) Integer reviewPageNumber,
+                         @RequestParam(value = "commentPageNumber", required = false) Integer commentPageNumber,
+                         Model model){
         var user = userService.currentUser();
         if (user != null){
             model.addAttribute("auth", SimpleUserInformation.from(user));
@@ -50,6 +53,15 @@ public class ReviewController {
             throw new IllegalStateException("review not found");
         }
         model.addAttribute("review", review);
+
+        PagingInformation pagingInfo = new PagingInformation(0, reviewPageNumber, commentPageNumber,0);
+        pagingInfo = pagingInfo.setDefaultsIfNull();
+        model.addAttribute("pagingInfo", pagingInfo);
+
+        var reviewsFromPost = reviewService.getReviews(review.id(), pagingInfo.reviewPageNumber());
+        var commentsFromPost = commentService.getComments(review.id(), pagingInfo.commentPageNumber());
+        model.addAttribute("reviewsFromPost", reviewsFromPost);
+        model.addAttribute("commentsFromPost", commentsFromPost);
         return "reviews/reviewReview";
     }
 

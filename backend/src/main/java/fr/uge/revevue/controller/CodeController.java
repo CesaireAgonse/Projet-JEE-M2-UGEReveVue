@@ -75,7 +75,6 @@ public class CodeController {
     public String code(@PathVariable("codeId") @Valid long codeId,
                        @ModelAttribute("commentForm") CommentForm commentForm,
                        @ModelAttribute("reviewForm") ReviewForm reviewForm,
-                       @RequestParam(value = "codePageNumber", required = false) Integer codePageNumber,
                        @RequestParam(value = "reviewPageNumber", required = false) Integer reviewPageNumber,
                        @RequestParam(value = "commentPageNumber", required = false) Integer commentPageNumber,
                        Model model){
@@ -89,15 +88,12 @@ public class CodeController {
         }
         model.addAttribute("code", code);
 
-        PagingInformation pagingInfo = new PagingInformation(codePageNumber, reviewPageNumber, commentPageNumber,0);
+        PagingInformation pagingInfo = new PagingInformation(0, reviewPageNumber, commentPageNumber,0);
         pagingInfo = pagingInfo.setDefaultsIfNull();
-        System.out.println("PAGEINFO ==>" + pagingInfo);
         model.addAttribute("pagingInfo", pagingInfo);
 
         var reviewsFromPost = reviewService.getReviews(code.id(), pagingInfo.reviewPageNumber());
-        System.out.println("reviews ==> nb page : " + reviewsFromPost.pageNumber() + " max page :" + reviewsFromPost.maxPageNumber());
         var commentsFromPost = commentService.getComments(code.id(), pagingInfo.commentPageNumber());
-        System.out.println("comments ==> nb page : " + commentsFromPost.pageNumber() + " max page :" + commentsFromPost.maxPageNumber());
         model.addAttribute("reviewsFromPost", reviewsFromPost);
         model.addAttribute("commentsFromPost", commentsFromPost);
         return "codes/codeReview";
