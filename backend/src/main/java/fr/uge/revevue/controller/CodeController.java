@@ -108,7 +108,7 @@ public class CodeController {
         if (result.hasErrors()){
             return "redirect:/codes/" + codeId;
         }
-        voteService.postVoted(userService.currentUser().getId(), codeId, voteType);
+        voteService.postVotedWithOptimisticLock(userService.currentUser().getId(), codeId, voteType);
         return "redirect:/";
     }
 

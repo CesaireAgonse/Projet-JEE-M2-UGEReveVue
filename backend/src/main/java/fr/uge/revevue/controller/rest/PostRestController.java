@@ -38,7 +38,7 @@ public class PostRestController {
     @PostMapping("/vote/{postId}")
     public ResponseEntity<Long> postVoted(@PathVariable("postId") @Valid long postId,
                                              @RequestParam("voteType") String voteType) {
-        return ResponseEntity.ok(voteService.postVoted(userService.currentUser().getId(), postId, Vote.VoteType.valueOf(voteType)));
+        return ResponseEntity.ok(voteService.postVotedWithOptimisticLock(userService.currentUser().getId(), postId, Vote.VoteType.valueOf(voteType)));
     }
 
     @PreAuthorize("isAuthenticated()")

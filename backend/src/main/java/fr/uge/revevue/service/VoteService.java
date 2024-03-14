@@ -37,46 +37,17 @@ public class VoteService {
         this.voteServiceWithFailure = voteServiceWithFailure;
     }
 
-    public void incrementScoreWithOptimisticLock(Post post, int value){
+    public long postVotedWithOptimisticLock(long userId, long postId, Vote.VoteType voteType){
         var retry=true;
+        long vote = 0;
         while(retry) {
             retry=false;
             try {
-                voteServiceWithFailure.incrementScoreWrong(post, value);
+                vote = voteServiceWithFailure.incrementScoreWrong(userId, postId, voteType);
             } catch (org.springframework.orm.ObjectOptimisticLockingFailureException e){
                 retry=true;
             }
         }
-    }
-
-    @Transactional
-    public long postVoted(long userId, long postId, Vote.VoteType voteType){
-        var findUser = userRepository.findById(userId);
-        if (findUser.isEmpty()){
-            throw new IllegalStateException("User not found");
-        }
-        var findPost = postRepository.findById(postId);
-        if (findPost.isEmpty()){
-            throw new IllegalStateException("Post not found");
-        }
-        var user = findUser.get();
-        var post = findPost.get();
-        var vote = voteRepository.findByPostAndUser(user, post);
-        if (vote == null){
-            var newVote = new Vote(user, post, voteType);
-            post.getVotes().add(newVote);
-            voteRepository.save(newVote);
-            incrementScoreWithOptimisticLock(post, voteType.ordinal() - 1);
-            return post.getScore();
-        }
-        else if (vote.getVoteType() != voteType){
-            vote.setVoteType(voteType);
-            incrementScoreWithOptimisticLock(post, 2 * (voteType.ordinal() - 1));
-            return post.getScore();
-        }
-        post.getVotes().remove(vote);
-        voteRepository.delete(vote);
-        incrementScoreWithOptimisticLock(post, - (voteType.ordinal() - 1));
-        return post.getScore();
+        return vote;
     }
 }

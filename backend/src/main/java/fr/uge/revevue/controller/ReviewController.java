@@ -80,7 +80,7 @@ public class ReviewController {
         if (result.hasErrors()){
             return "redirect:/reviews/" + reviewId;
         }
-        voteService.postVoted(userService.currentUser().getId(),reviewId,voteType);
+        voteService.postVotedWithOptimisticLock(userService.currentUser().getId(),reviewId,voteType);
         return "redirect:/";
     }
 
