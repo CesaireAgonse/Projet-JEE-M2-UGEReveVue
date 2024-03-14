@@ -30,6 +30,10 @@ public class User implements UserDetails {
     @OneToOne
     private Role role;
 
+    @Lob
+    @Column(name = "profile_photo", columnDefinition="BLOB")
+    private byte[] profilePhoto;
+
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(
@@ -108,6 +112,14 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public byte[] getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(byte[] profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 
     @Override
