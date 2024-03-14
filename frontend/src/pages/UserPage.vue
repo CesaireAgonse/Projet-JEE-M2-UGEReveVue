@@ -9,7 +9,8 @@
     </button>
     <div class="profile">
       <div class="profile-header">
-        <img src="../assets/profile.jpg" alt="Photo de profil" class="profile-photo">
+        <img v-if="photo == null" src="../assets/profile.jpg" alt="Photo de profil" class="profile-photo">
+        <img v-if="photo != null" :src="photo" alt="Photo de profil" class="profile-photo">
         <div class="profile-info">
           <p style="font-size: 200%">{{ username }}</p>
           <p style="margin-top: -20px">{{nbFollowed}} <i class="fa-solid fa-user-group"></i></p>
@@ -80,17 +81,22 @@ export default {
     userService.user(this.$route.params.name).then(res => {
       this.username = res.data.username
       this.nbFollowed = res.data.followed.length
+      if (res.data.profilePhoto != null){
+        this.photo = "data:image/jpg;base64," + res.data.profilePhoto
+      }
     }).catch(err => console.log(err))
     this.codes()
     this.reviews()
     this.comments()
     this.users()
     document.body.style.overflowY = "visible"
+
   },
   data() {
     return {
       username: null,
       nbFollowed: 0,
+      photo: null,
       auth: authenticationService.getAuth(),
       isPasswordModalVisible: false,
       selectedTab: 'followed',
@@ -203,7 +209,7 @@ export default {
     nextUser(){
       this.userPage.pageNumber += 1
       this.users()
-    },
+    }
   }
 }
 </script>

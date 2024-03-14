@@ -23,7 +23,8 @@
           <div v-if="isLogged">
             <div class="auth-buttons">
               <div class="user-avatar" @click="toggleDropdown">
-                <img class="post-author-avatar" src="../assets/profile.jpg" alt="User Avatar" />
+                <img v-if="photo == null" class="post-author-avatar" src="../assets/profile.jpg" alt="User Avatar" />
+                <img v-if="photo != null" class="post-author-avatar" :src="photo" alt="User Avatar" />
               </div>
               <div class="show" v-show="showDropdown">
                 <select size="2">
@@ -65,6 +66,7 @@ import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import {userService} from "@/services/user.service";
 library.add(fas, far, fab)
 dom.watch();
 
@@ -74,6 +76,13 @@ export default {
   },
   mounted() {
     document.body.style.overflowY = "hidden"
+    if (authenticationService.isLogged()){
+      userService.user(this.username()).then(res => {
+        if (res.data.profilePhoto != null){
+          this.photo = "data:image/jpg;base64," + res.data.profilePhoto
+        }
+      }).catch(err => console.log(err))
+    }
   },
   props: {
     isLoginModalVisible: {
@@ -115,7 +124,8 @@ export default {
       query: '',
       sortBy: '',
       pageNumber: 0,
-      scroll:'hidden'
+      scroll:'hidden',
+      photo:null
     };
   },
   methods: {
@@ -196,6 +206,9 @@ export default {
     },
     refresh(){
       this.$emit('refresh')
+    },
+    username(){
+      return authenticationService.getAuth().username
     }
   }
 };

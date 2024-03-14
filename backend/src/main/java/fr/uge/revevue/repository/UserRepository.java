@@ -38,4 +38,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
     void update(@Param("username") String username,@Param("password") String password);
     @Query("SELECT u.followed FROM User u WHERE u.username= :username ")
     List<User> findUserFollowedByUsername(String username, Pageable page);
+
 }

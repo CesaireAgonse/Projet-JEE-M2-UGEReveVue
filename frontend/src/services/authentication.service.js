@@ -33,7 +33,8 @@ let getAuth = () => {
         let token = jwtDecode(localStorage.getItem('bearer'))
         return {
             username : token.sub,
-            role: token.role.typeRole
+            role: token.role.typeRole,
+            photo: token.photo
         }
     }
     return null;

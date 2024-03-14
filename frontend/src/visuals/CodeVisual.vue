@@ -2,7 +2,8 @@
   <div class="post">
       <div class="post-header">
         <div class="post-header-info" @click="user()">
-          <img class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
+          <img v-if="photo == null" class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
+          <img v-if="photo != null" class="post-author-avatar" :src="photo" alt="Author Avatar" />
           <div class="post-author-info">
             <h2>{{ post.userInformation.username }}</h2>
           </div>
@@ -74,7 +75,8 @@ export default {
   },
   data() {
     return {
-      auth: authenticationService.getAuth()
+      auth: authenticationService.getAuth(),
+      photo:null
     }
   },
   methods: {
@@ -117,6 +119,9 @@ export default {
   },
   mounted(){
     this.highlightCode();
+    if (this.post.userInformation.profilePhoto != null){
+      this.photo = "data:image/jpg;base64," + this.post.userInformation.profilePhoto
+    }
   }
 }
 </script>

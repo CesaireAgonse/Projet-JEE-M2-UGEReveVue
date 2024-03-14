@@ -2,7 +2,8 @@
   <div class="post">
     <div class="post-header">
       <div class="post-header-info" @click="user()">
-        <img class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
+        <img v-if="photo == null" class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
+        <img v-if="photo != null" class="post-author-avatar" :src="photo" alt="Author Avatar" />
         <div class="post-author-info">
           <h2>{{ comment.userInformation.username }}</h2>
         </div>
@@ -31,6 +32,14 @@ dom.watch();
 export default {
   mounted() {
     this.highlightCode();
+    if (this.comment.userInformation.profilePhoto != null){
+      this.photo = "data:image/jpg;base64," + this.comment.userInformation.profilePhoto
+    }
+  },
+  data() {
+    return {
+      photo: null,
+    }
   },
   props: {
     comment: {
