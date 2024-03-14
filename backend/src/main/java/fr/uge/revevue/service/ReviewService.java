@@ -1,11 +1,14 @@
 package fr.uge.revevue.service;
 
+import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.entity.Review;
+import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.information.code.CodeInformation;
 import fr.uge.revevue.information.code.CodePageInformation;
 import fr.uge.revevue.information.review.ReviewInformation;
 import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.UserInformation;
+import fr.uge.revevue.repository.CommentRepository;
 import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.ReviewRepository;
 import fr.uge.revevue.repository.UserRepository;
@@ -23,14 +26,16 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
-    public ReviewService(ReviewRepository reviewRepository, PostRepository postRepository,UserRepository userRepository) {
+    public ReviewService(ReviewRepository reviewRepository, PostRepository postRepository,UserRepository userRepository, CommentRepository commentRepository) {
         this.reviewRepository = reviewRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
     @Transactional
-    public void create(long userId, long postId, String content){
+    public void create(long userId, long postId, String title, List<CommentForm> commentForms){
         var findUser = userRepository.findById(userId);
         if (findUser.isEmpty()){
             throw new IllegalStateException("User not found");
@@ -41,8 +46,16 @@ public class ReviewService {
         }
         var user = findUser.get();
         var post = findPost.get();
-        var review = new Review(post.getTitle(), content, user, post);
-
+        List<Comment> content = new ArrayList<>();
+        if (commentForms != null) {
+            for (var contentForm : commentForms) {
+                var comment = new Comment(contentForm.getContent(), user, null);
+                comment.setCodeSelection(contentForm.getCodeSelection());
+                content.add(comment);
+                commentRepository.save(comment);
+            }
+        }
+        var review = new Review(title, content, user, post);
         reviewRepository.save(review);
     }
 

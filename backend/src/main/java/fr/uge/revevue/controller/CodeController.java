@@ -4,6 +4,7 @@ import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
+import fr.uge.revevue.form.TestForm;
 import fr.uge.revevue.information.PagingInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.*;
@@ -126,12 +127,13 @@ public class CodeController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/review/{codeId}")
     public String codeReviewed(@PathVariable("codeId") @Valid long codeId,
-                               @ModelAttribute("reviewForm") @Valid ReviewForm reviewForm,
+                               @ModelAttribute("reviewForm") ReviewForm reviewForm,
                                BindingResult result){
+        System.out.println("terst");
         if (result.hasErrors()){
             return "redirect:/codes/" + codeId;
         }
-        reviewService.create(userService.currentUser().getId(),codeId,reviewForm.getContent());
+        reviewService.create(userService.currentUser().getId(),codeId, reviewForm.getTitle(), reviewForm.getContent());
         return "redirect:/codes/" + codeId;
     }
 }

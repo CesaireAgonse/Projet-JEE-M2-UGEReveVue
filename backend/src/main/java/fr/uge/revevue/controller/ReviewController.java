@@ -1,8 +1,10 @@
 package fr.uge.revevue.controller;
 
 import fr.uge.revevue.entity.Vote;
+import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
+import fr.uge.revevue.form.TestForm;
 import fr.uge.revevue.information.PagingInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.CommentService;
@@ -34,6 +36,11 @@ public class ReviewController {
         this.userService = userService;
         this.commentService = commentService;
         this.reviewService = reviewService;
+    }
+
+    @PostMapping("/reviews/create")
+    public void create(@ModelAttribute("testForm") TestForm testForm){
+        System.out.println(testForm);
     }
 
     @PreAuthorize("permitAll()")
@@ -97,7 +104,7 @@ public class ReviewController {
         if (result.hasErrors()){
             return "redirect:/reviews/" + reviewId;
         }
-        reviewService.create(userService.currentUser().getId(), reviewId, reviewForm.getContent());
+        reviewService.create(userService.currentUser().getId(), reviewId,  reviewForm.getTitle(), reviewForm.getContent());
         return "redirect:/reviews/" + reviewId;
     }
 }

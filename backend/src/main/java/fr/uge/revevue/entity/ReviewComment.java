@@ -2,12 +2,11 @@ package fr.uge.revevue.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Table(name = "Comments")
-public class Comment {
+@Table(name = "ReviewComment")
+public class ReviewComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,9 +15,6 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Post post;
-
     @NotBlank
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String content;
@@ -26,15 +22,11 @@ public class Comment {
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String codeSelection;
 
-    private Date date;
+    public ReviewComment() {}
 
-    public Comment() {}
-
-    public Comment(String content, User user,Post post) {
+    public ReviewComment(String content, User user) {
         this.content = content;
         this.user = user;
-        this.post = post;
-        this.date = new Date();
     }
 
     public long getId() {
@@ -67,33 +59,5 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id=" + id +
-                ", user=" + user +
-                ", post=" + post +
-                ", content='" + content + '\'' +
-                ", codeSelection='" + codeSelection + '\'' +
-                ", date=" + date +
-                '}';
     }
 }

@@ -49,10 +49,7 @@
             <button class="right button other" th:if="${reviewsFromPost.pageNumber() < reviewsFromPost.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber + 1}">Next Page</button>
         </form>
         <div th:if="${auth != null}" class="edit-zone">
-            <form th:action="@{/reviews/review/{reviewId}(reviewId=${review.id()})}" th:object="${reviewForm}" method="post">
-                <textarea class="review" id="contentReview" name="contentReview" th:field="*{content}" required></textarea>
-                <button type="submit" class="button basic">Review</button>
-            </form>
+            <div th:replace="reviews/create :: create(url=@{/reviews/review/{reviewId}(reviewId=${review.id()})})"></div>
         </div>
     </div>
 </div>

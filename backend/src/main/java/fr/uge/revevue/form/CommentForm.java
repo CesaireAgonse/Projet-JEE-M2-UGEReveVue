@@ -1,13 +1,16 @@
 package fr.uge.revevue.form;
 
-import javax.validation.constraints.NotBlank;
-
 public class CommentForm {
 
-    @NotBlank
     private String content;
 
     private String codeSelection;
+
+    public CommentForm(){}
+    public CommentForm(String content, String codeSelection) {
+        this.content = content;
+        this.codeSelection = codeSelection;
+    }
 
     public String getContent() {
         return content;

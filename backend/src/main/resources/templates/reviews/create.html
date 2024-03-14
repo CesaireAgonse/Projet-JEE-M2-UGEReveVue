@@ -1,0 +1,63 @@
+<div th:fragment="create(url)">
+    <form th:action="${url}" th:object="${reviewForm}" method="post" enctype="multipart/form-data" id="postForm">
+        <div class="form-group">
+            <label for="title-input">Title:</label>
+            <input type="text" id="title-input" name="title" th:field="*{title}" placeholder="Enter your title" required>
+        </div>
+        <div id="dynamicFields">
+            <!-- Les nouveaux champs seront ajoutés ici -->
+        </div>
+        <button type="button" class="button basic" onclick="addTextField()">Ajouter un champ</button>
+        <button type="submit" class="button basic">Review</button>
+    </form>
+    <script>
+        var dynamicFieldIndex = 0;
+        function addTextField() {
+            var dynamicFields = document.getElementById('dynamicFields');
+
+            var divWrapper = document.createElement('div');
+            dynamicFields.appendChild(divWrapper);
+
+            var codeElement = document.createElement('code');
+            divWrapper.appendChild(codeElement);
+
+            var input = document.createElement('textarea');
+            input.classList.add('review');
+            input.required = true;
+            input.name = 'content[' + dynamicFieldIndex + '].content'; // Utilisation d'index pour former le nom
+            input.placeholder = 'Enter a comment';
+            divWrapper.appendChild(input);
+
+            var copyButton = document.createElement('button');
+            copyButton.classList.add('button', 'other');
+            copyButton.textContent = 'Add selected code';
+            copyButton.type = 'button';
+            copyButton.onclick = function() {
+                var baseCode = document.getElementById('codeBlock').innerText;
+                var selection = window.getSelection().toString().trim();
+                if (selection !== '') {
+                    codeElement.innerText = selection;
+                } else {
+                    codeElement.innerText = baseCode;
+                }
+                var hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'content[' + (dynamicFieldIndex - 1) + '].codeSelection';
+                hiddenInput.value = codeElement.innerText;
+                divWrapper.appendChild(hiddenInput);
+            };
+
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Remove';
+            deleteButton.classList.add('button', 'other');
+            deleteButton.type = 'button';
+            deleteButton.onclick = function() {
+                divWrapper.remove();
+            };
+            divWrapper.appendChild(copyButton);
+            divWrapper.appendChild(deleteButton);
+            dynamicFieldIndex++;
+        }
+
+    </script>
+</div>

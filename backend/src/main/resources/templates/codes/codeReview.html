@@ -21,7 +21,7 @@
                     <button class="right button other" th:if="${commentsFromPost.pageNumber() < commentsFromPost.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber + 1}">Next Page</button>
                 </form>
                 <div th:if="${auth != null}" class="edit-zone">
-                    <button class="button other" onclick='selectedCode()'>Get Selected Code</button>
+                    <button class="button other" onclick='selectedCode()'>Add selected code</button>
                     <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
                         <input type="hidden" id="codeSelection" name="codeSelection" th:field="*{codeSelection}">
                         <pre><code id="preCodeSelection" name="preCodeSelection" ></code></pre>
@@ -47,10 +47,7 @@
                     <button class="right button other" th:if="${reviewsFromPost.pageNumber() < reviewsFromPost.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber + 1}">Next Page</button>
                 </form>
                 <div th:if="${auth != null}"  class="edit-zone">
-                    <form th:action="@{/codes/review/{codeId}(codeId=${code.id()})}" th:object="${reviewForm}" method="post">
-                        <textarea class="review" id="contentReview" name="contentReview" th:field="*{content}" required></textarea>
-                        <button type="submit" class="button basic">Review</button>
-                    </form>
+                    <div th:replace="reviews/create :: create(url=@{/codes/review/{codeId}(codeId=${code.id()})})"></div>
                 </div>
             </div>
         </div>

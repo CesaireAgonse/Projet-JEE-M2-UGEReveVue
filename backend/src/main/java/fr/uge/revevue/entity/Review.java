@@ -2,6 +2,7 @@ package fr.uge.revevue.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Entity
 @Table(name = "Reviews")
@@ -10,14 +11,13 @@ public class Review extends Post{
     @ManyToOne(fetch= FetchType.EAGER)
     private Post post;
 
-    @NotBlank
-    @Column(columnDefinition = "VARCHAR(MAX)")
-    private String content;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Comment> contents;
 
-    public Review(String title, String content, User user, Post post) {
+    public Review(String title, List<Comment> contents, User user, Post post) {
         super(title, user);
         this.post = post;
-        this.content = content;
+        this.contents = contents;
     }
 
     public Review(){}
@@ -30,11 +30,11 @@ public class Review extends Post{
         this.post = post;
     }
 
-    public String getContent() {
-        return content;
+    public List<Comment> getContent() {
+        return contents;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setContent(List<Comment> contents) {
+        this.contents = contents;
     }
 }
