@@ -72,12 +72,17 @@ export default {
   color: black;
 }
 
-textarea{
-  height: 80px;
-  width: 80%;
-  margin-left: 20px;
-  margin-right: 15px;
-  resize: none;
-  border-radius: 10px;
+textarea,
+input {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+  border: 1px solid #fff;
+  outline: none;
+  background-color: rgba(200, 200, 200, 0.2);
+  color: #ffffff;
+  font-size: large;
+  width: 100%;
 }
 </style>

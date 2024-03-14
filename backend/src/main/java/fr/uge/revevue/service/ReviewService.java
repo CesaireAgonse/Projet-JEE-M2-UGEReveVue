@@ -91,21 +91,11 @@ public class ReviewService {
     }
 
     @Transactional
-    public List<ReviewInformation> getAllReviewsFromUserId(long userId){
-        List<ReviewInformation> reviews = new ArrayList<>();
-        var reviewsFromUser = reviewRepository.findAllByUserId(userId);
-        for (var review : reviewsFromUser){
-            reviews.add(ReviewInformation.from(review));
-        }
-        return reviews;
-    }
-
-    @Transactional
-    public ReviewPageInformation getReviewPageFromUserId(long userId, int offset){
-        var count = reviewRepository.countByUserId(userId);
+    public ReviewPageInformation getReviewPageFromUsername(String username, int offset){
+        var count = reviewRepository.countByUserUsername(username);
         int maxPageNumber = (int) ((count - 1) / LIMIT_REVIEW_PAGE);
         Pageable page = PageRequest.of(offset, LIMIT_REVIEW_PAGE);
-        var reviewInformations = reviewRepository.findAllByUserId(userId, page).stream().map(ReviewInformation::from).toList();
+        var reviewInformations = reviewRepository.findAllByUserUsername(username, page).stream().map(ReviewInformation::from).toList();
         return new ReviewPageInformation(reviewInformations, offset, maxPageNumber);
     }
 

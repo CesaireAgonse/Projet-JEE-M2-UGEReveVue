@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,11 +23,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query("SELECT u.followed FROM User u WHERE u.id= :userId ")
     List<User> findFollowedById(long userId);
 
-    @Query("SELECT u.followed FROM User u WHERE u.id= :userId ")
-    List<User> findFollowedById(long userId, Pageable page);
-
-    @Query("SELECT u.followed FROM User u WHERE u.id= :userId ")
-    long countFollowedById(long userId);
+    long countUserFollowedByUsername(String username);
 
     @Query("SELECT u.followed FROM User u WHERE u.id= :userId AND u NOT IN :users")
     List<User> findFollowedByIdFilterUsers(long userId, List<User> users);
@@ -39,4 +36,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Modifying
     @Query("UPDATE User SET password = :password WHERE username = :username")
     void update(@Param("username") String username,@Param("password") String password);
+    @Query("SELECT u.followed FROM User u WHERE u.username= :username ")
+    List<User> findUserFollowedByUsername(String username, Pageable page);
 }

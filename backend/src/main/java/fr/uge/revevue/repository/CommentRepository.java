@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -16,7 +17,7 @@ public interface CommentRepository extends CrudRepository<Comment,Long> {
 
     long countByPostId(long postId);
 
-    List<Comment> findAllByUserId(long userId);
+    long countByUserUsername(String username);
 
-    List<Comment> findAllByUserId(long userId, Pageable page);
+    List<Comment> findAllByUserUsername(String username, Pageable page);
 }

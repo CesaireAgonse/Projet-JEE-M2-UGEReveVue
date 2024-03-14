@@ -98,7 +98,6 @@ textarea.review {
     height: 100px;
 }
 
-
 .comment{
     background: #e7e7e7;
     max-width: 70%;
@@ -144,3 +143,11 @@ textarea.review {
    max-height: 100px;
 }
 
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 5px;
+}

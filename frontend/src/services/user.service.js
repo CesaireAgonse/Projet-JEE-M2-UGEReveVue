@@ -20,12 +20,32 @@ let unfollow = (username) => {
     return Axios.post('/api/v1/users/unfollow/' + username)
 }
 
+let codes = (username, numberPage) => {
+    return Axios.get('/api/v1/users/codes/' + username + "?pageNumber=" + numberPage)
+}
+
+let reviews = (username, numberPage) => {
+    return Axios.get('/api/v1/users/reviews/' + username + "?pageNumber=" + numberPage)
+}
+
+let comments = (username, numberPage) => {
+    return Axios.get('/api/v1/users/comments/' + username + "?pageNumber=" + numberPage)
+}
+
+let followed = (username, numberPage) => {
+    return Axios.get('/api/v1/users/followed/' + username + "?pageNumber=" + numberPage)
+}
+
 export const userService = {
     profile,
     updatePassword,
     follow,
     unfollow,
-    user
+    user,
+    codes,
+    reviews,
+    comments,
+    followed
 }
 
 

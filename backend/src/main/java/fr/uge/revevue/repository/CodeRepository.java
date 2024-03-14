@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -20,10 +21,10 @@ public interface CodeRepository  extends CrudRepository<Code, Long> {
     int countByUserIdAndTitleContainingIgnoreCaseOrUserIdAndDescriptionContainingIgnoreCaseOrUserIdAndUserUsernameContainingIgnoreCase(long userIdTitle, String titleKeyword, long userIdDescription, String descriptionKeyword, long userIdUsername, String userUsernameKeyword);
     
     int countByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(String titleKeyword, String descriptionKeyword, String userUsernameKeyword);
-    
-    List<Code> findAllByUserId(long userId);
-
-    List<Code> findAllByUserId(long userId, Pageable page);
 
     long countByUserId(long userId);
+
+    long countByUserUsername(String username);
+
+    List<Code> findAllByUserUsername(String username, Pageable page);
 }

@@ -1,7 +1,11 @@
 package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Post;
-import fr.uge.revevue.information.review.ReviewInformation;
+import fr.uge.revevue.information.code.CodeInformation;
+import fr.uge.revevue.information.code.CodePageInformation;
+import fr.uge.revevue.information.code.FilterInformation;
+import fr.uge.revevue.information.comment.CommentPageInformation;
+import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.entity.User;
@@ -30,14 +34,21 @@ public class UserService implements UserDetailsService{
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PostRepository postRepository;
+    private final CodeService codeService;
+    private final ReviewService reviewService;
+    private final CommentService commentService;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                       PostRepository postRepository){
+                       PostRepository postRepository,
+                       CodeService codeService, ReviewService reviewService, CommentService commentService){
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.postRepository = postRepository;
+        this.codeService = codeService;
+        this.reviewService = reviewService;
+        this.commentService = commentService;
     }
 
     @Transactional
@@ -141,13 +152,12 @@ public class UserService implements UserDetailsService{
         int maxPageNumber = (int) ((count - 1) / limit);
         return new UserPageInformation(getSomeUsers(offset, limit),  offset, maxPageNumber);
     }
-
     @Transactional
-    public UserPageInformation getFollowedPageFromUserId(long userId, int offset){
-        var count = userRepository.findFollowedById(userId).size();
+    public UserPageInformation getFollowedPageFromUsername(String username, int offset){
+        var count = userRepository.countUserFollowedByUsername(username);
         int maxPageNumber = (int) ((count - 1) / LIMIT_FOLLOWED_PAGE);
         Pageable page = PageRequest.of(offset, LIMIT_FOLLOWED_PAGE);
-        var followedInformations = userRepository.findFollowedById(userId, page).stream().map(UserInformation::from).toList();
+        var followedInformations = userRepository.findUserFollowedByUsername(username, page).stream().map(UserInformation::from).toList();
         return new UserPageInformation(followedInformations, offset, maxPageNumber);
     }
 
@@ -156,21 +166,82 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
-    public UserInformation delete(long codeId){
-        var userOptional = userRepository.findById(codeId);
+    public UserInformation delete(long userId){
+        var userOptional = userRepository.findById(userId);
         if(userOptional.isEmpty()){
             throw new IllegalArgumentException("User not found");
         }
         var user = userOptional.get();
 
         //supression de tout les posts de l'User
-        Set<Post> userPosts = postRepository.findByUserId(codeId);
+        Set<Post> userPosts = postRepository.findByUserId(userId);
         for (Post post : userPosts) {
             postRepository.delete(post);
         }
 
         userRepository.delete(user);
         return UserInformation.from(user);
+    }
+
+    @Transactional
+    public FilterInformation filter(String sortBy, String query, Integer pageNumber){
+        var user = currentUser();
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        List<CodeInformation> codes;
+        var count = codeService.countCodeWithQuery(query);
+        int maxPageNumber = (count - 1) / CodeService.LIMIT;
+        switch (sortBy != null ? sortBy : "") {
+            // Display all codes by newest
+            case "newest" -> {
+                codes = codeService.findWithKeywordByNewest(query, pageNumber, CodeService.LIMIT);
+            }
+            // Display all codes by relevance
+            case "relevance"-> {
+                codes = codeService.findWithKeywordByScore(query, pageNumber, CodeService.LIMIT);
+            }
+            default -> {
+                if(user != null) {
+                    // Display codes from follows
+                    codes = codeService.getCodeFromFollowed(user, query, pageNumber, CodeService.LIMIT);
+                }
+                else {
+                    // Display all codes
+                    codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
+                }
+            }
+        }
+        return new FilterInformation(codes, sortBy, query, pageNumber, maxPageNumber);
+    }
+
+    public CodePageInformation codes(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        return codeService.getCodePageFromUsername(username, pageNumber);
+    }
+
+    public ReviewPageInformation reviews(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        return reviewService.getReviewPageFromUsername(username,pageNumber);
+    }
+
+    public CommentPageInformation comments(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        return commentService.getCommentPageFromUsername(username, pageNumber);
+    }
+
+    @Transactional
+    public UserPageInformation users(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        return getFollowedPageFromUsername(username, pageNumber);
     }
 }
 

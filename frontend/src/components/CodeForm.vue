@@ -130,7 +130,7 @@ input {
   border: 1px solid #fff;
   outline: none;
   background-color: rgba(200, 200, 200, 0.2);
-  color: #ffffff;
+  color: #a2a2a2;
   font-size: large;
   width: 100%;
 }

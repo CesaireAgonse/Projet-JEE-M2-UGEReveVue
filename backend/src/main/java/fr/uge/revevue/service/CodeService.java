@@ -28,7 +28,6 @@ public class CodeService {
 
     private CodeRepository codeRepository;
     private UserRepository userRepository;
-    private UserService userService;
     private EntityManager em;
     private EntityManagerFactory emf;
     public final static int LIMIT = 4;
@@ -36,12 +35,11 @@ public class CodeService {
     public CodeService(){}
 
     @Autowired
-    public CodeService(CodeRepository codeRepository, UserRepository userRepository, EntityManager em, EntityManagerFactory emf, UserService userService) {
+    public CodeService(CodeRepository codeRepository, UserRepository userRepository, EntityManager em, EntityManagerFactory emf) {
         this.codeRepository = codeRepository;
         this.em = em;
         this.emf = emf;
         this.userRepository = userRepository;
-        this.userService = userService;
     }
     @Transactional
     public void create(long id, String title, String description, MultipartFile javaContent, MultipartFile unitContent) throws IOException {
@@ -149,39 +147,8 @@ public class CodeService {
         return codes;
     }
 
-    @Transactional
-    public FilterInformation filter(String sortBy, String query, Integer pageNumber){
-        var user = userService.currentUser();
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
-        }
-        List<CodeInformation> codes;
-        var count = codeRepository.countByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(query, query, query);
-        int maxPageNumber = (count - 1) / CodeService.LIMIT;
-        System.out.println("count = " + count);
-        System.out.println("CodeService.LIMIT = " + CodeService.LIMIT);
-        System.out.println("MAX PAGE = " + maxPageNumber);
-        switch (sortBy != null ? sortBy : "") {
-            // Display all codes by newest
-            case "newest" -> {
-                codes = findWithKeywordByNewest(query, pageNumber, CodeService.LIMIT);
-            }
-            // Display all codes by relevance
-            case "relevance"-> {
-                codes = findWithKeywordByScore(query, pageNumber, CodeService.LIMIT);
-            }
-            default -> {
-                if(user != null) {
-                    // Display codes from follows
-                    codes = getCodeFromFollowed(user, query, pageNumber, CodeService.LIMIT);
-                }
-                else {
-                    // Display all codes
-                    codes = findWithKeyword(query, pageNumber, CodeService.LIMIT);
-                }
-            }
-        }
-        return new FilterInformation(codes, sortBy, query, pageNumber, maxPageNumber);
+    int countCodeWithQuery(String query){
+        return codeRepository.countByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(query, query, query);
     }
 
     @Transactional
@@ -195,21 +162,11 @@ public class CodeService {
     }
 
     @Transactional
-    public List<CodeInformation> getAllCodesFromUserId(long userId){
-        List<CodeInformation> codes = new ArrayList<>();
-        var codesFromUser = codeRepository.findAllByUserId(userId);
-        for (var code : codesFromUser){
-            codes.add(CodeInformation.from(code));
-        }
-        return codes;
-    }
-
-    @Transactional
-    public CodePageInformation getCodePageFromUserId(long userId, int offset){
-        var count = codeRepository.countByUserId(userId);
+    public CodePageInformation getCodePageFromUsername(String username, int offset){
+        var count = codeRepository.countByUserUsername(username);
         int maxPageNumber = (int) ((count - 1) / LIMIT);
         Pageable page = PageRequest.of(offset, LIMIT);
-        var codeInformations = codeRepository.findAllByUserId(userId, page).stream().map(CodeInformation::from).toList();
+        var codeInformations = codeRepository.findAllByUserUsername(username, page).stream().map(CodeInformation::from).toList();
         return new CodePageInformation(codeInformations, offset, maxPageNumber);
     }
 

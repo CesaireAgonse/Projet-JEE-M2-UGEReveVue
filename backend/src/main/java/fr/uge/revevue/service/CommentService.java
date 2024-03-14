@@ -75,21 +75,11 @@ public class CommentService {
     }
 
     @Transactional
-    public List<CommentInformation> getAllCommentsFromUserId(long userId){
-        List<CommentInformation> comments = new ArrayList<>();
-        var commentsFromUser = commentRepository.findAllByUserId(userId);
-        for (var comment : commentsFromUser){
-            comments.add(CommentInformation.from(comment));
-        }
-        return comments;
-    }
-
-    @Transactional
-    public CommentPageInformation getCommentPageFromUserId(long userId, int offset){
-        var count = commentRepository.countByUserId(userId);
+    public CommentPageInformation getCommentPageFromUsername(String username, int offset){
+        var count = commentRepository.countByUserUsername(username);
         int maxPageNumber = (int) ((count - 1) / LIMIT_COMMENT_PAGE);
         Pageable page = PageRequest.of(offset, LIMIT_COMMENT_PAGE);
-        var commentInformations = commentRepository.findAllByUserId(userId, page).stream().map(CommentInformation::from).toList();
+        var commentInformations = commentRepository.findAllByUserUsername(username, page).stream().map(CommentInformation::from).toList();
         return new CommentPageInformation(commentInformations, offset, maxPageNumber);
     }
 }

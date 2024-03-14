@@ -84,12 +84,12 @@ public class UserController {
         pagingInfo = pagingInfo.setDefaultsIfNull();
         model.addAttribute("pagingInfo", pagingInfo);
 
-        var followedsFromUser = userService.getFollowedPageFromUserId(userInformation.id(), pagingInfo.followedPageNumber());
-        var codesFromUser = codeService.getCodePageFromUserId(userInformation.id(), pagingInfo.codePageNumber());
+        var followedsFromUser = userService.getFollowedPageFromUsername(userInformation.username(), pagingInfo.followedPageNumber());
+        var codesFromUser = codeService.getCodePageFromUsername(userInformation.username(), pagingInfo.codePageNumber());
         var codesNumberFromUser = codeService.countCodesFromUser(userInformation);
-        var reviewsFromUser = reviewService.getReviewPageFromUserId(userInformation.id(), pagingInfo.reviewPageNumber());
+        var reviewsFromUser = reviewService.getReviewPageFromUsername(userInformation.username(), pagingInfo.reviewPageNumber());
         var reviewsNumberFromUser = reviewService.countReviewsFromUser(userInformation);
-        var commentsFromUser = commentService.getCommentPageFromUserId(userInformation.id(), pagingInfo.commentPageNumber());
+        var commentsFromUser = commentService.getCommentPageFromUsername(userInformation.username(), pagingInfo.commentPageNumber());
         var commentsNumberFromUser = commentService.countCommentsFromUser(userInformation);
         model.addAttribute("followedsFromUser", followedsFromUser);
         model.addAttribute("codesFromUser", codesFromUser);

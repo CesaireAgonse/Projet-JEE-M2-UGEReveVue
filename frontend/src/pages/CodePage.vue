@@ -18,7 +18,7 @@
           <button v-if="pageNumber > 0" class="basic-button prevButton" @click="commentsPrev">
               <i class="fa-solid fa-arrow-left"></i>
           </button>
-          <button class="basic-button nextButton" @click="commentsNext">
+          <button v-if="pageNumber < maxPageCommentNumber" class="basic-button nextButton" @click="commentsNext">
               <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
@@ -43,7 +43,7 @@
         <button v-if="pageReviewNumber > 0" class="basic-button prevButton" @click="reviewsPrev">
             <i class="fa-solid fa-arrow-left"></i>
         </button>
-        <button class="basic-button nextButton" @click="reviewsNext">
+        <button v-if="pageReviewNumber < maxPageReviewNumber" class="basic-button nextButton" @click="reviewsNext">
             <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
@@ -91,6 +91,8 @@ export default {
       selectedCode:'',
       commentsPage:null,
       pageNumber:0,
+      maxPageCommentNumber:0,
+      maxPageReviewNumber:0,
       reviewsPage:null,
       pageReviewNumber:0,
       auth: authenticationService.getAuth()
@@ -115,6 +117,7 @@ export default {
       postService.comments(this.$route.params.id, this.pageNumber).then(res => {
         this.commentsPage = res.data.comments
         this.pageNumber = res.data.pageNumber
+        this.maxPageCommentNumber = res.data.maxPageNumber
         this.selectedCode = ""
       })
     },
@@ -130,6 +133,7 @@ export default {
       postService.reviews(this.$route.params.id, this.pageReviewNumber).then(res => {
         this.reviewsPage = res.data.reviews
         this.pageReviewNumber = res.data.pageNumber
+        this.maxPageReviewNumber = res.data.maxPageNumber
       })
     },
     reviewsPrev(){

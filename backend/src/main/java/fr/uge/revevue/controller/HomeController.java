@@ -31,7 +31,7 @@ public class HomeController {
         if (user != null){
             model.addAttribute("auth", SimpleUserInformation.from(user));
         }
-        model.addAttribute("filter", codeService.filter(sortBy, query, pageNumber));
+        model.addAttribute("filter", userService.filter(sortBy, query, pageNumber));
         return "home";
     }
 }

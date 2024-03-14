@@ -1,7 +1,12 @@
 package fr.uge.revevue.controller.rest;
 
 import fr.uge.revevue.information.UpdatePasswordInformation;
+import fr.uge.revevue.information.code.CodePageInformation;
+import fr.uge.revevue.information.code.FilterInformation;
+import fr.uge.revevue.information.comment.CommentPageInformation;
+import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.UserInformation;
+import fr.uge.revevue.information.user.UserPageInformation;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -65,5 +70,33 @@ public class UserRestController {
     public ResponseEntity<Void> delete(@PathVariable("userId") @Valid long userId) {
         userService.delete(userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/codes/{username}")
+    public ResponseEntity<CodePageInformation> codes(@PathVariable("username") @Valid String username,
+                                                     @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+        return ResponseEntity.ok(userService.codes(username, pageNumber));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/reviews/{username}")
+    public ResponseEntity<ReviewPageInformation> reviews(@PathVariable("username") @Valid String username,
+                                                         @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+        return ResponseEntity.ok(userService.reviews(username, pageNumber));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/comments/{username}")
+    public ResponseEntity<CommentPageInformation> comments(@PathVariable("username") @Valid String username,
+                                                           @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+        return ResponseEntity.ok(userService.comments(username, pageNumber));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/followed/{username}")
+    public ResponseEntity<UserPageInformation> users(@PathVariable("username") @Valid String username,
+                                                        @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+        return ResponseEntity.ok(userService.users(username, pageNumber));
     }
 }

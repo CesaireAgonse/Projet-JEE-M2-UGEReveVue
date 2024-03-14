@@ -72,6 +72,9 @@ export default {
   components: {
     CodeVisual
   },
+  mounted() {
+    document.body.style.overflowY = "hidden"
+  },
   props: {
     isLoginModalVisible: {
       type: Boolean,
@@ -318,7 +321,8 @@ input::placeholder {
 }
 
 body {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
   background-color: #333333;
 }
 
