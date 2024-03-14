@@ -10,7 +10,8 @@ import fr.uge.revevue.entity.User;
 public record UserInformation (long id,
                                String username,
                                Set<SimpleUserInformation> followed,
-                               boolean isAdmin){
+                               boolean isAdmin,
+                               byte[] profilePhoto){
 
     public static UserInformation from(User user){
         Objects.requireNonNull(user, "[UserInformation] user is null");
@@ -18,7 +19,8 @@ public record UserInformation (long id,
                 user.getId(),
                 user.getUsername(),
                 user.getFollowed().stream().map(SimpleUserInformation::from).collect(Collectors.toSet()),
-                user.getRole().getTypeRole().equals(Role.TypeRole.ADMIN)
+                user.getRole().getTypeRole().equals(Role.TypeRole.ADMIN),
+                user.getProfilePhoto()
         );
     }
 
