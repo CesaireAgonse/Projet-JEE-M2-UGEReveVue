@@ -48,12 +48,7 @@
         </button>
       </div>
       <div v-if="auth != null">
-        <div class="row">
-          <textarea v-model="reviewTextarea" placeholder="Entrez votre texte ici"></textarea>
-          <div class="send-button" @click="review()">
-            <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
-          </div>
-        </div>
+        <ReviewForm @refresh="reviews"></ReviewForm>
       </div>
     </div>
   </div>
@@ -75,11 +70,12 @@ import Prism from 'prismjs';
 import "prismjs/themes/prism-tomorrow.css"
 import 'prismjs/components/prism-java'
 import {authenticationService} from "@/services/authentication.service";
+import ReviewForm from "@/components/ReviewForm.vue";
 library.add(fas, far, fab)
 dom.watch();
 
 export default {
-  components: {CodeVisual, CodeTestVisual, CommentVisual, ReviewVisual},
+  components: {CodeVisual, CodeTestVisual, CommentVisual, ReviewVisual, ReviewForm},
   mounted() {
     document.title = "Code"
     this.comments()
@@ -91,6 +87,7 @@ export default {
       post: null,
       contentTextarea: '',
       reviewTextarea:'',
+      title:'',
       selectedCode:'',
       commentsPage:null,
       pageNumber:0,
@@ -112,12 +109,6 @@ export default {
       postService.comment(this.$route.params.id, {content:this.contentTextarea, codeSelection:this.selectedCode}).then(() => {
         this.contentTextarea = ''
         this.comments()
-      })
-    },
-    review(){
-      postService.review(this.$route.params.id, {content:this.reviewTextarea}).then(() => {
-        this.reviewTextarea = ''
-        this.reviews()
       })
     },
     comments(){

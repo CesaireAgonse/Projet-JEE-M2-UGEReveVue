@@ -12,7 +12,10 @@
     </div>
     <div @click="review()">
       <h2 class="post-title">{{ post.title }}</h2>
-      <pre><div v-html="markdownToHtml(post.content)"></div></pre>
+      <p v-for="contentReview in post.content" :key="contentReview">
+        <pre v-if="contentReview.codeSelection != null && contentReview.codeSelection !== ''"><code class="language-java">{{ contentReview.codeSelection }}</code></pre>
+        <pre><code v-html="markdownToHtml(contentReview.content)"></code></pre>
+      </p>
     </div>
     <div class="post-footer">
       <div class="post-votes">
@@ -51,6 +54,9 @@ import { postService } from "@/services/post.service";
 import router from "@/router";
 import MarkdownIt from "markdown-it";
 import {authenticationService} from "@/services/authentication.service";
+import Prism from 'prismjs';
+import "prismjs/themes/prism-tomorrow.css"
+import 'prismjs/components/prism-java'
 
 library.add(fas, far, fab)
 dom.watch();
@@ -71,30 +77,36 @@ export default {
   methods: {
     like() {
       postService.vote(this.post.id, "UpVote").then(res => {
-        this.score=res.data
+        this.score = res.data
       })
     },
     dislike() {
       postService.vote(this.post.id, "DownVote").then(res => {
-        this.score=res.data
+        this.score = res.data
       })
     },
-    review(){
+    review() {
       router.push('/reviews/' + this.post.id)
     },
-    user(){
+    user() {
       router.push('/profile/' + this.post.userInformation.username)
     },
     markdownToHtml(markdown) {
       const md = new MarkdownIt();
       return md.render(markdown);
     },
-    del(){
-      if (confirm("Êtes-vous sûr de vouloir supprimer ce code ?")){
+    highlightCode() {
+      Prism.highlightAll();
+    },
+    del() {
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce code ?")) {
         reviewService.del(this.post.id)
         this.$emit("refresh")
       }
     }
+  },
+  mounted(){
+    this.highlightCode();
   }
 }
 </script>

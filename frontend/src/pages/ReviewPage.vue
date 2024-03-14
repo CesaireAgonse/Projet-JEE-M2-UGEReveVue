@@ -42,11 +42,8 @@
           <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
-      <div class="row">
-        <textarea v-model="reviewTextarea" placeholder="Entrez votre texte ici"></textarea>
-        <div class="send-button" @click="review()">
-          <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
-        </div>
+      <div v-if="auth != null">
+        <ReviewForm @refresh="reviews"></ReviewForm>
       </div>
     </div>
   </div>
@@ -62,11 +59,13 @@ import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import ReviewForm from "@/components/ReviewForm.vue";
+import {authenticationService} from "@/services/authentication.service";
 library.add(fas, far, fab)
 dom.watch();
 
 export default {
-  components: {CommentVisual, ReviewVisual},
+  components: {ReviewForm, CommentVisual, ReviewVisual},
   watch: {
     '$route.params.id': function() {
       this.comments()
@@ -88,7 +87,8 @@ export default {
       commentsPage:null,
       pageNumber:0,
       reviewsPage:null,
-      pageReviewNumber:0
+      pageReviewNumber:0,
+      auth: authenticationService.getAuth()
     }
   },
   methods : {

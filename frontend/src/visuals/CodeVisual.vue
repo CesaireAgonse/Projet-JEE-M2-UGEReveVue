@@ -14,7 +14,7 @@
     <div @click="code()">
       <h2 class="post-title">{{ post.title }}</h2>
       <p class="post-description">{{ post.description }}</p>
-      <pre @mouseup="handleSelection"><code class="language-java">{{ post.javaContent }}</code></pre>
+      <pre @mouseup="handleSelection"><code id="codeBlock" class="language-java">{{ post.javaContent }}</code></pre>
     </div>
     <div class="post-footer">
       <div class="post-votes">
@@ -117,7 +117,6 @@ export default {
   },
   mounted(){
     this.highlightCode();
-    console.log(this.auth)
   }
 }
 </script>
