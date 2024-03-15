@@ -40,8 +40,8 @@ public class AuthenticationRestController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
+    public ResponseEntity<Void> logout() {
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("Logged out successfully");
+        return ResponseEntity.ok().build();
     }
 }

@@ -47,7 +47,7 @@
             const userId = form.getAttribute('data-user-id');
             const voteType = this.value;
             console.log("delete id " + userId);
-            fetch('../api/v1/users/delete/' + userId , {
+            fetch('/api/v1/users/' + userId , {
                 method: 'DELETE'
             })
                 .then(response => {

@@ -64,6 +64,10 @@ public class CommentService {
         return commentRepository.countByUserId(realUser.get().getId());
     }
 
+    public boolean isExisted(long id){
+        return commentRepository.existsById(id);
+    }
+
     @Transactional
     public CommentInformation delete (long reviewId){
         var comment = commentRepository.findById(reviewId);

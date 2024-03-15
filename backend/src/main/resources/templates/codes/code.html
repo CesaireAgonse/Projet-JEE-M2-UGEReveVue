@@ -60,7 +60,7 @@
                 const codeId = form.getAttribute('data-code-id');
                 const voteType = this.value;
                 console.log("delete id " + codeId);
-                fetch('../api/v1/codes/delete/' + codeId , {
+                fetch('../api/v1/codes/' + codeId , {
                     method: 'DELETE'
                 })
                     .then(response => {

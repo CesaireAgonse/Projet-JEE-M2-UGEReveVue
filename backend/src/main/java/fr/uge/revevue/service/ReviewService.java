@@ -80,6 +80,10 @@ public class ReviewService {
         return new ReviewPageInformation(reviews, page, maxPageNumber);
     }
 
+    public boolean isExisted(long id){
+        return reviewRepository.existsById(id);
+    }
+
     @Transactional
     public ReviewInformation delete (long reviewId){
         var review = reviewRepository.findById(reviewId);

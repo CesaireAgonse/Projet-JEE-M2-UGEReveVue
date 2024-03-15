@@ -41,6 +41,16 @@ public class CodeService {
         this.emf = emf;
         this.userRepository = userRepository;
     }
+
+    @Transactional
+    public CodeInformation getInformation(long idCode){
+        var code = codeRepository.findById(idCode);
+        if(code.isEmpty()){
+            throw new IllegalArgumentException("Code not found");
+        }
+        return CodeInformation.from(code.get());
+    }
+
     @Transactional
     public void create(long id, String title, String description, MultipartFile javaContent, MultipartFile unitContent) throws IOException {
         var user = userRepository.findById(id);
@@ -54,15 +64,6 @@ public class CodeService {
             code.setTestResults(new TestResults(results.testsTotalCount(), results.testsSucceededCount(), results.testsFailedCount(), results.testsTotalTime(), results.failures()));
         }
         codeRepository.save(code);
-    }
-
-    @Transactional
-    public CodeInformation getInformation(long idCode){
-        var code = codeRepository.findById(idCode);
-        if(code.isEmpty()){
-            throw new IllegalArgumentException("Code not found");
-        }
-        return CodeInformation.from(code.get());
     }
 
     @Transactional
@@ -150,6 +151,11 @@ public class CodeService {
     int countCodeWithQuery(String query){
         return codeRepository.countByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(query, query, query);
     }
+
+    public boolean isExisted(long id){
+        return codeRepository.existsById(id);
+    }
+
 
     @Transactional
     public CodeInformation delete (long codeId){

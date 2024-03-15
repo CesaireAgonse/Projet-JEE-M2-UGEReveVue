@@ -25,7 +25,7 @@
                 const form = this.closest('form');
                 const commentId = form.getAttribute('data-comment-id');
                 console.log("delete id " + commentId);
-                fetch('../api/v1/comments/delete/' + commentId , {
+                fetch('../api/v1/comments/' + commentId , {
                     method: 'DELETE'
                 })
                     .then(response => {

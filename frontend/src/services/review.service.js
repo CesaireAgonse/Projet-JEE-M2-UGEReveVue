@@ -5,7 +5,7 @@ let get = (reviewId) => {
 }
 
 let del = (reviewId) => {
-    return Axios.delete('/api/v1/reviews/delete/' + reviewId)
+    return Axios.delete('/api/v1/reviews/' + reviewId)
 }
 
 export const reviewService = {

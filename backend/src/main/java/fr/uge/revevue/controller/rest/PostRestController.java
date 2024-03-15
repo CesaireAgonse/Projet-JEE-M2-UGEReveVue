@@ -1,6 +1,5 @@
 package fr.uge.revevue.controller.rest;
 
-import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
@@ -14,30 +13,52 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/posts")
 public class PostRestController {
     private final UserService userService;
-    private final CodeService codeService;
     private final VoteService voteService;
     private final CommentService commentService;
     private final ReviewService reviewService;
+    private final PostService postService;
 
     @Autowired
-    public PostRestController(CodeService codeService, UserService userService, VoteService voteService,CommentService commentService,ReviewService reviewService){
+    public PostRestController(UserService userService, VoteService voteService, CommentService commentService, ReviewService reviewService, PostService postService){
         this.userService = userService;
-        this.codeService = codeService;
         this.voteService = voteService;
         this.commentService = commentService;
         this.reviewService = reviewService;
+        this.postService = postService;
     }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/comments/{postId}")
+    public ResponseEntity<CommentPageInformation> comments(@PathVariable("postId") @Valid long postId,
+                                                           @RequestParam(value = "pageNumber", required = false) int pageNumber) {
+        if (!postService.isExisted(postId)){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(commentService.getComments(postId, pageNumber));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/reviews/{postId}")
+    public ResponseEntity<ReviewPageInformation> reviews(@PathVariable("postId") @Valid long postId,
+                                                         @RequestParam(value = "pageNumber", required = false) int pageNumber) {
+        if (!postService.isExisted(postId)){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(reviewService.getReviews(postId, pageNumber));
+    }
+
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/vote/{postId}")
     public ResponseEntity<Long> postVoted(@PathVariable("postId") @Valid long postId,
                                              @RequestParam("voteType") String voteType) {
+        if (!postService.isExisted(postId)){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(voteService.postVotedWithOptimisticLock(userService.currentUser().getId(), postId, Vote.VoteType.valueOf(voteType)));
     }
 
@@ -47,10 +68,13 @@ public class PostRestController {
                                 @RequestBody @Valid CommentForm commentForm,
                                 BindingResult result){
         if (result.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
+        if (!postService.isExisted(postId)){
             return ResponseEntity.notFound().build();
         }
         commentService.postCommented(userService.currentUser().getId(),postId,commentForm.getContent(), commentForm.getCodeSelection());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -59,23 +83,12 @@ public class PostRestController {
                                @RequestBody @Valid ReviewForm reviewForm,
                                BindingResult result){
         if (result.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
+        if (!postService.isExisted(postId)){
             return ResponseEntity.notFound().build();
         }
         reviewService.create(userService.currentUser().getId(), postId, reviewForm.getTitle(), reviewForm.getContent());
-        return ResponseEntity.noContent().build();
-    }
-
-    @PreAuthorize("permitAll()")
-    @GetMapping("/comments/{postId}")
-    public ResponseEntity<CommentPageInformation> comments(@PathVariable("postId") @Valid long postId,
-                                                           @RequestParam(value = "pageNumber", required = false) int pageNumber) {
-        return ResponseEntity.ok(commentService.getComments(postId, pageNumber));
-    }
-
-    @PreAuthorize("permitAll()")
-    @GetMapping("/reviews/{postId}")
-    public ResponseEntity<ReviewPageInformation> reviews(@PathVariable("postId") @Valid long postId,
-                                                         @RequestParam(value = "pageNumber", required = false) int pageNumber) {
-        return ResponseEntity.ok(reviewService.getReviews(postId, pageNumber));
+        return ResponseEntity.ok().build();
     }
 }

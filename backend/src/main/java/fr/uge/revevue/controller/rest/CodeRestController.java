@@ -5,7 +5,6 @@ import fr.uge.revevue.information.code.CodeInformation;
 import fr.uge.revevue.information.code.FilterInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.UserService;
-import fr.uge.revevue.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,15 +16,13 @@ import java.io.IOException;
 @RestController
 @RequestMapping("api/v1/codes")
 public class CodeRestController {
-    private final UserService userService;
     private final CodeService codeService;
-    private final VoteService voteService;
+    private final UserService userService;
 
     @Autowired
-    public CodeRestController(CodeService codeService, UserService userService, VoteService voteService) {
-        this.userService = userService;
+    public CodeRestController(CodeService codeService, UserService userService) {
         this.codeService = codeService;
-        this.voteService = voteService;
+        this.userService = userService;
     }
 
     @PreAuthorize("permitAll()")
@@ -38,11 +35,12 @@ public class CodeRestController {
         return ResponseEntity.ok(code);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/delete/{codeId}")
-    public ResponseEntity<Void> codeDeleted(@PathVariable("codeId") @Valid long codeId) {
-        codeService.delete(codeId);
-        return ResponseEntity.noContent().build();
+    @PreAuthorize("permitAll()")
+    @GetMapping("/filter")
+    public ResponseEntity<FilterInformation> filter(@RequestParam(value = "sortBy", required = false) String sortBy,
+                                                    @RequestParam(value = "q", required = false, defaultValue = "") String query,
+                                                    @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+        return ResponseEntity.ok(userService.filter(sortBy, query, pageNumber));
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -53,14 +51,16 @@ public class CodeRestController {
                 codeForm.getDescription(),
                 codeForm.getJavaFile(),
                 codeForm.getUnitFile());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("permitAll()")
-    @GetMapping("/filter")
-    public ResponseEntity<FilterInformation> filter(@RequestParam(value = "sortBy", required = false)String sortBy,
-                           @RequestParam(value = "q", required = false, defaultValue = "")String query,
-                           @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
-        return ResponseEntity.ok(userService.filter(sortBy, query, pageNumber));
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("/{codeId}")
+    public ResponseEntity<Void> codeDeleted(@PathVariable("codeId") @Valid long codeId) {
+        if (!codeService.isExisted(codeId)){
+            return ResponseEntity.notFound().build();
+        }
+        codeService.delete(codeId);
+        return ResponseEntity.ok().build();
     }
 }

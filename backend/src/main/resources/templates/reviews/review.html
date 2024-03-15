@@ -48,7 +48,7 @@
                 const postType = form.getAttribute('data-post-type');
                 const voteType = this.value;
                 console.log("delete id " + codeId);
-                fetch('../api/v1/reviews/delete/' + codeId , {
+                fetch('../api/v1/reviews/' + codeId , {
                     method: 'DELETE'
                 })
                     .then(response => {

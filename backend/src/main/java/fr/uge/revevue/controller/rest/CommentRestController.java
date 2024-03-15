@@ -12,14 +12,18 @@ import javax.validation.Valid;
 @RequestMapping("api/v1/comments")
 public class CommentRestController {
     private final CommentService commentService;
+
     @Autowired
     public CommentRestController(CommentService commentService) {
         this.commentService = commentService;
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/delete/{commentId}")
+    @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> commentDeleted(@PathVariable("commentId") @Valid long commentId) {
+        if (!commentService.isExisted(commentId)){
+            return ResponseEntity.notFound().build();
+        }
         commentService.delete(commentId);
         return ResponseEntity.noContent().build();
     }

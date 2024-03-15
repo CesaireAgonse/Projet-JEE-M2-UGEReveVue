@@ -16,7 +16,7 @@ let filter = (sortyBy, q, pageNumber) => {
 }
 
 let del = (codeId) => {
-    return Axios.delete('/api/v1/codes/delete/' + codeId)
+    return Axios.delete('/api/v1/codes/' + codeId)
 }
 
 export const codeService = {

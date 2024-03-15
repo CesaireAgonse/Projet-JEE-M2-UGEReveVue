@@ -13,6 +13,7 @@ import javax.validation.Valid;
 @RequestMapping("api/v1/reviews")
 public class  ReviewRestController {
     private final ReviewService reviewService;
+
     @Autowired
     public ReviewRestController(ReviewService reviewService) {
         this.reviewService = reviewService;
@@ -29,9 +30,12 @@ public class  ReviewRestController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/delete/{reviewId}")
+    @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> reviewDeleted(@PathVariable("reviewId") @Valid long reviewId) {
+        if (!reviewService.isExisted(reviewId)){
+            return ResponseEntity.notFound().build();
+        }
         reviewService.delete(reviewId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }
