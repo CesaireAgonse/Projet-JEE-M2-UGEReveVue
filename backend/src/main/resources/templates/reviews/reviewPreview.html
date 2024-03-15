@@ -1,7 +1,7 @@
 <div th:fragment="reviewPreview" class="container limit home">
     <p class="stats left" th:text="'score: ' + ${review.score()}"></p>
-    <p class="stats left" th:text="'reviews: '+ ${review.reviews().size()}"></p>
-    <p class="stats left" th:text="'comments: ' + ${review.comments().size()} "></p>
+    <p class="stats left" th:text="'reviews: '+ ${review.reviews()}"></p>
+    <p class="stats left" th:text="'comments: ' + ${review.comments()} "></p>
     <div class ="author right">
         <a th:href="'/users/' + ${review.userInformation().username()}" th:text="${review.userInformation().username()}"></a>
     </div>

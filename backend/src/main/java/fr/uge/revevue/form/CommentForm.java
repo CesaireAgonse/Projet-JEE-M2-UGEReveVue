@@ -7,6 +7,7 @@ public class CommentForm {
     private String codeSelection;
 
     public CommentForm(){}
+
     public CommentForm(String content, String codeSelection) {
         this.content = content;
         this.codeSelection = codeSelection;

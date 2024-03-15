@@ -74,7 +74,7 @@ public class ReviewService {
             page = 0;
         }
         var count = reviewRepository.countByPostId(postId);
-        int maxPageNumber = (int) ((count - 1) / LIMIT_REVIEW_PAGE);
+        int maxPageNumber = ((count - 1) / LIMIT_REVIEW_PAGE);
         Pageable pageable = PageRequest.of(page, LIMIT_REVIEW_PAGE);
         var reviews = reviewRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(ReviewInformation::from).toList();
         return new ReviewPageInformation(reviews, page, maxPageNumber);
@@ -97,7 +97,7 @@ public class ReviewService {
     @Transactional
     public ReviewPageInformation getReviewPageFromUsername(String username, int offset){
         var count = reviewRepository.countByUserUsername(username);
-        int maxPageNumber = (int) ((count - 1) / LIMIT_REVIEW_PAGE);
+        int maxPageNumber = ((count - 1) / LIMIT_REVIEW_PAGE);
         Pageable page = PageRequest.of(offset, LIMIT_REVIEW_PAGE);
         var reviewInformations = reviewRepository.findAllByUserUsername(username, page).stream().map(ReviewInformation::from).toList();
         return new ReviewPageInformation(reviewInformations, offset, maxPageNumber);
@@ -108,5 +108,4 @@ public class ReviewService {
         var realUser = userRepository.findByUsername(user.username());
         return reviewRepository.countByUserId(realUser.get().getId());
     }
-
 }

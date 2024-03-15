@@ -1,10 +1,8 @@
 package fr.uge.revevue.controller;
 
 import fr.uge.revevue.entity.Vote;
-import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
-import fr.uge.revevue.form.TestForm;
 import fr.uge.revevue.information.PagingInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.CommentService;
@@ -22,25 +20,17 @@ import javax.validation.Valid;
 
 @Controller
 public class ReviewController {
-
     private final VoteService voteService;
-
     private final UserService userService;
-
     private final CommentService commentService;
-
     private final ReviewService reviewService;
+
     @Autowired
     public ReviewController(VoteService voteService, UserService userService,CommentService commentService, ReviewService reviewService) {
         this.voteService = voteService;
         this.userService = userService;
         this.commentService = commentService;
         this.reviewService = reviewService;
-    }
-
-    @PostMapping("/reviews/create")
-    public void create(@ModelAttribute("testForm") TestForm testForm){
-        System.out.println(testForm);
     }
 
     @PreAuthorize("permitAll()")
@@ -74,14 +64,17 @@ public class ReviewController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/reviews/vote/{reviewId}")
-    public String reviewVoted(@PathVariable("reviewId") @Valid Long reviewId,
+    public String reviewVoted(@PathVariable("reviewId") @Valid long reviewId,
                               @RequestParam("voteType")Vote.VoteType voteType,
                               BindingResult result){
         if (result.hasErrors()){
             return "redirect:/reviews/" + reviewId;
         }
+        if (!reviewService.isExisted(reviewId)){
+            return "redirect:/";
+        }
         voteService.postVotedWithOptimisticLock(userService.currentUser().getId(),reviewId,voteType);
-        return "redirect:/";
+        return "redirect:/reviews/" + reviewId;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -91,6 +84,9 @@ public class ReviewController {
                                   BindingResult result){
         if (result.hasErrors()){
             return "redirect:/reviews/" + reviewId;
+        }
+        if (!reviewService.isExisted(reviewId)){
+            return "redirect:/";
         }
         commentService.postCommented(userService.currentUser().getId(), reviewId, commentForm.getContent(), commentForm.getCodeSelection());
         return "redirect:/reviews/" + reviewId;
@@ -103,6 +99,9 @@ public class ReviewController {
                                  BindingResult result){
         if (result.hasErrors()){
             return "redirect:/reviews/" + reviewId;
+        }
+        if (!reviewService.isExisted(reviewId)){
+            return "redirect:/";
         }
         reviewService.create(userService.currentUser().getId(), reviewId,  reviewForm.getTitle(), reviewForm.getContent());
         return "redirect:/reviews/" + reviewId;

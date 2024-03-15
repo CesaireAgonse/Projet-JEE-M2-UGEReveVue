@@ -38,30 +38,6 @@ public class UserController {
         return "users/password";
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/password")
-    public String password(@ModelAttribute("passwordForm") @Valid PasswordForm passwordForm, BindingResult result, Model model){
-        var user = userService.currentUser();
-        model.addAttribute("auth", SimpleUserInformation.from(user));
-        if (result.hasErrors()){
-            return "users/password";
-        }
-        if (!passwordForm.getNewPassword().equals(passwordForm.getConfirmPassword())){
-            result.rejectValue("confirmPassword", "error.passwordForm", "The confirmation of the new password does not match the new password entered.");
-            return "users/password";
-        }
-        if(userService.matchesPassword(passwordForm.getNewPassword(), user.getPassword())){
-            result.rejectValue("newPassword", "error.passwordForm", "The new password should be different from the current password.");
-            return "users/password";
-        }
-        if (!userService.matchesPassword(passwordForm.getCurrentPassword(), user.getPassword())) {
-            result.rejectValue("currentPassword", "error.passwordForm", "The current password you entered is incorrect. Please try again.");
-            return "users/password";
-        }
-        var userInformation = userService.modifyPassword(passwordForm.getCurrentPassword(), passwordForm.getNewPassword());
-        return "redirect:/users/" + userInformation.username();
-    }
-
     @PreAuthorize("permitAll()")
     @GetMapping("/users/{username}")
     public String information(@PathVariable String username,
@@ -102,6 +78,30 @@ public class UserController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @PostMapping("/password")
+    public String password(@ModelAttribute("passwordForm") @Valid PasswordForm passwordForm, BindingResult result, Model model){
+        var user = userService.currentUser();
+        model.addAttribute("auth", SimpleUserInformation.from(user));
+        if (result.hasErrors()){
+            return "users/password";
+        }
+        if (!passwordForm.getNewPassword().equals(passwordForm.getConfirmPassword())){
+            result.rejectValue("confirmPassword", "error.passwordForm", "The confirmation of the new password does not match the new password entered.");
+            return "users/password";
+        }
+        if(userService.matchesPassword(passwordForm.getNewPassword(), user.getPassword())){
+            result.rejectValue("newPassword", "error.passwordForm", "The new password should be different from the current password.");
+            return "users/password";
+        }
+        if (!userService.matchesPassword(passwordForm.getCurrentPassword(), user.getPassword())) {
+            result.rejectValue("currentPassword", "error.passwordForm", "The current password you entered is incorrect. Please try again.");
+            return "users/password";
+        }
+        var userInformation = userService.modifyPassword(passwordForm.getCurrentPassword(), passwordForm.getNewPassword());
+        return "redirect:/users/" + userInformation.username();
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("users/follow/{username}")
     public String follow(@PathVariable String username){
         if (!userService.isExisted(username)){
@@ -127,5 +127,4 @@ public class UserController {
         userService.delete(userId);
         return "redirect:/";
     }
-
 }

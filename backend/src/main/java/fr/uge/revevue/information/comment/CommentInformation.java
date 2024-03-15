@@ -23,7 +23,6 @@ public record CommentInformation(long id, long idPost, boolean postIsCode, Simpl
                     comment.getDate()
             );
         }
-
         return new CommentInformation(
                 comment.getId(),
                 comment.getPost().getId(),

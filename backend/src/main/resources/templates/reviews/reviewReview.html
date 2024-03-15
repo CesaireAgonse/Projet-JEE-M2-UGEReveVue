@@ -37,8 +37,8 @@
         <div th:each="review:${reviewsFromPost.reviews()}">
             <div class="container review-post">
                 <div>
-                    <p class="stats left" th:text="'reviews: '+ ${review.reviews().size()}"></p>
-                    <p class="stats left" th:text="'comments: ' + ${review.comments().size()} "></p>
+                    <p class="stats left" th:text="'reviews: '+ ${review.reviews()}"></p>
+                    <p class="stats left" th:text="'comments: ' + ${review.comments()} "></p>
                 </div>
                 <div th:replace="reviews/review :: reviewFragment(review=${review})"></div>
             </div>

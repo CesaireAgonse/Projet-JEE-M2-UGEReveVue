@@ -3,7 +3,6 @@ package fr.uge.revevue.service;
 import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.UnitTestResultInformation;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 public class WebClientService {
 
@@ -15,5 +14,4 @@ public class WebClientService {
                 .retrieve().bodyToMono(UnitTestResultInformation.class)
                 .block();
     }
-
 }

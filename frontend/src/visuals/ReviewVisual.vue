@@ -35,11 +35,11 @@
         <button class="post-button">
           <i class="fa-regular fa-comment fa-bounce" style="color: #74C0FC"></i>
         </button>
-        <p style="padding-right: 7px">{{post.comments.length }}</p>
+        <p style="padding-right: 7px">{{post.comments }}</p>
         <button class="post-button" >
           <i class="fa-regular fa-pen-to-square fa-2xs fa-bounce" style="color: #74C0FC"></i>
         </button>
-        <p>{{post.reviews.length }}</p>
+        <p>{{post.reviews }}</p>
       </div>
     </div>
   </div>

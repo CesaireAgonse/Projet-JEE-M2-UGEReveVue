@@ -4,7 +4,6 @@ import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
-import fr.uge.revevue.form.TestForm;
 import fr.uge.revevue.information.PagingInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.*;
@@ -25,8 +24,8 @@ public class CodeController {
     private final CodeService codeService;
     private final VoteService voteService;
     private final CommentService commentService;
-
     private final ReviewService reviewService;
+
     @Autowired
     public CodeController(CodeService codeService, UserService userService, VoteService voteService, CommentService commentService, ReviewService reviewService){
         this.userService = userService;
@@ -41,34 +40,6 @@ public class CodeController {
     public String post(@ModelAttribute("codeForm") CodeForm codeForm, Model model){
         model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
         return "codes/create";
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/codes/create")
-    public String post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result, Model model)  throws IOException {
-        if (result.hasErrors()){
-            return "codes/create";
-        }
-        if (codeForm.getJavaFile().isEmpty()){
-            result.rejectValue("javaFile", "error.codeForm", "Please upload a file.");
-            return "codes/create";
-        }
-        if (!Objects.requireNonNull(codeForm.getJavaFile().getResource().getFilename()).endsWith(".java")){
-            result.rejectValue("javaFile", "error.codeForm", "Please upload a java file.");
-            return "codes/create";
-        }
-        if (!codeForm.getUnitFile().isEmpty() &&
-                !Objects.requireNonNull(codeForm.getUnitFile().getResource().getFilename()).endsWith(".java")){
-            result.rejectValue("unitFile", "error.codeForm", "Please upload a java file.");
-            return "codes/create";
-        }
-        codeService.create(
-                userService.currentUser().getId(),
-                codeForm.getTitle(),
-                codeForm.getDescription(),
-                codeForm.getJavaFile(),
-                codeForm.getUnitFile());
-        return "redirect:/";
     }
 
     @PreAuthorize("permitAll()")
@@ -101,6 +72,34 @@ public class CodeController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @PostMapping("/codes/create")
+    public String post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result, Model model)  throws IOException {
+        if (result.hasErrors()){
+            return "codes/create";
+        }
+        if (codeForm.getJavaFile().isEmpty()){
+            result.rejectValue("javaFile", "error.codeForm", "Please upload a file.");
+            return "codes/create";
+        }
+        if (!Objects.requireNonNull(codeForm.getJavaFile().getResource().getFilename()).endsWith(".java")){
+            result.rejectValue("javaFile", "error.codeForm", "Please upload a java file.");
+            return "codes/create";
+        }
+        if (!codeForm.getUnitFile().isEmpty() &&
+                !Objects.requireNonNull(codeForm.getUnitFile().getResource().getFilename()).endsWith(".java")){
+            result.rejectValue("unitFile", "error.codeForm", "Please upload a java file.");
+            return "codes/create";
+        }
+        codeService.create(
+                userService.currentUser().getId(),
+                codeForm.getTitle(),
+                codeForm.getDescription(),
+                codeForm.getJavaFile(),
+                codeForm.getUnitFile());
+        return "redirect:/";
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/vote/{codeId}")
     public String codeVoted(@PathVariable("codeId") @Valid long codeId,
                             @RequestParam("voteType") Vote.VoteType voteType,
@@ -108,8 +107,11 @@ public class CodeController {
         if (result.hasErrors()){
             return "redirect:/codes/" + codeId;
         }
+        if (!codeService.isExisted(codeId)){
+            return "redirect:/";
+        }
         voteService.postVotedWithOptimisticLock(userService.currentUser().getId(), codeId, voteType);
-        return "redirect:/";
+        return "redirect:/codes/" + codeId;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -120,6 +122,9 @@ public class CodeController {
         if (result.hasErrors()){
             return "redirect:/codes/" + codeId;
         }
+        if (!codeService.isExisted(codeId)){
+            return "redirect:/";
+        }
         commentService.postCommented(userService.currentUser().getId(),codeId,commentForm.getContent(), commentForm.getCodeSelection());
         return "redirect:/codes/" + codeId;
     }
@@ -129,9 +134,11 @@ public class CodeController {
     public String codeReviewed(@PathVariable("codeId") @Valid long codeId,
                                @ModelAttribute("reviewForm") ReviewForm reviewForm,
                                BindingResult result){
-        System.out.println("terst");
         if (result.hasErrors()){
             return "redirect:/codes/" + codeId;
+        }
+        if (!codeService.isExisted(codeId)){
+            return "redirect:/";
         }
         reviewService.create(userService.currentUser().getId(),codeId, reviewForm.getTitle(), reviewForm.getContent());
         return "redirect:/codes/" + codeId;

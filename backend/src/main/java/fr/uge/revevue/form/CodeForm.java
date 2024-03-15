@@ -3,8 +3,6 @@ package fr.uge.revevue.form;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 public class CodeForm {
 

@@ -6,7 +6,6 @@ import fr.uge.revevue.entity.User;
 import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.code.CodeInformation;
 import fr.uge.revevue.information.code.CodePageInformation;
-import fr.uge.revevue.information.code.FilterInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.repository.CodeRepository;
 import fr.uge.revevue.repository.UserRepository;
@@ -25,7 +24,6 @@ import java.util.*;
 
 @Service
 public class CodeService {
-
     private CodeRepository codeRepository;
     private UserRepository userRepository;
     private EntityManager em;
@@ -104,7 +102,6 @@ public class CodeService {
     }
     
     ArrayDeque<User> addNonFollowToQueueFollow(ArrayDeque<User> queueFollow, List<User> usersAlreadySeen) {
-        System.out.println("Pas de follow");
         var nonFollowers = userRepository.findUserFilterUsers(usersAlreadySeen);
         queueFollow.addAll(nonFollowers);
         return queueFollow;
@@ -156,7 +153,6 @@ public class CodeService {
         return codeRepository.existsById(id);
     }
 
-
     @Transactional
     public CodeInformation delete (long codeId){
         var code = codeRepository.findById(codeId);
@@ -170,7 +166,7 @@ public class CodeService {
     @Transactional
     public CodePageInformation getCodePageFromUsername(String username, int offset){
         var count = codeRepository.countByUserUsername(username);
-        int maxPageNumber = (int) ((count - 1) / LIMIT);
+        int maxPageNumber = ((count - 1) / LIMIT);
         Pageable page = PageRequest.of(offset, LIMIT);
         var codeInformations = codeRepository.findAllByUserUsername(username, page).stream().map(CodeInformation::from).toList();
         return new CodePageInformation(codeInformations, offset, maxPageNumber);
@@ -181,5 +177,4 @@ public class CodeService {
         var realUser = userRepository.findByUsername(user.username());
         return codeRepository.countByUserId(realUser.get().getId());
     }
-
 }

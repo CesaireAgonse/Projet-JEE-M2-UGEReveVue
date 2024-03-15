@@ -9,6 +9,5 @@ import java.util.Set;
 @Repository
 public interface PostRepository extends CrudRepository<Post, Long> {
 
-
     Set<Post> findByUserId(long userId);
 }

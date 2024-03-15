@@ -5,12 +5,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 import java.util.*;
-
-import static fr.uge.revevue.entity.Role.TypeRole.ADMIN;
-
 
 @Entity
 @Table(name = "Users")
@@ -33,7 +29,6 @@ public class User implements UserDetails {
     @Lob
     @Column(name = "profile_photo", columnDefinition="BLOB")
     private byte[] profilePhoto;
-
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(
@@ -65,6 +60,7 @@ public class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + this.role.getTypeRole()));

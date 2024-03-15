@@ -2,7 +2,6 @@ package fr.uge.revevue.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 
 @Entity
 @Table(name = "ReviewComment")

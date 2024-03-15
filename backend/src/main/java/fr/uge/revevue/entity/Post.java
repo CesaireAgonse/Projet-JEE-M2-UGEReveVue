@@ -1,8 +1,5 @@
 package fr.uge.revevue.entity;
 
-import fr.uge.revevue.entity.Comment;
-import fr.uge.revevue.entity.Vote;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;

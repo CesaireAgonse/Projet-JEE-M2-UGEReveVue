@@ -26,11 +26,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-
 @Service
 public class UserService implements UserDetailsService{
+    private static final int LIMIT_FOLLOWED_PAGE = 10;
 
-    private static int LIMIT_FOLLOWED_PAGE = 10;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PostRepository postRepository;
@@ -101,7 +100,6 @@ public class UserService implements UserDetailsService{
         followerUser.getFollowed().remove(followedUser);
     }
 
-
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByUsername(username);
@@ -135,10 +133,6 @@ public class UserService implements UserDetailsService{
         var optionalUser = userRepository.findByUsername(username);
         return optionalUser.map(UserInformation::from).orElse(null);
     }
-    @Transactional
-    public List<UserInformation> getAllUser(){
-        return userRepository.findAll().stream().map(UserInformation::from).toList();
-    }
 
     @Transactional
     public List<UserInformation> getSomeUsers(int offset, int limit){
@@ -155,7 +149,7 @@ public class UserService implements UserDetailsService{
     @Transactional
     public UserPageInformation getFollowedPageFromUsername(String username, int offset){
         var count = userRepository.countUserFollowedByUsername(username);
-        int maxPageNumber = (int) ((count - 1) / LIMIT_FOLLOWED_PAGE);
+        int maxPageNumber = ((count - 1) / LIMIT_FOLLOWED_PAGE);
         Pageable page = PageRequest.of(offset, LIMIT_FOLLOWED_PAGE);
         var followedInformations = userRepository.findUserFollowedByUsername(username, page).stream().map(UserInformation::from).toList();
         return new UserPageInformation(followedInformations, offset, maxPageNumber);

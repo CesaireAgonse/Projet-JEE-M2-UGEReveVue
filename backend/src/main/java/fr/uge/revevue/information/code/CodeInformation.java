@@ -2,8 +2,6 @@ package fr.uge.revevue.information.code;
 
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Vote;
-import fr.uge.revevue.information.comment.CommentInformation;
-import fr.uge.revevue.information.review.ReviewInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.information.UnitTestResultInformation;
 
@@ -20,8 +18,8 @@ public record CodeInformation(
         UnitTestResultInformation testResultsInformation,
         long score,
         Date date,
-        List<CommentInformation> comments,
-        List<ReviewInformation> reviews
+        int comments,
+        int reviews
 ) {
 
     public static CodeInformation from(Code code){
@@ -37,10 +35,8 @@ public record CodeInformation(
                 UnitTestResultInformation.from(code.getTestResults()),
                 code.getScore(),
                 code.getDate(),
-                code.getComments().stream().map(CommentInformation::from).sorted(Comparator.comparing(CommentInformation::date).reversed()).toList(),
-                code.getReviews().stream().map(ReviewInformation::from)
-                        .sorted(Comparator.comparing(ReviewInformation::date).reversed())
-                        .sorted(Comparator.comparing(ReviewInformation::score).reversed()).toList()
+                code.getComments().size(),
+                code.getReviews().size()
         );
     }
 }

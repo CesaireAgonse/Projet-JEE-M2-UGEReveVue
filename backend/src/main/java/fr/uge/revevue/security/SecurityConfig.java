@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -40,7 +39,9 @@ public class SecurityConfig {
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/css/**", "/prism/**", "/script/**", "/h2-console/**").permitAll()
-                // Pas besoin puisqu'on utilise les PreAuthorize pour gérer la sécurité
+
+// Pas besoin puisqu'on utilise les PreAuthorize pour gérer la sécurité
+
 //                .antMatchers("/","/signup", "/login", "/refresh").permitAll()   // Client léger
 //                .antMatchers("/codes/{codeId}", "/reviews/{reviewId}").permitAll()
 //                .antMatchers("/admin/**").hasRole("ADMIN")

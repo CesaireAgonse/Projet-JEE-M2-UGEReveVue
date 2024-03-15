@@ -1,24 +1,18 @@
 package fr.uge.revevue.controller;
 
 import fr.uge.revevue.security.CookieService;
-import fr.uge.revevue.security.JwtService;
 import fr.uge.revevue.form.LoginForm;
 import fr.uge.revevue.form.SignupForm;
 import fr.uge.revevue.service.AuthenticationService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -46,6 +40,26 @@ public class AuthenticationController {
         return "users/signup";
     }
 
+    @GetMapping("/login")
+    public String login(@ModelAttribute("loginForm") LoginForm loginForm){
+        if (userService.currentUser() != null){
+            return "redirect:/";
+        }
+        return "users/login";
+    }
+
+    @GetMapping("/refresh")
+    public String refresh(HttpServletRequest request, HttpServletResponse response){
+        var cookie = cookieService.findCookie("refresh", request);
+        if (cookie == null) {
+            return "redirect:/login";
+        }
+        var tokens = authenticationService.refresh(Map.of(cookie.getName(), cookie.getValue()));
+        cookieService.addAllCookiesFromTokens(tokens, response);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/");
+    }
+
     @PostMapping("/signup")
     public String signup(@ModelAttribute("signupForm") @Valid SignupForm signupForm, BindingResult result, HttpServletResponse response){
         if (result.hasErrors()){
@@ -63,14 +77,6 @@ public class AuthenticationController {
         var tokens = authenticationService.login(signupForm.getUsername(), signupForm.getPassword());
         cookieService.addAllCookiesFromTokens(tokens, response);
         return "redirect:/";
-    }
-
-    @GetMapping("/login")
-    public String login(@ModelAttribute("loginForm") LoginForm loginForm){
-        if (userService.currentUser() != null){
-            return "redirect:/";
-        }
-        return "users/login";
     }
 
     @PostMapping("/login")
@@ -92,17 +98,5 @@ public class AuthenticationController {
         var tokens = authenticationService.login(loginForm.getUsername(), loginForm.getPassword());
         cookieService.addAllCookiesFromTokens(tokens, response);
         return "redirect:/";
-    }
-
-    @GetMapping("/refresh")
-    public String refresh(HttpServletRequest request, HttpServletResponse response){
-        var cookie = cookieService.findCookie("refresh", request);
-        if (cookie == null) {
-            return "redirect:/login";
-        }
-        var tokens = authenticationService.refresh(Map.of(cookie.getName(), cookie.getValue()));
-        cookieService.addAllCookiesFromTokens(tokens, response);
-        String referer = request.getHeader("Referer");
-        return "redirect:" + (referer != null ? referer : "/");
     }
 }

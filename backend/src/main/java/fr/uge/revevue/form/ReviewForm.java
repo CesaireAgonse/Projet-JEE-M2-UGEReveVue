@@ -1,8 +1,5 @@
 package fr.uge.revevue.form;
 
-import fr.uge.revevue.entity.Comment;
-import fr.uge.revevue.entity.Review;
-
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;

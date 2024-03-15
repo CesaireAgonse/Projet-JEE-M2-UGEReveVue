@@ -2,8 +2,6 @@ package fr.uge.revevue.information;
 
 import fr.uge.revevue.entity.TestResults;
 
-import java.util.List;
-
 public record UnitTestResultInformation(
         long testsTotalCount,
         long testsSucceededCount,

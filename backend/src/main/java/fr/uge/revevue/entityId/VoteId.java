@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class VoteId implements Serializable {
-
     private Long user;
     private Long post;
 

@@ -52,7 +52,7 @@ public class CommentService {
             page = 0;
         }
         var count = commentRepository.countByPostId(postId);
-        int maxPageNumber = (int) ((count - 1) / LIMIT_COMMENT_PAGE);
+        int maxPageNumber = ((count - 1) / LIMIT_COMMENT_PAGE);
         Pageable pageable = PageRequest.of(page, LIMIT_COMMENT_PAGE);
         var comments = commentRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(CommentInformation::from).toList();
         return new CommentPageInformation(comments, page, maxPageNumber);
@@ -81,7 +81,7 @@ public class CommentService {
     @Transactional
     public CommentPageInformation getCommentPageFromUsername(String username, int offset){
         var count = commentRepository.countByUserUsername(username);
-        int maxPageNumber = (int) ((count - 1) / LIMIT_COMMENT_PAGE);
+        int maxPageNumber = ((count - 1) / LIMIT_COMMENT_PAGE);
         Pageable page = PageRequest.of(offset, LIMIT_COMMENT_PAGE);
         var commentInformations = commentRepository.findAllByUserUsername(username, page).stream().map(CommentInformation::from).toList();
         return new CommentPageInformation(commentInformations, offset, maxPageNumber);
