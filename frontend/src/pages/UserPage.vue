@@ -90,7 +90,6 @@ export default {
     this.comments()
     this.users()
     document.body.style.overflowY = "visible"
-
   },
   data() {
     return {

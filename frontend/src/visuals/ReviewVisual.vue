@@ -120,9 +120,10 @@ export default {
 .post {
   background-color: #1e1e1e;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
   padding: 20px;
-  max-width: 100%;
+  margin: 20px;
+  width: calc(100% - 80px);
   text-align: left;
 }
 
@@ -162,12 +163,6 @@ export default {
   text-align: left;
 }
 
-.post-description {
-  font-size: 16px;
-  margin-bottom: 15px;
-  text-align: left;
-}
-
 .post-footer {
   display: flex;
   justify-content: space-between;
@@ -180,7 +175,7 @@ export default {
 }
 
 .post-button {
-  background-color: transparent; /* Green */
+  background-color: transparent;
   border: none;
   color: white;
   text-align: center;

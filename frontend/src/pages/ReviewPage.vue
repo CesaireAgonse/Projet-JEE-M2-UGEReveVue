@@ -17,7 +17,7 @@
           <button v-if="pageNumber > 0" class="basic-button prevButton" @click="commentsPrev">
             <i class="fa-solid fa-arrow-left"></i>
           </button>
-          <button class="basic-button nextButton" @click="commentsNext">
+          <button v-if="pageNumber < maxPageCommentNumber" class="basic-button nextButton" @click="commentsNext">
             <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
@@ -38,7 +38,7 @@
         <button v-if="pageReviewNumber > 0" class="basic-button prevButton" @click="reviewsPrev">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
-        <button class="basic-button nextButton" @click="reviewsNext">
+        <button v-if="pageReviewNumber < maxPageReviewNumber" class="basic-button nextButton" @click="reviewsNext">
           <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
@@ -78,6 +78,7 @@ export default {
     this.comments()
     this.reviews()
     this.code()
+    document.body.style.overflowY = "visible"
   },
   data() {
     return {
@@ -88,6 +89,8 @@ export default {
       pageNumber:0,
       reviewsPage:null,
       pageReviewNumber:0,
+      maxPageCommentNumber:0,
+      maxPageReviewNumber:0,
       auth: authenticationService.getAuth()
     }
   },
@@ -95,7 +98,6 @@ export default {
     code(){
       reviewService.get(this.$route.params.id).then(res => {
         this.post = res.data
-        console.log(this.post)
       })
     },
     home(){
@@ -117,6 +119,7 @@ export default {
       postService.comments(this.$route.params.id, this.pageNumber).then(res => {
         this.commentsPage = res.data.comments
         this.pageNumber = res.data.pageNumber
+        this.maxPageCommentNumber = res.data.maxPageNumber
       })
     },
     commentsPrev(){
@@ -131,6 +134,7 @@ export default {
       postService.reviews(this.$route.params.id, this.pageReviewNumber).then(res => {
         this.reviewsPage = res.data.reviews
         this.pageReviewNumber = res.data.pageNumber
+        this.maxPageReviewNumber = res.data.maxPageNumber
       })
     },
     reviewsPrev(){
@@ -155,7 +159,7 @@ export default {
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
   margin: 20px;
-  width: calc(33.3333% - 40px);
+  width: calc(48.5%);
 }
 
 .reviews {

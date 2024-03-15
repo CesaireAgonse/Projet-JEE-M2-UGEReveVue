@@ -1,17 +1,17 @@
 <template>
   <div>
-    <form @submit.prevent="submitReview" enctype="multipart/form-data" id="postForm">
+    <form enctype="multipart/form-data" id="postForm">
       <div class="form-group">
-        <label for="title-input">Title:</label>
         <input type="text" id="title-input" v-model="reviewForm.title" placeholder="Enter your title" required>
       </div>
       <div v-for="(field, index) in reviewForm.content" :key="index">
         <code v-if="field.codeSelection !== ''" class="language-java">{{ field.codeSelection }}</code>
         <textarea class="review" v-model="field.content" :name="'content[' + index + '].content'" placeholder="Enter a comment" required></textarea>
-        <button @click="addCode(field)" class="basic-button">Add selected code</button>
-        <button @click="removeField(index)" class="basic-button">Remove</button>
+        <button @click="addCode(field)" class="basic-button">Ajouter le code selectionné</button>
+        <button @click="removeField(index)" class="basic-button">Supprimer le champ</button>
       </div>
-      <button @click="addField" class="basic-button">Ajouter un champ</button>
+      <div class="space"></div>
+      <button @click="addField" class="other-button">Ajouter un champ</button>
       <div type="submit" class="send-button" @click="review()">
         <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
       </div>
@@ -27,7 +27,7 @@ export default {
     return {
       reviewForm: {
         title: '',
-        content: [],
+        content: [{ content: '', codeSelection: '' }],
       },
     };
   },
@@ -36,7 +36,9 @@ export default {
       this.reviewForm.content.push({ content: '', codeSelection: '' });
     },
     removeField(index) {
-      this.reviewForm.content.splice(index, 1);
+      if (this.reviewForm.content.length > 1){
+        this.reviewForm.content.splice(index, 1);
+      }
     },
     addCode(field) {
       const baseCode = document.getElementById('codeBlock').innerText;
@@ -50,7 +52,7 @@ export default {
     review(){
       postService.review(this.$route.params.id, this.reviewForm).then(() => {
         this.reviewForm.title = ''
-        this.reviewForm.content = []
+        this.reviewForm.content = [{ content: '', codeSelection: '' }]
         this.$emit('refresh')
       })
     },
@@ -60,8 +62,7 @@ export default {
 
 <style scoped>
 .send-button{
-  margin-top: 15px;
-  margin-bottom: 25px;
+  margin: 15px 100px 25px;
   padding: 10px;
   border: 2px solid #ccc;
   border-radius: 10px;
@@ -72,17 +73,44 @@ export default {
   color: black;
 }
 
+textarea {
+  margin-top: 30px;
+}
+
 textarea,
 input {
   padding-top: 10px;
   padding-bottom: 10px;
-  margin-bottom: 30px;
+  width: 95%;
+  margin-left: 20px;
+  margin-right: 20px;
   border-radius: 5px;
   border: 1px solid #fff;
   outline: none;
   background-color: rgba(200, 200, 200, 0.2);
   color: #ffffff;
   font-size: large;
-  width: 100%;
 }
+
+.space{
+  padding: 20px;
+}
+
+.other-button{
+  border: 1px solid #fff;
+  background-color: #fff;
+  color: black;
+  padding: 8px 12px;
+  border-radius: 20px;
+  margin-left: 20px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.other-button:hover {
+  color: #fff;
+  background-color: transparent;
+}
+
+
 </style>

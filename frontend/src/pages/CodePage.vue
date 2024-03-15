@@ -81,6 +81,7 @@ export default {
     this.comments()
     this.reviews()
     this.code()
+    document.body.style.overflowY = "visible"
   },
   data() {
     return {
