@@ -160,19 +160,12 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
-    public UserInformation delete(long userId){
-        var userOptional = userRepository.findById(userId);
+    public UserInformation delete(String username){
+        var userOptional = userRepository.findByUsername(username);
         if(userOptional.isEmpty()){
             throw new IllegalArgumentException("User not found");
         }
         var user = userOptional.get();
-
-        //supression de tout les posts de l'User
-        Set<Post> userPosts = postRepository.findByUserId(userId);
-        for (Post post : userPosts) {
-            postRepository.delete(post);
-        }
-
         userRepository.delete(user);
         return UserInformation.from(user);
     }
@@ -236,6 +229,15 @@ public class UserService implements UserDetailsService{
             pageNumber = 0;
         }
         return getFollowedPageFromUsername(username, pageNumber);
+    }
+
+    @Transactional
+    public void changePhoto(byte[] photo) {
+        var user = currentUser();
+        if (user == null){
+            throw new IllegalStateException("User not found");
+        }
+        user.setProfilePhoto(photo);
     }
 }
 

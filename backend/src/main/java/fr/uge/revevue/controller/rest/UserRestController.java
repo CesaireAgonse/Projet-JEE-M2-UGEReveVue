@@ -105,10 +105,22 @@ public class UserRestController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/photo")
+    public ResponseEntity<Void> photo(@RequestBody @Valid byte[] photo){
+        userService.changePhoto(photo);
+        return ResponseEntity.ok().build();
+    }
+
+
+
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> delete(@PathVariable("userId") @Valid long userId) {
-        userService.delete(userId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Void> delete(@PathVariable("username") @Valid String username) {
+        if (!userService.isExisted(username)){
+            return ResponseEntity.notFound().build();
+        }
+        userService.delete(username);
+        return ResponseEntity.ok().build();
     }
 }

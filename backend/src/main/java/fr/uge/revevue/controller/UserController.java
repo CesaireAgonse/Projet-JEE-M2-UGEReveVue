@@ -122,9 +122,12 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/delete/{userId}")
-    public String delete(@PathVariable("userId") @Valid long userId) {
-        userService.delete(userId);
+    @DeleteMapping("/{username}")
+    public String delete(@PathVariable("username") @Valid String username) {
+        if (!userService.isExisted(username)){
+            return "redirect:/";
+        }
+        userService.delete(username);
         return "redirect:/";
     }
 }

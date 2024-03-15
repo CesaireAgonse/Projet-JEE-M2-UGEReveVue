@@ -11,6 +11,10 @@
         <button type="submit" class="button basic">Review</button>
     </form>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            addTextField();
+        });
+
         var dynamicFieldIndex = 0;
         function addTextField() {
             var dynamicFields = document.getElementById('dynamicFields');
@@ -52,12 +56,16 @@
             deleteButton.classList.add('button', 'other');
             deleteButton.type = 'button';
             deleteButton.onclick = function() {
-                divWrapper.remove();
+                if (dynamicFieldIndex > 1) {
+                    divWrapper.remove();
+                    dynamicFieldIndex--;
+                } else {
+                    alert("You cannot remove the last field.");
+                }
             };
             divWrapper.appendChild(copyButton);
             divWrapper.appendChild(deleteButton);
             dynamicFieldIndex++;
         }
-
     </script>
 </div>

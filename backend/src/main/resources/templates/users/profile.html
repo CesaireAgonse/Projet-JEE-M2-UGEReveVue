@@ -4,6 +4,7 @@
         <title>Profile</title>
         <link rel="stylesheet" href="/css/style.css"/>
         <link rel="stylesheet" href="/css/users/profile.css"/>
+        <link rel="stylesheet" href="/prism/prism.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
@@ -40,8 +41,8 @@
                     <input type="hidden" name="codePageNumber" th:value="${pagingInfo.codePageNumber}" />
                     <input type="hidden" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber}" />
                     <input type="hidden" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber}" />
-                    <button class="left button other" th:if="${followedsFromUser.pageNumber() > 0}" type="submit" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber - 1}">Previous Page</button>
-                    <button class="right button other" th:if="${followedsFromUser.pageNumber() < followedsFromUser.maxPageNumber()}" type="submit" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber + 1}">Next Page</button>
+                    <button class="button other" th:if="${followedsFromUser.pageNumber() > 0}" type="submit" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber - 1}">Previous Page</button>
+                    <button class="button other" th:if="${followedsFromUser.pageNumber() < followedsFromUser.maxPageNumber()}" type="submit" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber + 1}">Next Page</button>
                 </form>
             </div>
             <div class="container limit">
@@ -53,8 +54,8 @@
                     <input type="hidden" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber}" />
                     <input type="hidden" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber}" />
                     <input type="hidden" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber}" />
-                    <button class="left button other" th:if="${codesFromUser.pageNumber() > 0}" type="submit" name="codePageNumber" th:value="${pagingInfo.codePageNumber - 1}">Previous Page</button>
-                    <button class="right button other" th:if="${codesFromUser.pageNumber() < codesFromUser.maxPageNumber()}" type="submit" name="codePageNumber" th:value="${pagingInfo.codePageNumber + 1}">Next Page</button>
+                    <button class="button other" th:if="${codesFromUser.pageNumber() > 0}" type="submit" name="codePageNumber" th:value="${pagingInfo.codePageNumber - 1}">Previous Page</button>
+                    <button class="button other" th:if="${codesFromUser.pageNumber() < codesFromUser.maxPageNumber()}" type="submit" name="codePageNumber" th:value="${pagingInfo.codePageNumber + 1}">Next Page</button>
                 </form>
             </div>
             <div class="container limit">
@@ -66,8 +67,8 @@
                     <input type="hidden" name="codePageNumber" th:value="${pagingInfo.codePageNumber}" />
                     <input type="hidden" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber}" />
                     <input type="hidden" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber}" />
-                    <button class="left button other" th:if="${reviewsFromUser.pageNumber() > 0}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber - 1}">Previous Page</button>
-                    <button class="right button other" th:if="${reviewsFromUser.pageNumber() < reviewsFromUser.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber + 1}">Next Page</button>
+                    <button class="button other" th:if="${reviewsFromUser.pageNumber() > 0}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber - 1}">Previous Page</button>
+                    <button class="button other" th:if="${reviewsFromUser.pageNumber() < reviewsFromUser.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber + 1}">Next Page</button>
                 </form>
             </div>
             <div class="container limit">
@@ -79,10 +80,30 @@
                     <input type="hidden" name="codePageNumber" th:value="${pagingInfo.codePageNumber}" />
                     <input type="hidden" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber}" />
                     <input type="hidden" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber}" />
-                    <button class="left button other" th:if="${commentsFromUser.pageNumber() > 0}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber - 1}">Previous Page</button>
-                    <button class="right button other" th:if="${commentsFromUser.pageNumber() < commentsFromUser.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber + 1}">Next Page</button>
+                    <button class="button other" th:if="${commentsFromUser.pageNumber() > 0}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber - 1}">Previous Page</button>
+                    <button class="button other" th:if="${commentsFromUser.pageNumber() < commentsFromUser.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber + 1}">Next Page</button>
                 </form>
             </div>
         </div>
     </body>
 </html>
+<script src="/prism/prism.js"></script>
+<script>
+    document.querySelectorAll('.code-container').forEach(codeContainer => {
+        const codeElement = codeContainer.querySelector('.language-java');
+        const codeContent = codeElement.getAttribute('data-code');
+        codeElement.textContent = codeContent;
+    });
+</script>
+<script src="/markdown-it/markdown-it.min.js"></script>
+<script>
+    var md = window.markdownit();
+    var divs = document.getElementsByClassName('markdown');
+    for (var i = 0; i < divs.length; i++) {
+        if (!divs[i].hasAttribute('data-rendered')) {
+            var content = divs[i].innerHTML;
+            divs[i].innerHTML = md.render(content);
+            divs[i].setAttribute('data-rendered', 'true');
+        }
+    }
+</script>

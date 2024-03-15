@@ -38,6 +38,15 @@ public class User implements UserDetails {
     )
     private Set<User> followed = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Post> posts = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Comment> comments = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Vote> votes = new HashSet<>();
+
     public User(){}
 
     public User(String username, String password){
@@ -116,6 +125,30 @@ public class User implements UserDetails {
 
     public void setProfilePhoto(byte[] profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public Set<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(Set<Vote> votes) {
+        this.votes = votes;
     }
 
     @Override

@@ -22,7 +22,7 @@ import java.util.List;
 
 @Service
 public class ReviewService {
-    private static int LIMIT_REVIEW_PAGE = 4;
+    private static final int LIMIT_REVIEW_PAGE = 4;
     private final ReviewRepository reviewRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -36,6 +36,9 @@ public class ReviewService {
     }
     @Transactional
     public void create(long userId, long postId, String title, List<CommentForm> commentForms){
+        if (commentForms == null){
+            throw new IllegalArgumentException("Comment Forms is null");
+        }
         var findUser = userRepository.findById(userId);
         if (findUser.isEmpty()){
             throw new IllegalStateException("User not found");
@@ -47,13 +50,11 @@ public class ReviewService {
         var user = findUser.get();
         var post = findPost.get();
         List<Comment> content = new ArrayList<>();
-        if (commentForms != null) {
-            for (var contentForm : commentForms) {
-                var comment = new Comment(contentForm.getContent(), user, null);
-                comment.setCodeSelection(contentForm.getCodeSelection());
-                content.add(comment);
-                commentRepository.save(comment);
-            }
+        for (var contentForm : commentForms) {
+            var comment = new Comment(contentForm.getContent(), user, null);
+            comment.setCodeSelection(contentForm.getCodeSelection());
+            content.add(comment);
+            commentRepository.save(comment);
         }
         var review = new Review(title, content, user, post);
         reviewRepository.save(review);

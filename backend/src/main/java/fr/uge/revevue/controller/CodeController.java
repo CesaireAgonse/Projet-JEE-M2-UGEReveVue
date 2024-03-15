@@ -59,21 +59,17 @@ public class CodeController {
             throw new IllegalStateException("code not found");
         }
         model.addAttribute("code", code);
-
         PagingInformation pagingInfo = new PagingInformation(0, reviewPageNumber, commentPageNumber,0);
         pagingInfo = pagingInfo.setDefaultsIfNull();
         model.addAttribute("pagingInfo", pagingInfo);
-
-        var reviewsFromPost = reviewService.getReviews(code.id(), pagingInfo.reviewPageNumber());
-        var commentsFromPost = commentService.getComments(code.id(), pagingInfo.commentPageNumber());
-        model.addAttribute("reviewsFromPost", reviewsFromPost);
-        model.addAttribute("commentsFromPost", commentsFromPost);
+        model.addAttribute("reviewsFromPost", reviewService.getReviews(code.id(), pagingInfo.reviewPageNumber()));
+        model.addAttribute("commentsFromPost", commentService.getComments(code.id(), pagingInfo.commentPageNumber()));
         return "codes/codeReview";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/create")
-    public String post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result, Model model)  throws IOException {
+    public String post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result)  throws IOException {
         if (result.hasErrors()){
             return "codes/create";
         }
