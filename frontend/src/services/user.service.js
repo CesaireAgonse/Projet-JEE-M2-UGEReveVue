@@ -40,6 +40,10 @@ let photo = (photo) => {
     return Axios.post('/api/v1/users/photo', photo)
 }
 
+let reviewsContents = (username, numberPage) => {
+    return Axios.get("/api/v1/users/reviews/contents/" + username + "?pageNumber=" + numberPage)
+}
+
 export const userService = {
     profile,
     updatePassword,
@@ -50,7 +54,8 @@ export const userService = {
     reviews,
     comments,
     followed,
-    photo
+    photo,
+    reviewsContents
 }
 
 

@@ -1,4 +1,24 @@
 <template>
+  <div v-if="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" @click="hideCodeModal">&times;</span>
+      <h2 class="label">Ajouter un champ d'une ancienne review</h2>
+      <div v-for="(content) in reviewContent" :key="content">
+          <p v-text="content.content"></p>
+      </div>
+      <div class="row">
+        <button v-if="pageNumber > 0" class="basic-button prevButton" @click="prev">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button v-if="pageNumber < maxPageNumber" class="basic-button nextButton" @click="next">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
   <div>
     <form enctype="multipart/form-data" id="postForm">
       <div class="form-group">
@@ -12,6 +32,7 @@
       </div>
       <div class="space"></div>
       <button @click="addField" class="other-button">Ajouter un champ</button>
+      <button @click="addReviewField" class="other-button">Ajouter un champ d'une ancienne review</button>
       <div type="submit" class="send-button" @click="review()">
         <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
       </div>
@@ -21,10 +42,21 @@
 
 <script scoped>
 import {postService} from "@/services/post.service";
-
+import {userService} from "@/services/user.service";
+import {authenticationService} from "@/services/authentication.service";
+import { library, dom } from "@fortawesome/fontawesome-svg-core";
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+library.add(fas, far, fab)
+dom.watch();
 export default {
   data() {
     return {
+      modal: false,
+      reviewContent: [],
+      pageNumber:0,
+      maxPageNumber:0,
       reviewForm: {
         title: '',
         content: [{ content: '', codeSelection: '' }],
@@ -34,6 +66,10 @@ export default {
   methods: {
     addField() {
       this.reviewForm.content.push({ content: '', codeSelection: '' });
+    },
+    addReviewField(){
+      this.oldReviewsContents()
+      this.modal = true
     },
     removeField(index) {
       if (this.reviewForm.content.length > 1){
@@ -56,6 +92,29 @@ export default {
         this.$emit('refresh')
       })
     },
+    hideCodeModal() {
+      this.modal = false;
+    },
+    handleModalClick(event) {
+      if (!event.target.closest('.modal-content')) {
+        this.hideCodeModal();
+      }
+    },
+    oldReviewsContents(){
+      userService.reviewsContents(authenticationService.getAuth().username, this.pageNumber).then((res) => {
+        this.reviewContent = res.data.reviewContent
+        this.pageNumber = res.data.pageNumber
+        this.maxPageNumber = res.data.maxPageNumber
+      })
+    },
+    next(){
+      this.pageNumber++;
+      this.oldReviewsContents()
+    },
+    prev(){
+      this.pageNumber--
+      this.oldReviewsContents()
+    }
   },
 };
 </script>
@@ -112,5 +171,45 @@ input {
   background-color: transparent;
 }
 
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  border: 2px solid #fff;
+  backdrop-filter: blur(10px);
+}
+
+.close {
+  color: #fff;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+.label {
+  margin-bottom: 30px;
+}
 
 </style>

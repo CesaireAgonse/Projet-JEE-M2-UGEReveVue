@@ -5,6 +5,7 @@ import fr.uge.revevue.information.code.CodeInformation;
 import fr.uge.revevue.information.code.CodePageInformation;
 import fr.uge.revevue.information.code.FilterInformation;
 import fr.uge.revevue.information.comment.CommentPageInformation;
+import fr.uge.revevue.information.review.ReviewContentPageInformation;
 import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.information.user.UserInformation;
@@ -231,6 +232,13 @@ public class UserService implements UserDetailsService{
         return getFollowedPageFromUsername(username, pageNumber);
     }
 
+    public ReviewContentPageInformation reviewsContents(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        return reviewService.getReviewContentPageFromUsername(username, pageNumber);
+    }
+
     @Transactional
     public void changePhoto(byte[] photo) {
         var user = currentUser();
@@ -241,6 +249,7 @@ public class UserService implements UserDetailsService{
         userRepository.changePhoto(user.getUsername(), photo);
         System.out.println("TEST");
     }
+
 }
 
 

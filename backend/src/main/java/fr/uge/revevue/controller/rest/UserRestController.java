@@ -3,6 +3,7 @@ package fr.uge.revevue.controller.rest;
 import fr.uge.revevue.information.UpdatePasswordInformation;
 import fr.uge.revevue.information.code.CodePageInformation;
 import fr.uge.revevue.information.comment.CommentPageInformation;
+import fr.uge.revevue.information.review.ReviewContentPageInformation;
 import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.information.user.UserPageInformation;
@@ -65,6 +66,16 @@ public class UserRestController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(userService.comments(username, pageNumber));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/reviews/contents/{username}")
+    public ResponseEntity<ReviewContentPageInformation> reviewContent(@PathVariable("username") @Valid String username,
+                                                                      @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+        if (!userService.isExisted(username)){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userService.reviewsContents(username, pageNumber));
     }
 
     @PreAuthorize("permitAll()")
