@@ -83,8 +83,8 @@ export default {
       this.username = res.data.username
       this.nbFollowed = res.data.followed.length
       if (res.data.profilePhoto != null){
-        console.log(res.data.profilePhoto)
-        this.photo = "data:image/jpg;base64," + res.data.profilePhoto
+        this.photo = "data:image/jpg;base64," + res.data.profilePhoto;
+
       }
     }).catch(err => console.log(err))
     this.codes()
@@ -220,23 +220,25 @@ export default {
       // Écoutez l'événement 'change' de l'input file
       fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.photo = reader.result;
-          userService.photo(this.photo)
-        };
-        reader.readAsDataURL(file);
+        let formData = new FormData();
+        formData.append('photo', file);
+        userService.photo(formData).then(() => {
+          userService.user(this.$route.params.name).then(res => {
+            if (res.data.profilePhoto != null){
+              this.photo = "data:image/jpg;base64," + res.data.profilePhoto;
+            }
+          }).catch(err => console.log(err))
+        })
       });
-
-      // Simulez un clic sur l'élément input file
       fileInput.click();
-    }
+    },
   }
 }
 </script>
 <style scoped>
 .button-profile {
   font-size: 110%;
+  margin-bottom: 20px;
 }
 
 .profile {
@@ -252,7 +254,7 @@ export default {
 .profile-photo {
   width: 250px;
   height: 250px;
-  margin: 10px 30px 10px 10px;
+  margin: 40px 30px 10px 10px;
 }
 
 .profile-info {

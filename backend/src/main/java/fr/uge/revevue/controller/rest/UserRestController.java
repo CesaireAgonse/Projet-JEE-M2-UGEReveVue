@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Lob;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -120,8 +121,8 @@ public class UserRestController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/photo")
-    public ResponseEntity<Void> photo(@RequestBody byte[] photo){
-        userService.changePhoto(photo);
+    public ResponseEntity<Void> photo(@RequestParam("photo") MultipartFile photo) throws IOException {
+        userService.changePhoto(photo.getBytes());
         return ResponseEntity.ok().build();
     }
 

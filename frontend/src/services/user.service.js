@@ -37,7 +37,11 @@ let followed = (username, numberPage) => {
 }
 
 let photo = (photo) => {
-    return Axios.post('/api/v1/users/photo', photo)
+    return Axios.post('/api/v1/users/photo', photo, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
 }
 
 let reviewsContents = (username, numberPage) => {
