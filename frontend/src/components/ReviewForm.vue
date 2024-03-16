@@ -4,7 +4,10 @@
       <span class="close" @click="hideCodeModal">&times;</span>
       <h2 class="label">Ajouter un champ d'une ancienne review</h2>
       <div v-for="(content) in reviewContent" :key="content">
-          <p v-text="content.content"></p>
+        <div class="post" @click="select(content)">
+          <pre v-if="content.codeSelection !== null && content.codeSelection !== ''" class="select-code"><code class="language-java">{{ content.codeSelection }}</code></pre>
+          <pre><div v-html="markdownToHtml(content.content)"></div></pre>
+        </div>
       </div>
       <div class="row">
         <button v-if="pageNumber > 0" class="basic-button prevButton" @click="prev">
@@ -48,6 +51,7 @@ import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import MarkdownIt from "markdown-it";
 library.add(fas, far, fab)
 dom.watch();
 export default {
@@ -114,12 +118,27 @@ export default {
     prev(){
       this.pageNumber--
       this.oldReviewsContents()
+    },
+    markdownToHtml(markdown) {
+      const md = new MarkdownIt();
+      return md.render(markdown);
+    },
+    select(content){
+      this.reviewForm.content.push({ content: content.content, codeSelection: content.codeSelection });
     }
   },
 };
 </script>
 
 <style scoped>
+.post {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
+  margin: 20px;
+  text-align: left;
+  padding: 10px;
+}
 .send-button{
   margin: 15px 100px 25px;
   padding: 10px;
