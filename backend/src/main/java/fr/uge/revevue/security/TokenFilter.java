@@ -54,6 +54,12 @@ public class TokenFilter extends OncePerRequestFilter {
         }
         // Chargement de l'utilisateur avec le token
         if (!isTokenExpired && username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+            if (!userService.isExisted(username)){
+                cookieService.removeCookie("bearer", response);
+                cookieService.removeCookie("refresh", response);
+                response.sendRedirect("/");
+                return;
+            }
             UserDetails userDetails = userService.loadUserByUsername(username);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);

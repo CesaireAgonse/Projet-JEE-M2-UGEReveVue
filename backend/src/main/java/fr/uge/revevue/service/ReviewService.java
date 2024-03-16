@@ -1,17 +1,12 @@
 package fr.uge.revevue.service;
 
-import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.entity.Review;
+import fr.uge.revevue.entity.ReviewContent;
 import fr.uge.revevue.form.CommentForm;
-import fr.uge.revevue.information.code.CodeInformation;
-import fr.uge.revevue.information.code.CodePageInformation;
 import fr.uge.revevue.information.review.ReviewInformation;
 import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.UserInformation;
-import fr.uge.revevue.repository.CommentRepository;
-import fr.uge.revevue.repository.PostRepository;
-import fr.uge.revevue.repository.ReviewRepository;
-import fr.uge.revevue.repository.UserRepository;
+import fr.uge.revevue.repository.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ReviewService {
@@ -27,12 +23,14 @@ public class ReviewService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final ReviewContentRepository reviewContentRepository;
 
-    public ReviewService(ReviewRepository reviewRepository, PostRepository postRepository,UserRepository userRepository, CommentRepository commentRepository) {
+    public ReviewService(ReviewRepository reviewRepository, PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, ReviewContentRepository reviewContentRepository) {
         this.reviewRepository = reviewRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
+        this.reviewContentRepository = reviewContentRepository;
     }
     @Transactional
     public void create(long userId, long postId, String title, List<CommentForm> commentForms){
@@ -49,14 +47,18 @@ public class ReviewService {
         }
         var user = findUser.get();
         var post = findPost.get();
-        List<Comment> content = new ArrayList<>();
+        List<ReviewContent> contents = new ArrayList<>();
         for (var contentForm : commentForms) {
-            var comment = new Comment(contentForm.getContent(), user, null);
-            comment.setCodeSelection(contentForm.getCodeSelection());
-            content.add(comment);
-            commentRepository.save(comment);
+           var content = reviewContentRepository.findByUserUsernameAndContentAndCodeSelection(user.getUsername(), contentForm.getContent(), contentForm.getCodeSelection());
+           if (content.isPresent()){
+               contents.add(content.get());
+           }else{
+               var comment = new ReviewContent(contentForm.getContent(), contentForm.getCodeSelection(), user);
+               contents.add(comment);
+               reviewContentRepository.save(comment);
+           }
         }
-        var review = new Review(title, content, user, post);
+        var review = new Review(title, contents, user, post);
         reviewRepository.save(review);
     }
 

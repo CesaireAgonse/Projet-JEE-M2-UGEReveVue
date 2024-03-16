@@ -18,6 +18,7 @@
           <button v-if="auth != null && auth.username !== username" class="basic-button button-profile left" @click="follow"><i class="fa-solid fa-user-plus"></i> Suivre</button>
           <button v-if="auth != null && auth.username !== username" class="basic-button button-profile left" @click="unfollow"><i class="fa-solid fa-user-minus"></i> Ne plus suivre</button>
           <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="showPasswordModal">Modifier son mot de passe</button>
+          <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="uploadPhoto"><i class="fa-solid fa-camera"></i> Changer la photo de profil</button>
         </div>
       </div>
     </div>
@@ -82,6 +83,7 @@ export default {
       this.username = res.data.username
       this.nbFollowed = res.data.followed.length
       if (res.data.profilePhoto != null){
+        console.log(res.data.profilePhoto)
         this.photo = "data:image/jpg;base64," + res.data.profilePhoto
       }
     }).catch(err => console.log(err))
@@ -208,6 +210,26 @@ export default {
     nextUser(){
       this.userPage.pageNumber += 1
       this.users()
+    },
+    uploadPhoto() {
+      // Créez une référence à l'élément input de type file
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.style.display = 'none';
+
+      // Écoutez l'événement 'change' de l'input file
+      fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.photo = reader.result;
+          userService.photo(this.photo)
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Simulez un clic sur l'élément input file
+      fileInput.click();
     }
   }
 }

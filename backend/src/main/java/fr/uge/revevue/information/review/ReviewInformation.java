@@ -2,6 +2,7 @@ package fr.uge.revevue.information.review;
 
 import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Review;
+import fr.uge.revevue.entity.ReviewContent;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.information.comment.CommentInformation;
@@ -17,7 +18,7 @@ public record ReviewInformation(
         SimpleUserInformation userInformation,
         Vote.VoteType voteType,
         String title,
-        List<CommentInformation> content,
+        List<ReviewContentInformation> content,
         long score,
         Date date,
         int comments,
@@ -34,7 +35,7 @@ public record ReviewInformation(
                 SimpleUserInformation.from(review.getUser()),
                 review.getVoteUser(),
                 review.getTitle(),
-                review.getContent().stream().map(CommentInformation::from).toList(),
+                review.getContent().stream().map(ReviewContentInformation::from).toList(),
                 review.getScore(),
                 review.getDate(),
                 review.getComments().size(),

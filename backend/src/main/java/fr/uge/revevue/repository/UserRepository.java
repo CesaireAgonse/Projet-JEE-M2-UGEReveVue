@@ -18,6 +18,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query("UPDATE User SET password = :password WHERE username = :username")
     void update(@Param("username") String username,@Param("password") String password);
 
+    @Modifying
+    @Query("UPDATE User SET profilePhoto = :photo WHERE username = :username")
+    void changePhoto(String username, byte[] photo);
+
     boolean existsByUsername(String username);
 
     int countUserFollowedByUsername(String username);

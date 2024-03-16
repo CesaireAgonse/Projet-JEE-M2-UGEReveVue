@@ -2,10 +2,11 @@ package fr.uge.revevue.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 
 @Entity
-@Table(name = "ReviewComment")
-public class ReviewComment {
+@Table(name = "ReviewContents")
+public class ReviewContent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,11 +22,15 @@ public class ReviewComment {
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String codeSelection;
 
-    public ReviewComment() {}
+    private Date date;
 
-    public ReviewComment(String content, User user) {
+    public ReviewContent() {}
+
+    public ReviewContent(String content, String codeSelection, User user) {
         this.content = content;
+        this.codeSelection = codeSelection;
         this.user = user;
+        this.date = new Date();
     }
 
     public long getId() {
@@ -59,4 +64,14 @@ public class ReviewComment {
     public void setUser(User user) {
         this.user = user;
     }
+
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
 }

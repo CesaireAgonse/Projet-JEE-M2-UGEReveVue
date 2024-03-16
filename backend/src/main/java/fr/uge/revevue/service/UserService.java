@@ -237,7 +237,9 @@ public class UserService implements UserDetailsService{
         if (user == null){
             throw new IllegalStateException("User not found");
         }
-        user.setProfilePhoto(photo);
+        System.out.println(photo);
+        userRepository.changePhoto(user.getUsername(), photo);
+        System.out.println("TEST");
     }
 }
 

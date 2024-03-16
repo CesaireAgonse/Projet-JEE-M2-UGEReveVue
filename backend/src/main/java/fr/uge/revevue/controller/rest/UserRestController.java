@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -107,12 +109,10 @@ public class UserRestController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/photo")
-    public ResponseEntity<Void> photo(@RequestBody @Valid byte[] photo){
+    public ResponseEntity<Void> photo(@RequestBody byte[] photo){
         userService.changePhoto(photo);
         return ResponseEntity.ok().build();
     }
-
-
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{username}")

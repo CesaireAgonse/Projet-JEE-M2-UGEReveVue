@@ -12,17 +12,6 @@ public record CommentInformation(long id, long idPost, boolean postIsCode, Simpl
     public static CommentInformation from(Comment comment){
         Objects.requireNonNull(comment, "[CommentInformation] comment is null");
         var postIsCode = comment.getPost() instanceof Code;
-        if (comment.getPost() == null){
-            return new CommentInformation(
-                    comment.getId(),
-                    -1,
-                    postIsCode,
-                    SimpleUserInformation.from(comment.getUser()),
-                    comment.getContent(),
-                    comment.getCodeSelection(),
-                    comment.getDate()
-            );
-        }
         return new CommentInformation(
                 comment.getId(),
                 comment.getPost().getId(),

@@ -10,10 +10,10 @@ public class Review extends Post{
     @ManyToOne(fetch= FetchType.EAGER)
     private Post post;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Comment> contents;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<ReviewContent> contents;
 
-    public Review(String title, List<Comment> contents, User user, Post post) {
+    public Review(String title, List<ReviewContent> contents, User user, Post post) {
         super(title, user);
         this.post = post;
         this.contents = contents;
@@ -29,11 +29,11 @@ public class Review extends Post{
         this.post = post;
     }
 
-    public List<Comment> getContent() {
+    public List<ReviewContent> getContent() {
         return contents;
     }
 
-    public void setContent(List<Comment> contents) {
+    public void setContent(List<ReviewContent> contents) {
         this.contents = contents;
     }
 }
