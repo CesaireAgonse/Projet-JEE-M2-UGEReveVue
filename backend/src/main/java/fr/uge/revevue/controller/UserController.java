@@ -2,6 +2,7 @@ package fr.uge.revevue.controller;
 
 import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.information.PagingInformation;
+import fr.uge.revevue.information.user.AuthInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.CodeService;
 import fr.uge.revevue.service.CommentService;
@@ -19,16 +20,10 @@ import javax.validation.Valid;
 @Controller
 public class UserController {
     private final UserService userService;
-    private final CodeService codeService;
-    private final ReviewService reviewService;
-    private final CommentService commentService;
 
     @Autowired
-    public UserController(UserService userService, CodeService codeService, ReviewService reviewService, CommentService commentService){
+    public UserController(UserService userService){
         this.userService = userService;
-        this.codeService = codeService;
-        this.reviewService = reviewService;
-        this.commentService = commentService;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -52,28 +47,13 @@ public class UserController {
         }
         var user = userService.currentUser();
         if (user != null){
-            model.addAttribute("auth", userService.getInformation(user.getUsername()));
+            model.addAttribute("auth", AuthInformation.from(user));
         }
         model.addAttribute("user", userInformation);
-
-        PagingInformation pagingInfo = new PagingInformation(codePageNumber, reviewPageNumber, commentPageNumber, followedPageNumber);
-        pagingInfo = pagingInfo.setDefaultsIfNull();
-        model.addAttribute("pagingInfo", pagingInfo);
-
-        var followedsFromUser = userService.getFollowedPageFromUsername(userInformation.username(), pagingInfo.followedPageNumber());
-        var codesFromUser = codeService.getCodePageFromUsername(userInformation.username(), pagingInfo.codePageNumber());
-        var codesNumberFromUser = codeService.countCodesFromUser(userInformation);
-        var reviewsFromUser = reviewService.getReviewPageFromUsername(userInformation.username(), pagingInfo.reviewPageNumber());
-        var reviewsNumberFromUser = reviewService.countReviewsFromUser(userInformation);
-        var commentsFromUser = commentService.getCommentPageFromUsername(userInformation.username(), pagingInfo.commentPageNumber());
-        var commentsNumberFromUser = commentService.countCommentsFromUser(userInformation);
-        model.addAttribute("followedsFromUser", followedsFromUser);
-        model.addAttribute("codesFromUser", codesFromUser);
-        model.addAttribute("codesNumberFromUser", codesNumberFromUser);
-        model.addAttribute("reviewsFromUser", reviewsFromUser);
-        model.addAttribute("reviewsNumberFromUser", reviewsNumberFromUser);
-        model.addAttribute("commentsFromUser", commentsFromUser);
-        model.addAttribute("commentsNumberFromUser", commentsNumberFromUser);
+        model.addAttribute("followedPageInformation", userService.users(userInformation.username(), followedPageNumber));
+        model.addAttribute("codePageInformation", userService.codes(userInformation.username(), followedPageNumber));
+        model.addAttribute("reviewPageInformation", userService.reviews(userInformation.username(), reviewPageNumber));
+        model.addAttribute("commentPageInformation", userService.comments(userInformation.username(), commentPageNumber));
         return "users/profile";
     }
 
@@ -81,7 +61,7 @@ public class UserController {
     @PostMapping("/password")
     public String password(@ModelAttribute("passwordForm") @Valid PasswordForm passwordForm, BindingResult result, Model model){
         var user = userService.currentUser();
-        model.addAttribute("auth", SimpleUserInformation.from(user));
+        model.addAttribute("auth", AuthInformation.from(user));
         if (result.hasErrors()){
             return "users/password";
         }

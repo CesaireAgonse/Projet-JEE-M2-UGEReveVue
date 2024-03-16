@@ -5,6 +5,7 @@ import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
 import fr.uge.revevue.information.PagingInformation;
+import fr.uge.revevue.information.user.AuthInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class CodeController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/codes/create")
     public String post(@ModelAttribute("codeForm") CodeForm codeForm, Model model){
-        model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
+        model.addAttribute("auth", AuthInformation.from(userService.currentUser()));
         return "codes/create";
     }
 
@@ -52,7 +53,7 @@ public class CodeController {
                        Model model){
         var user = userService.currentUser();
         if (user != null){
-            model.addAttribute("auth", SimpleUserInformation.from(user));
+            model.addAttribute("auth", AuthInformation.from(user));
             model.addAttribute("oldContentsReview", reviewService.getReviewContentPageFromUsername(user.getUsername(), 0));
         }
         var code = codeService.getInformation(codeId);
@@ -60,11 +61,8 @@ public class CodeController {
             throw new IllegalStateException("code not found");
         }
         model.addAttribute("code", code);
-        PagingInformation pagingInfo = new PagingInformation(0, reviewPageNumber, commentPageNumber,0);
-        pagingInfo = pagingInfo.setDefaultsIfNull();
-        model.addAttribute("pagingInfo", pagingInfo);
-        model.addAttribute("reviewsFromPost", reviewService.getReviews(code.id(), pagingInfo.reviewPageNumber()));
-        model.addAttribute("commentsFromPost", commentService.getComments(code.id(), pagingInfo.commentPageNumber()));
+        model.addAttribute("reviewPageInformation", reviewService.getReviews(code.id(), reviewPageNumber));
+        model.addAttribute("commentPageInformation", commentService.getComments(code.id(), commentPageNumber));
         return "codes/codeReview";
     }
 

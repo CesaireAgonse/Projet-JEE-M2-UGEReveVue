@@ -73,15 +73,15 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewPageInformation getReviews(long postId, int page){
-        if (page < 0){
-            page = 0;
+    public ReviewPageInformation getReviews(long postId, Integer pageNumber){
+        if (pageNumber == null || pageNumber < 0){
+            pageNumber = 0;
         }
         var count = reviewRepository.countByPostId(postId);
         int maxPageNumber = ((count - 1) / LIMIT_REVIEW_PAGE);
-        Pageable pageable = PageRequest.of(page, LIMIT_REVIEW_PAGE);
+        Pageable pageable = PageRequest.of(pageNumber, LIMIT_REVIEW_PAGE);
         var reviews = reviewRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(ReviewInformation::from).toList();
-        return new ReviewPageInformation(reviews, page, maxPageNumber);
+        return new ReviewPageInformation(reviews, pageNumber, maxPageNumber);
     }
 
     public boolean isExisted(long id){

@@ -5,29 +5,30 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.uge.revevue.entity.Post;
 import fr.uge.revevue.entity.Role;
 import fr.uge.revevue.entity.User;
 
-public record UserInformation (long id,
-                               String username,
-                               int nbFollowed,
-                               boolean isAdmin,
-                               List<SimpleUserInformation> followed,
-                               byte[] profilePhoto
+public record UserInformation (
+        String username,
+        byte[] profilePhoto,
+        int nbFollowed,
+        int nbCode,
+        int nbReview,
+        int nbComments,
+        boolean isFollowed
 ){
 
-    public static UserInformation from(User user){
+    public static UserInformation from(User user, boolean isFollowed){
         Objects.requireNonNull(user, "[UserInformation] user is null");
         return new UserInformation(
-                user.getId(),
                 user.getUsername(),
+                user.getProfilePhoto(),
                 user.getFollowed().size(),
-                user.getRole().getTypeRole().equals(Role.TypeRole.ADMIN),
-                user.getFollowed().stream().map(SimpleUserInformation::from).toList(),
-                user.getProfilePhoto()
+                user.getPosts().stream().filter(post -> post.getDtype().equals("Code")).toList().size(),
+                user.getPosts().stream().filter(post -> post.getDtype().equals("Review")).toList().size(),
+                user.getComments().size(),
+                isFollowed
         );
-    }
-    public Set<String> allFollowedName(){
-        return followed.stream().map(SimpleUserInformation::username).collect(Collectors.toSet());
     }
 }

@@ -12,19 +12,18 @@
         <div class="main">
             <div class="container limit profile-header">
                 <h1 class="username" th:text="${user.username()}"></h1>
-                <p th:if="${user.isAdmin()}" th:text="'is admin :^)'"></p>
                 <div class="stats-profil">
                     <p class="stats-profil-item" th:text="${user.nbFollowed()} + ' followed'"></p>
-                    <p class="stats-profil-item" th:text="${codesNumberFromUser} + ' codes'"></p>
-                    <p class="stats-profil-item" th:text="${reviewsNumberFromUser} + ' reviews'"></p>
-                    <p class="stats-profil-item" th:text="${commentsNumberFromUser} + ' comments'"></p>
+                    <p class="stats-profil-item" th:text="${user.nbCode()} + ' codes'"></p>
+                    <p class="stats-profil-item" th:text="${user.nbReview()} + ' reviews'"></p>
+                    <p class="stats-profil-item" th:text="${user.nbComments()} + ' comments'"></p>
                 </div>
                 <a th:if="${auth != null && user.username().equals(auth.username())}" href="/password" class="button basic">Change Your Password</a>
-                <form th:if="${auth != null && !user.username().equals(auth.username()) && !auth.allFollowedName().contains(user.username())}"
+                <form th:if="${auth != null && !user.username().equals(auth.username()) && !user.isFollowed()}"
                       th:action="@{/users/follow/{username}(username=${user.username()})}" th:method="post">
                     <button type="submit" class="button basic">Follow</button>
                 </form>
-                <form th:if="${auth != null &&  !user.username().equals(auth.username()) && auth.allFollowedName().contains(user.username())}"
+                <form th:if="${auth != null &&  !user.username().equals(auth.username()) && user.isFollowed()}"
                       th:action="@{/users/unfollow/{username}(username=${user.username()})}" th:method="post">
                     <button type="submit" class="button basic">Unfollow</button>
                 </form>
@@ -32,56 +31,56 @@
 
             <div class="container limit">
                 <h2 class="content-title">Followed:</h2>
-                <div th:each="followed : ${followedsFromUser.users()}" class="followed-list">
+                <div th:each="followed : ${followedPageInformation.users()}" class="followed-list">
                     <div>
                         <a th:href="${followed.username()}" th:text="${followed.username()}"/>
                     </div>
                 </div>
                 <form th:action="@{'/users/' + ${user.username}}" method="get">
-                    <input type="hidden" name="codePageNumber" th:value="${pagingInfo.codePageNumber}" />
-                    <input type="hidden" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber}" />
-                    <input type="hidden" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber}" />
-                    <button class="button other" th:if="${followedsFromUser.pageNumber() > 0}" type="submit" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber - 1}">Previous Page</button>
-                    <button class="button other" th:if="${followedsFromUser.pageNumber() < followedsFromUser.maxPageNumber()}" type="submit" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber + 1}">Next Page</button>
+                    <input type="hidden" name="codePageNumber" th:value="${codePageInformation.pageNumber()}" />
+                    <input type="hidden" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber()}" />
+                    <input type="hidden" name="commentPageNumber" th:value="${commentPageInformation.pageNumber()}" />
+                    <button class="button other" th:if="${followedPageInformation.pageNumber() > 0}" type="submit" name="followedPageNumber" th:value="${followedPageInformation.pageNumber() - 1}">Previous Page</button>
+                    <button class="button other" th:if="${followedPageInformation.pageNumber() < followedPageInformation.maxPageNumber()}" type="submit" name="followedPageNumber" th:value="${followedPageInformation.pageNumber() + 1}">Next Page</button>
                 </form>
             </div>
             <div class="container limit">
                 <h2 class="content-title" >Codes:</h2>
-                <div th:each="code : ${codesFromUser.codes()}">
+                <div th:each="code : ${codePageInformation.codes()}">
                     <div th:replace="codes/codePreview :: codePreview"></div>
                 </div>
                 <form th:action="@{'/users/' + ${user.username}}" method="get">
-                    <input type="hidden" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber}" />
-                    <input type="hidden" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber}" />
-                    <input type="hidden" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber}" />
-                    <button class="button other" th:if="${codesFromUser.pageNumber() > 0}" type="submit" name="codePageNumber" th:value="${pagingInfo.codePageNumber - 1}">Previous Page</button>
-                    <button class="button other" th:if="${codesFromUser.pageNumber() < codesFromUser.maxPageNumber()}" type="submit" name="codePageNumber" th:value="${pagingInfo.codePageNumber + 1}">Next Page</button>
+                    <input type="hidden" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber()}" />
+                    <input type="hidden" name="commentPageNumber" th:value="${commentPageInformation.pageNumber()}" />
+                    <input type="hidden" name="followedPageNumber" th:value="${followedPageInformation.pageNumber()}" />
+                    <button class="button other" th:if="${codePageInformation.pageNumber() > 0}" type="submit" name="codePageNumber" th:value="${codePageInformation.pageNumber() - 1}">Previous Page</button>
+                    <button class="button other" th:if="${codePageInformation.pageNumber() < codePageInformation.maxPageNumber()}" type="submit" name="codePageNumber" th:value="${codePageInformation.pageNumber() + 1}">Next Page</button>
                 </form>
             </div>
             <div class="container limit">
                 <h2 class="content-title" >Reviews:</h2>
-                <div th:each="review : ${reviewsFromUser.reviews()}">
+                <div th:each="review : ${reviewPageInformation.reviews()}">
                     <div th:replace="reviews/reviewPreview :: reviewPreview"></div>
                 </div>
                 <form th:action="@{'/users/' + ${user.username}}" method="get">
-                    <input type="hidden" name="codePageNumber" th:value="${pagingInfo.codePageNumber}" />
-                    <input type="hidden" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber}" />
-                    <input type="hidden" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber}" />
-                    <button class="button other" th:if="${reviewsFromUser.pageNumber() > 0}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber - 1}">Previous Page</button>
-                    <button class="button other" th:if="${reviewsFromUser.pageNumber() < reviewsFromUser.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber + 1}">Next Page</button>
+                    <input type="hidden" name="codePageNumber" th:value="${codePageInformation.pageNumber()}" />
+                    <input type="hidden" name="commentPageNumber" th:value="${commentPageInformation.pageNumber()}" />
+                    <input type="hidden" name="followedPageNumber" th:value="${followedPageInformation.pageNumber()}" />
+                    <button class="button other" th:if="${reviewPageInformation.pageNumber() > 0}" type="submit" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber() - 1}">Previous Page</button>
+                    <button class="button other" th:if="${reviewPageInformation.pageNumber() < reviewPageInformation.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber() + 1}">Next Page</button>
                 </form>
             </div>
             <div class="container limit">
                 <h2 class="content-title" >Comments:</h2>
-                <div th:each="comment : ${commentsFromUser.comments()}">
+                <div th:each="comment : ${commentPageInformation.comments()}">
                     <div th:replace="comments/commentPreview :: commentPreview"></div>
                 </div>
                 <form th:action="@{'/users/' + ${user.username}}" method="get">
-                    <input type="hidden" name="codePageNumber" th:value="${pagingInfo.codePageNumber}" />
-                    <input type="hidden" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber}" />
-                    <input type="hidden" name="followedPageNumber" th:value="${pagingInfo.followedPageNumber}" />
-                    <button class="button other" th:if="${commentsFromUser.pageNumber() > 0}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber - 1}">Previous Page</button>
-                    <button class="button other" th:if="${commentsFromUser.pageNumber() < commentsFromUser.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber + 1}">Next Page</button>
+                    <input type="hidden" name="codePageNumber" th:value="${codePageInformation.pageNumber()}" />
+                    <input type="hidden" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber()}" />
+                    <input type="hidden" name="followedPageNumber" th:value="${followedPageInformation.pageNumber()}" />
+                    <button class="button other" th:if="${commentPageInformation.pageNumber() > 0}" type="submit" name="commentPageNumber" th:value="${commentPageInformation.pageNumber() - 1}">Previous Page</button>
+                    <button class="button other" th:if="${commentPageInformation.pageNumber() < commentPageInformation.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${commentPageInformation.pageNumber() + 1}">Next Page</button>
                 </form>
             </div>
         </div>

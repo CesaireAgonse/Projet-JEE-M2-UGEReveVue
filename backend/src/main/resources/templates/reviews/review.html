@@ -23,7 +23,7 @@
                 <form th:if="${auth != null && auth.isAdmin()}" name="delete" id="delete"
                       th:data-code-id="${review.id()}"
                       th:data-post-id="${review.idPost()}"
-                      th:data-post-type="${review.postIsCode()}">
+                      th:data-post-type="${review.typePost()}">
                     <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
                 </form>
             </div>
@@ -69,7 +69,7 @@
                             console.log('Review deleted successfully, no JSON data returned');
                         }
                         showNotification('Review deleted.');
-                        if (postType == 'true') {
+                        if (postType === 'Code') {
                             window.location.href = '/codes/' + postId;
                         } else {
                             window.location.href = '/reviews/' + postId;

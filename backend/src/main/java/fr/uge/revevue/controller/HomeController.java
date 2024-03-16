@@ -1,5 +1,6 @@
 package fr.uge.revevue.controller;
 
+import fr.uge.revevue.information.user.AuthInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class HomeController {
                            Model model) {
         var user = userService.currentUser();
         if (user != null){
-            model.addAttribute("auth", SimpleUserInformation.from(user));
+            model.addAttribute("auth", AuthInformation.from(user));
         }
         model.addAttribute("filter", userService.filter(sortBy, query, pageNumber));
         return "home";

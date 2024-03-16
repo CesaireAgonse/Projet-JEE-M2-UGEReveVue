@@ -132,13 +132,19 @@ public class UserService implements UserDetailsService{
     @Transactional
     public UserInformation getInformation(String username){
         var optionalUser = userRepository.findByUsername(username);
-        return optionalUser.map(UserInformation::from).orElse(null);
+        if (optionalUser.isEmpty()){
+            return null;
+        }
+        var optionalAuth = userRepository.findByUsername(currentUser().getUsername());
+        boolean isFollowed;
+        isFollowed = optionalAuth.map(user -> user.getFollowed().contains(optionalUser.get())).orElse(false);
+        return optionalUser.map(user -> UserInformation.from(user, isFollowed)).orElse(null);
     }
 
     @Transactional
-    public List<UserInformation> getSomeUsers(int offset, int limit){
+    public List<SimpleUserInformation> getSomeUsers(int offset, int limit){
         Pageable page = PageRequest.of(offset, limit);
-        return userRepository.findAll(page).stream().map(UserInformation::from).toList();
+        return userRepository.findAll(page).stream().map(SimpleUserInformation::from).toList();
     }
 
     @Transactional
@@ -152,7 +158,7 @@ public class UserService implements UserDetailsService{
         var count = userRepository.countUserFollowedByUsername(username);
         int maxPageNumber = ((count - 1) / LIMIT_FOLLOWED_PAGE);
         Pageable page = PageRequest.of(offset, LIMIT_FOLLOWED_PAGE);
-        var followedInformations = userRepository.findUserFollowedByUsername(username, page).stream().map(UserInformation::from).toList();
+        var followedInformations = userRepository.findUserFollowedByUsername(username, page).stream().map(SimpleUserInformation::from).toList();
         return new UserPageInformation(followedInformations, offset, maxPageNumber);
     }
 
@@ -161,14 +167,13 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
-    public UserInformation delete(String username){
+    public void delete(String username){
         var userOptional = userRepository.findByUsername(username);
         if(userOptional.isEmpty()){
             throw new IllegalArgumentException("User not found");
         }
         var user = userOptional.get();
         userRepository.delete(user);
-        return UserInformation.from(user);
     }
 
     @Transactional
@@ -214,7 +219,7 @@ public class UserService implements UserDetailsService{
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;
         }
-        return reviewService.getReviewPageFromUsername(username,pageNumber);
+        return reviewService.getReviewPageFromUsername(username, pageNumber);
     }
 
     public CommentPageInformation comments(String username, Integer pageNumber) {
@@ -222,14 +227,6 @@ public class UserService implements UserDetailsService{
             pageNumber = 0;
         }
         return commentService.getCommentPageFromUsername(username, pageNumber);
-    }
-
-    @Transactional
-    public UserPageInformation users(String username, Integer pageNumber) {
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
-        }
-        return getFollowedPageFromUsername(username, pageNumber);
     }
 
     public ReviewContentPageInformation reviewsContents(String username, Integer pageNumber) {
@@ -240,16 +237,21 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
+    public UserPageInformation users(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        return getFollowedPageFromUsername(username, pageNumber);
+    }
+
+    @Transactional
     public void changePhoto(byte[] photo) {
         var user = currentUser();
         if (user == null){
             throw new IllegalStateException("User not found");
         }
-        System.out.println(photo);
         userRepository.changePhoto(user.getUsername(), photo);
-        System.out.println("TEST");
     }
-
 }
 
 

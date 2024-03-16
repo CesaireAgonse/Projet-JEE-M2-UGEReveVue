@@ -4,6 +4,7 @@ import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
 import fr.uge.revevue.information.PagingInformation;
+import fr.uge.revevue.information.user.AuthInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.CommentService;
 import fr.uge.revevue.service.ReviewService;
@@ -43,7 +44,7 @@ public class ReviewController {
                          Model model){
         var user = userService.currentUser();
         if (user != null){
-            model.addAttribute("auth", SimpleUserInformation.from(user));
+            model.addAttribute("auth", AuthInformation.from(user));
             model.addAttribute("oldContentsReview", reviewService.getReviewContentPageFromUsername(user.getUsername(), 0));
         }
         var review = reviewService.getInformation(reviewId);
@@ -51,15 +52,8 @@ public class ReviewController {
             throw new IllegalStateException("review not found");
         }
         model.addAttribute("review", review);
-
-        PagingInformation pagingInfo = new PagingInformation(0, reviewPageNumber, commentPageNumber,0);
-        pagingInfo = pagingInfo.setDefaultsIfNull();
-        model.addAttribute("pagingInfo", pagingInfo);
-
-        var reviewsFromPost = reviewService.getReviews(review.id(), pagingInfo.reviewPageNumber());
-        var commentsFromPost = commentService.getComments(review.id(), pagingInfo.commentPageNumber());
-        model.addAttribute("reviewsFromPost", reviewsFromPost);
-        model.addAttribute("commentsFromPost", commentsFromPost);
+        model.addAttribute("reviewPageInformation", reviewService.getReviews(review.id(), reviewPageNumber));
+        model.addAttribute("commentPageInformation", commentService.getComments(review.id(), commentPageNumber));
         return "reviews/reviewReview";
     }
 

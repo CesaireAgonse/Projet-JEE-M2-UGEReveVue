@@ -47,15 +47,15 @@ public class CommentService {
         commentRepository.save(comment);
     }
     @Transactional
-    public CommentPageInformation getComments(long postId, int page){
-        if (page < 0){
-            page = 0;
+    public CommentPageInformation getComments(long postId, Integer pageNumber){
+        if (pageNumber == null || pageNumber < 0){
+            pageNumber = 0;
         }
         var count = commentRepository.countByPostId(postId);
         int maxPageNumber = ((count - 1) / LIMIT_COMMENT_PAGE);
-        Pageable pageable = PageRequest.of(page, LIMIT_COMMENT_PAGE);
+        Pageable pageable = PageRequest.of(pageNumber, LIMIT_COMMENT_PAGE);
         var comments = commentRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(CommentInformation::from).toList();
-        return new CommentPageInformation(comments, page, maxPageNumber);
+        return new CommentPageInformation(comments, pageNumber, maxPageNumber);
     }
 
     @Transactional

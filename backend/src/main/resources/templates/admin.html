@@ -13,10 +13,10 @@
             <div>
                 <p class="text-title left">Moderation page</p>
             </div>
-            <p class="result left" th:text="${users.size() == 1 ? '1 user registered' : users.size() + ' registered users'} "></p>
+            <p class="result left" th:text="${userPageInformation.users().size() == 1 ? '1 user registered' : userPageInformation.users().size() + ' registered users'} "></p>
         </div>
         <div class="container limit home">
-            <div th:each="user : ${users}">
+            <div th:each="user : ${userPageInformation.users()}">
                 <div class="main-info">
                     <h2 class ="title">
                         <a th:href="'/users/' + ${user.username()}" th:text="${user.username()}"></a>
@@ -24,15 +24,15 @@
                     <form name="delete" id="delete" th:data-user-username="${user.username()}">
                         <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
                     </form>
-                    <p class="stats left" th:text="'followed: ' + ${user.followed.size()}"></p>
-                    <p class="stats left" th:text="'codes: ' + ${codesByUser.get(user)}"></p>
-                    <p class="stats left" th:text="'reviews: ' + ${reviewsByUser.get(user)}"></p>
-                    <p class="stats left" th:text="'comments: ' + ${commentsByUser.get(user)}"></p>
+                    <p class="stats left" th:text="'followed: ' + ${user.nbFollowed()}"></p>
+                    <p class="stats left" th:text="'codes: ' + ${user.nbCode()}"></p>
+                    <p class="stats left" th:text="'reviews: ' + ${user.nbReview()}"></p>
+                    <p class="stats left" th:text="'comments: ' + ${user.nbComments()}"></p>
                 </div>
             </div>
             <form th:action="@{/admin}" method="get">
-                <button class="left button other" th:if="${pageNumber} > 0" type="submit" th:name="pageNumber" th:value="${pageNumber-1}">Previous Page</button>
-                <button class="right button other" th:if="${pageNumber} < ${maxPageNumber}" type="submit" th:name="pageNumber" th:value="${pageNumber+1}">Next Page</button>
+                <button class="left button other" th:if="${userPageInformation.pageNumber()} > 0" type="submit" th:name="pageNumber" th:value="${userPageInformation.pageNumber()-1}">Previous Page</button>
+                <button class="right button other" th:if="${userPageInformation.pageNumber()} < ${userPageInformation.maxPageNumber()}" type="submit" th:name="pageNumber" th:value="${userPageInformation.pageNumber()+1}">Next Page</button>
             </form>
         </div>
     </div>

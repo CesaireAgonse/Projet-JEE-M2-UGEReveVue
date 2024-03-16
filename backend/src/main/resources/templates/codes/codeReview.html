@@ -10,15 +10,15 @@
         <div class="main">
             <div class="container limit">
                 <div th:replace="codes/code :: codeFragment(code=${code})"></div>
-                <div th:each="comment:${commentsFromPost.comments()}">
+                <div th:each="comment:${commentPageInformation.comments()}">
                     <div class="container comment">
                         <div th:replace="comments/comment :: commentFragment(comment=${comment})"></div>
                     </div>
                 </div>
                 <form th:action="@{'/codes/' + ${code.id()}}" method="get">
-                    <input type="hidden" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber}" />
-                    <button class="left button other" th:if="${commentsFromPost.pageNumber() > 0}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber - 1}">Previous Page</button>
-                    <button class="right button other" th:if="${commentsFromPost.pageNumber() < commentsFromPost.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber + 1}">Next Page</button>
+                    <input type="hidden" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber()}" />
+                    <button class="left button other" th:if="${commentPageInformation.pageNumber() > 0}" type="submit" name="commentPageNumber" th:value="${commentPageInformation.pageNumber() - 1}">Previous Page</button>
+                    <button class="right button other" th:if="${commentPageInformation.pageNumber() < commentPageInformation.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${commentPageInformation.pageNumber() + 1}">Next Page</button>
                 </form>
                 <div th:if="${auth != null}" class="edit-zone">
                     <button class="button other" onclick='selectedCode()'>Add selected code</button>
@@ -31,8 +31,8 @@
                 </div>
             </div>
             <div class="container limit">
-                <h2 th:text="${reviewsFromPost.reviews().size() == 1 ? '1 Review' : reviewsFromPost.reviews().size() + ' Reviews'}"></h2>
-                <div th:each="review:${reviewsFromPost.reviews()}">
+                <h2 th:text="${reviewPageInformation.reviews().size() == 1 ? '1 Review' : reviewPageInformation.reviews().size() + ' Reviews'}"></h2>
+                <div th:each="review:${reviewPageInformation.reviews()}">
                     <div class="container review-post">
                         <div>
                             <p class="stats left" th:text="'reviews: '+ ${review.reviews()}"></p>
@@ -42,9 +42,9 @@
                     </div>
                 </div>
                 <form th:action="@{'/codes/' + ${code.id()}}" method="get">
-                    <input type="hidden" name="commentPageNumber" th:value="${pagingInfo.commentPageNumber}" />
-                    <button class="left button other" th:if="${reviewsFromPost.pageNumber() > 0}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber - 1}">Previous Page</button>
-                    <button class="right button other" th:if="${reviewsFromPost.pageNumber() < reviewsFromPost.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber + 1}">Next Page</button>
+                    <input type="hidden" name="commentPageNumber" th:value="${commentPageInformation.pageNumber()}" />
+                    <button class="left button other" th:if="${reviewPageInformation.pageNumber() > 0}" type="submit" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber() - 1}">Previous Page</button>
+                    <button class="right button other" th:if="${reviewPageInformation.pageNumber() < reviewPageInformation.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber() + 1}">Next Page</button>
                 </form>
                 <div th:if="${auth != null}"  class="edit-zone">
                     <div th:replace="reviews/create :: create(url=@{/codes/review/{codeId}(codeId=${code.id()})}, oldContentReview=${oldContentsReview})"></div>
