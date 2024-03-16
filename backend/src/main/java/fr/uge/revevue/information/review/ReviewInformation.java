@@ -14,7 +14,7 @@ import java.util.Objects;
 public record ReviewInformation(
         long id,
         long idPost,
-        boolean postIsCode,
+        String typePost,
         SimpleUserInformation userInformation,
         Vote.VoteType voteType,
         String title,
@@ -27,11 +27,10 @@ public record ReviewInformation(
 
     public static ReviewInformation from(Review review){
         Objects.requireNonNull(review, "[ReviewInformation] review is null");
-        var postIsCode = review.getPost() instanceof Code ;
         return new ReviewInformation(
                 review.getId(),
                 review.getPost().getId(),
-                postIsCode,
+                review.getPost().getDtype(),
                 SimpleUserInformation.from(review.getUser()),
                 review.getVoteUser(),
                 review.getTitle(),

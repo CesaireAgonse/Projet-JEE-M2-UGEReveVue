@@ -39,6 +39,16 @@ body{
     background-color: #e5e5e5;
 }
 
+.button.other.clicked{
+    border: 1px solid #999;
+    color: #7e7e7e;
+    background-color: #cccccc;
+}
+
+.button.other.clicked:hover{
+    background-color: #ffffff;
+}
+
 .container{
     padding: 20px;
     max-width: 100%;

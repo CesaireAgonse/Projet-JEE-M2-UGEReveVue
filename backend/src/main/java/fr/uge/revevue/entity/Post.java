@@ -33,6 +33,9 @@ public abstract class Post {
     @NotBlank
     private String title;
 
+    @Column(name = "dtype", insertable = false, updatable = false)
+    private String dtype;
+
     public Post(String title, User user) {
         this.title = title;
         this.user = user;
@@ -111,5 +114,13 @@ public abstract class Post {
 
     public void setReviews(Set<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public String getDtype() {
+        return dtype;
+    }
+
+    public void setDtype(String dtype) {
+        this.dtype = dtype;
     }
 }

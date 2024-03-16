@@ -16,12 +16,14 @@
                     <a th:if="${auth != null}" th:href="'codes/create'" class="button basic right">Post Code</a>
                 </div>
                 <div>
-                    <p class="result left" th:text="${filter.codes.size() == 0 ? '0 result' : filter.codes.size() + ' results'} +
+                    <p class="result left" th:text="${filter.resultNumber() == 0 ? '0 result' : filter.resultNumber() + ' results'} +
                     ${filter.sortBy != '' ? ' sorted by ' + filter.sortBy : ''} +
-                    ${auth != null && filter.sortBy == '' ? ' from followed' : ''}"></p>
+                    ${auth != null && filter.sortBy == '' ? '' : ''}"></p>
                     <form th:action="@{/}" method="get">
-                        <button class="right button other order" th:name="sortBy" th:value="relevance">Relevance</button>
-                        <button class="right button other order" th:name="sortBy" th:value="newest">Newest</button>
+                        <button th:if="${filter.sortBy != 'relevance'}" class="right button other order" th:name="sortBy" th:value="relevance">Relevance</button>
+                        <button th:if="${filter.sortBy == 'relevance'}" class="right button other clicked order" th:name="sortBy" th:value="''">Relevance</button>
+                        <button th:if="${filter.sortBy != 'newest'}" class="right button other order" th:name="sortBy" th:value="newest">Newest</button>
+                        <button th:if="${filter.sortBy == 'newest'}" class="right button other clicked order" th:name="sortBy" th:value="''">Newest</button>
                         <input type="hidden" th:name="q" th:value="${filter.q}"/>
                         <input type="hidden" th:name="pageNumber" th:value="${filter.pageNumber}"/>
                     </form>

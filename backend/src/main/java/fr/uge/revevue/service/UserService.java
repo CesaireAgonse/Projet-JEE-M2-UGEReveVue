@@ -200,7 +200,7 @@ public class UserService implements UserDetailsService{
                 }
             }
         }
-        return new FilterInformation(codes, sortBy, query, pageNumber, maxPageNumber);
+        return new FilterInformation(codes, sortBy, query, pageNumber, maxPageNumber, count);
     }
 
     public CodePageInformation codes(String username, Integer pageNumber) {

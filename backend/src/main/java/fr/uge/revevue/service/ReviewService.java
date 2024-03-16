@@ -1,12 +1,10 @@
 package fr.uge.revevue.service;
 
+import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Review;
 import fr.uge.revevue.entity.ReviewContent;
 import fr.uge.revevue.form.CommentForm;
-import fr.uge.revevue.information.review.ReviewContentInformation;
-import fr.uge.revevue.information.review.ReviewContentPageInformation;
-import fr.uge.revevue.information.review.ReviewInformation;
-import fr.uge.revevue.information.review.ReviewPageInformation;
+import fr.uge.revevue.information.review.*;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.repository.*;
 import org.springframework.data.domain.PageRequest;
@@ -123,4 +121,5 @@ public class ReviewService {
         var realUser = userRepository.findByUsername(user.username());
         return reviewRepository.countByUserId(realUser.get().getId());
     }
+
 }

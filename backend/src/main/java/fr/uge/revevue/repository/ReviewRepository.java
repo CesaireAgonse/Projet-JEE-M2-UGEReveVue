@@ -1,5 +1,6 @@
 package fr.uge.revevue.repository;
 
+import fr.uge.revevue.entity.Post;
 import fr.uge.revevue.entity.Review;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
@@ -15,6 +16,8 @@ public interface ReviewRepository extends CrudRepository<Review,Long> {
     int countByUserUsername(String username);
 
     int countByPostId(long postId);
+
+    Post findPostById(long id);
 
     List<Review> findAllByUserUsername(String username, Pageable page);
 

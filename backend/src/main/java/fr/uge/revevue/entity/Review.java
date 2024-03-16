@@ -7,7 +7,7 @@ import java.util.List;
 @Table(name = "Reviews")
 public class Review extends Post{
 
-    @ManyToOne(fetch= FetchType.EAGER)
+    @ManyToOne(fetch= FetchType.LAZY)
     private Post post;
 
     @ManyToMany(fetch = FetchType.LAZY)

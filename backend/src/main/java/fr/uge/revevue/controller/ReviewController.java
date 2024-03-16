@@ -60,7 +60,6 @@ public class ReviewController {
         var commentsFromPost = commentService.getComments(review.id(), pagingInfo.commentPageNumber());
         model.addAttribute("reviewsFromPost", reviewsFromPost);
         model.addAttribute("commentsFromPost", commentsFromPost);
-
         return "reviews/reviewReview";
     }
 

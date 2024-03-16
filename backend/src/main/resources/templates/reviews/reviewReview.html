@@ -10,8 +10,8 @@
 <div class="main">
     <div class="container limit">
         <h2 class="title" th:text="${'This review refers to this :'}"></h2>
-        <a th:if="${review.postIsCode() == true}" th:href="'/codes/' + ${review.idPost()}"> code</a>
-        <a th:unless="${review.postIsCode() == true}" th:href="'/reviews/' + ${review.idPost()}"> review</a>
+        <a th:if="${review.typePost() == 'Code'}" th:href="'/codes/' + ${review.idPost()}"> code</a>
+        <a th:if="${review.typePost() == 'Review'}"  th:href="'/reviews/' + ${review.idPost()}"> review</a>
     </div>
     <div class="container limit">
         <div th:replace="reviews/review :: reviewFragment(review=${review})"></div>
