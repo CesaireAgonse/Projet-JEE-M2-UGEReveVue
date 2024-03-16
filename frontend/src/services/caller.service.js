@@ -30,6 +30,10 @@ Axios.interceptors.response.use(response => response, async error => {
                 window.location.reload()
                 return Axios(originalRequest)
             }
+            else {
+                authenticationService.removeToken("bearer")
+                authenticationService.removeToken("refresh")
+            }
         });
     }
     refresh = false;

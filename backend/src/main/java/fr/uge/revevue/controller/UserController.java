@@ -77,8 +77,8 @@ public class UserController {
             result.rejectValue("currentPassword", "error.passwordForm", "The current password you entered is incorrect. Please try again.");
             return "users/password";
         }
-        var userInformation = userService.modifyPassword(passwordForm.getCurrentPassword(), passwordForm.getNewPassword());
-        return "redirect:/users/" + userInformation.username();
+        userService.modifyPassword(passwordForm.getCurrentPassword(), passwordForm.getNewPassword());
+        return "redirect:/users/" + user.getUsername();
     }
 
     @PreAuthorize("isAuthenticated()")

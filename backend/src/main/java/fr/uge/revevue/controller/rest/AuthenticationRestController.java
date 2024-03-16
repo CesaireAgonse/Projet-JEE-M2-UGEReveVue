@@ -13,7 +13,6 @@ import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
-@PreAuthorize("permitAll()")
 @RequestMapping("api/v1")
 public class AuthenticationRestController {
     private final AuthenticationService authenticationService;
@@ -23,22 +22,26 @@ public class AuthenticationRestController {
         this.authenticationService = authenticationService;
     }
 
+    @PreAuthorize("permitAll()")
     @PostMapping("/signup")
     public Map<String, String> signup(@RequestBody @Valid AuthenticationInformation authenticationInformation){
         authenticationService.signup(authenticationInformation.username(), authenticationInformation.password());
         return authenticationService.login(authenticationInformation.username(), authenticationInformation.password());
     }
 
+    @PreAuthorize("permitAll()")
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody @Valid AuthenticationInformation authenticationInformation){
         return authenticationService.login(authenticationInformation.username(), authenticationInformation.password());
     }
 
+    @PreAuthorize("permitAll()")
     @PostMapping("/refresh")
     public Map<String, String> refresh(@RequestBody @Valid RefreshToken token){
         return authenticationService.refresh(Map.of("refresh", token.refresh()));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout() {
         SecurityContextHolder.clearContext();

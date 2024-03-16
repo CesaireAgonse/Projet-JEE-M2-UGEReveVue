@@ -10,7 +10,7 @@
               @sortBy="handleSortBy"
               @pageNumber="handlePageNumber"
               @refresh="filter"
-            :isLogged="isLogged" :posts="posts" :totalPage="totalPage" :sortBy="sortBy" :search="q"/>
+            :isLogged="isLogged" :posts="posts" :totalPage="totalPage" :sortBy="sortBy" :search="q" :photo="photo"/>
 </template>
 
 <script>
@@ -21,10 +21,12 @@ import HomeVisual from "@/visuals/HomeVisual.vue";
 import CodeForm from "@/components/CodeForm.vue";
 import {authenticationService} from '@/services/authentication.service'
 import {codeService} from "@/services/code.service";
+import {userService} from "@/services/user.service";
 export default {
   mounted() {
     document.title = "Home"
     this.filter()
+    this.loadPhoto()
   },
   components: {
     CodeForm,
@@ -42,7 +44,8 @@ export default {
       sortBy:"",
       q:"",
       pageNumber:0,
-      totalPage:0
+      totalPage:0,
+      photo:null,
     };
   },
   methods: {
@@ -56,30 +59,32 @@ export default {
       })
     },
     connect(){
-      this.isLogged = true;
+      this.loadPhoto()
+      this.isLogged = true
       this.filter()
     },
     disconnect(){
-      this.isLogged = false;
+      this.photo = null
+      this.isLogged = false
       this.filter()
     },
     showLoginModal() {
-      this.isLoginModalVisible = true;
+      this.isLoginModalVisible = true
     },
     hideLoginModal() {
-      this.isLoginModalVisible = false;
+      this.isLoginModalVisible = false
     },
     showSignupModal() {
-      this.isSignupModalVisible = true;
+      this.isSignupModalVisible = true
     },
     hideSignupModal() {
-      this.isSignupModalVisible = false;
+      this.isSignupModalVisible = false
     },
     showCodeModal() {
-      this.isCodeModalVisible = true;
+      this.isCodeModalVisible = true
     },
     hideCodeModal() {
-      this.isCodeModalVisible = false;
+      this.isCodeModalVisible = false
     },
     handleQuery(query){
       this.q = query
@@ -92,6 +97,15 @@ export default {
     handlePageNumber(pageNumber){
       this.pageNumber = pageNumber
       this.filter()
+    },
+    loadPhoto(){
+      if (authenticationService.isLogged()){
+        userService.user(authenticationService.getAuth().username).then(res => {
+          if (res.data.profilePhoto != null){
+            this.photo = "data:image/jpg;base64," + res.data.profilePhoto
+          }
+        }).catch(err => console.log(err))
+      }
     }
   }
 };

@@ -66,7 +66,6 @@ import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
-import {userService} from "@/services/user.service";
 library.add(fas, far, fab)
 dom.watch();
 
@@ -76,13 +75,6 @@ export default {
   },
   mounted() {
     document.body.style.overflowY = "hidden"
-    if (authenticationService.isLogged()){
-      userService.user(this.username()).then(res => {
-        if (res.data.profilePhoto != null){
-          this.photo = "data:image/jpg;base64," + res.data.profilePhoto
-        }
-      }).catch(err => console.log(err))
-    }
   },
   props: {
     isLoginModalVisible: {
@@ -104,10 +96,13 @@ export default {
       type:Object
     },
     totalPage:{
-      type:Object
+      type:Number
     },
     search:{
-      type:Object
+      type:String
+    },
+    photo:{
+      type:String
     }
   },
   data() {
@@ -124,8 +119,7 @@ export default {
       query: '',
       sortBy: '',
       pageNumber: 0,
-      scroll:'hidden',
-      photo:null
+      scroll:'hidden'
     };
   },
   methods: {

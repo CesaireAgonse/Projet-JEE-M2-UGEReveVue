@@ -15,8 +15,8 @@
           <p style="font-size: 200%">{{ username }}</p>
           <p style="margin-top: -20px">{{nbFollowed}} <i class="fa-solid fa-user-group"></i></p>
           <p>{{ "Ceci est une description de profile" }}</p>
-          <button v-if="auth != null && auth.username !== username" class="basic-button button-profile left" @click="follow"><i class="fa-solid fa-user-plus"></i> Suivre</button>
-          <button v-if="auth != null && auth.username !== username" class="basic-button button-profile left" @click="unfollow"><i class="fa-solid fa-user-minus"></i> Ne plus suivre</button>
+          <button v-if="auth != null && auth.username !== username && !isFollowed" class="basic-button button-profile left" @click="follow"><i class="fa-solid fa-user-plus"></i> Suivre</button>
+          <button v-if="auth != null && auth.username !== username && isFollowed" class="basic-button button-profile left" @click="unfollow"><i class="fa-solid fa-user-minus"></i> Ne plus suivre</button>
           <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="showPasswordModal">Modifier son mot de passe</button>
           <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="uploadPhoto"><i class="fa-solid fa-camera"></i> Changer la photo de profil</button>
         </div>
@@ -79,14 +79,7 @@ export default {
   components: {ReviewVisual, CodeVisual, PasswordForm, CommentVisual},
   mounted() {
     document.title = "Profile"
-    userService.user(this.$route.params.name).then(res => {
-      this.username = res.data.username
-      this.nbFollowed = res.data.followed.length
-      if (res.data.profilePhoto != null){
-        this.photo = "data:image/jpg;base64," + res.data.profilePhoto;
-
-      }
-    }).catch(err => console.log(err))
+    this.user()
     this.codes()
     this.reviews()
     this.comments()
@@ -98,6 +91,7 @@ export default {
       username: null,
       nbFollowed: 0,
       photo: null,
+      isFollowed:false,
       auth: authenticationService.getAuth(),
       isPasswordModalVisible: false,
       selectedTab: 'followed',
@@ -129,15 +123,27 @@ export default {
     },
     follow() {
       userService.follow(this.username)
+      this.isFollowed = true
     },
     unfollow() {
       userService.unfollow(this.username)
+      this.isFollowed = false
     },
     showPasswordModal() {
       this.isPasswordModalVisible = true;
     },
     hidePasswordModal() {
       this.isPasswordModalVisible = false;
+    },
+    user(){
+      userService.user(this.$route.params.name).then(res => {
+        this.username = res.data.username
+        this.nbFollowed = res.data.nbFollowed
+        if (res.data.profilePhoto != null){
+          this.photo = "data:image/jpg;base64," + res.data.profilePhoto;
+        }
+        this.isFollowed = res.data.isFollowed
+      }).catch(err => console.log(err))
     },
     codes(){
       userService.codes(this.$route.params.name, this.codePage.pageNumber).then(res => {

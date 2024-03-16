@@ -52,7 +52,7 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
-    public SimpleUserInformation modifyPassword(String currentPassword, String newPassword){
+    public void modifyPassword(String currentPassword, String newPassword){
         var user = currentUser();
         if (user == null){
             throw new IllegalStateException("User not found");
@@ -62,7 +62,6 @@ public class UserService implements UserDetailsService{
         }
         var passwordCrypt = bCryptPasswordEncoder.encode(newPassword);
         userRepository.update(user.getUsername(), passwordCrypt);
-        return SimpleUserInformation.from(user);
     }
 
     @Transactional
