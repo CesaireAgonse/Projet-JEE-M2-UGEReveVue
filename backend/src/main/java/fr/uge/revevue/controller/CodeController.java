@@ -53,6 +53,7 @@ public class CodeController {
         var user = userService.currentUser();
         if (user != null){
             model.addAttribute("auth", SimpleUserInformation.from(user));
+            model.addAttribute("oldContentsReview", reviewService.getReviewContentPageFromUsername(user.getUsername(), 0));
         }
         var code = codeService.getInformation(codeId);
         if (code == null){

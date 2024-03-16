@@ -6,7 +6,7 @@ import fr.uge.revevue.information.user.SimpleUserInformation;
 import java.util.Date;
 import java.util.Objects;
 
-public record ReviewContentInformation(String content, String codeSelection, SimpleUserInformation simpleUserInformation, Date date) {
+public record ReviewContentInformation(String content, String codeSelection, SimpleUserInformation userInformation, Date date) {
 
     public static ReviewContentInformation from(ReviewContent reviewContent){
         Objects.requireNonNull(reviewContent, "[ReviewContentInformation] reviewContent is null");

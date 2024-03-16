@@ -44,6 +44,7 @@ public class ReviewController {
         var user = userService.currentUser();
         if (user != null){
             model.addAttribute("auth", SimpleUserInformation.from(user));
+            model.addAttribute("oldContentsReview", reviewService.getReviewContentPageFromUsername(user.getUsername(), 0));
         }
         var review = reviewService.getInformation(reviewId);
         if (review == null){
@@ -59,6 +60,7 @@ public class ReviewController {
         var commentsFromPost = commentService.getComments(review.id(), pagingInfo.commentPageNumber());
         model.addAttribute("reviewsFromPost", reviewsFromPost);
         model.addAttribute("commentsFromPost", commentsFromPost);
+
         return "reviews/reviewReview";
     }
 

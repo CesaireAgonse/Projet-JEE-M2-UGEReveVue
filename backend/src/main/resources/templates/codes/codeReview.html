@@ -47,7 +47,7 @@
                     <button class="right button other" th:if="${reviewsFromPost.pageNumber() < reviewsFromPost.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${pagingInfo.reviewPageNumber + 1}">Next Page</button>
                 </form>
                 <div th:if="${auth != null}"  class="edit-zone">
-                    <div th:replace="reviews/create :: create(url=@{/codes/review/{codeId}(codeId=${code.id()})})"></div>
+                    <div th:replace="reviews/create :: create(url=@{/codes/review/{codeId}(codeId=${code.id()})}, oldContentReview=${oldContentsReview})"></div>
                 </div>
             </div>
         </div>

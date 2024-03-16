@@ -11,7 +11,7 @@
               th:data-comment-id="${comment.id()}">
             <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
         </form>
-        <pre><code th:text="${comment.codeSelection()}"></code></pre>
+        <pre th:if="${comment.codeSelection != null && comment.codeSelection != ''}" ><code th:text="${comment.codeSelection()}"></code></pre>
         <p class="markdown message" th:text="${comment.content()}"></p>
         <p class="date right" th:text="${comment.date()}"></p>
     </div>

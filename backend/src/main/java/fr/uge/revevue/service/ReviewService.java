@@ -3,6 +3,8 @@ package fr.uge.revevue.service;
 import fr.uge.revevue.entity.Review;
 import fr.uge.revevue.entity.ReviewContent;
 import fr.uge.revevue.form.CommentForm;
+import fr.uge.revevue.information.review.ReviewContentInformation;
+import fr.uge.revevue.information.review.ReviewContentPageInformation;
 import fr.uge.revevue.information.review.ReviewInformation;
 import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.UserInformation;
@@ -13,23 +15,23 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Service
 public class ReviewService {
     private static final int LIMIT_REVIEW_PAGE = 4;
+    private static final int LIMIT_REVIEW_CONTENT_PAGE = 3;
     private final ReviewRepository reviewRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
     private final ReviewContentRepository reviewContentRepository;
 
-    public ReviewService(ReviewRepository reviewRepository, PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, ReviewContentRepository reviewContentRepository) {
+    public ReviewService(ReviewRepository reviewRepository, PostRepository postRepository, UserRepository userRepository, ReviewContentRepository reviewContentRepository) {
         this.reviewRepository = reviewRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.commentRepository = commentRepository;
         this.reviewContentRepository = reviewContentRepository;
     }
     @Transactional
@@ -51,6 +53,7 @@ public class ReviewService {
         for (var contentForm : commentForms) {
            var content = reviewContentRepository.findByUserUsernameAndContentAndCodeSelection(user.getUsername(), contentForm.getContent(), contentForm.getCodeSelection());
            if (content.isPresent()){
+               content.get().setDate(new Date());
                contents.add(content.get());
            }else{
                var comment = new ReviewContent(contentForm.getContent(), contentForm.getCodeSelection(), user);
@@ -104,6 +107,15 @@ public class ReviewService {
         Pageable page = PageRequest.of(offset, LIMIT_REVIEW_PAGE);
         var reviewInformations = reviewRepository.findAllByUserUsername(username, page).stream().map(ReviewInformation::from).toList();
         return new ReviewPageInformation(reviewInformations, offset, maxPageNumber);
+    }
+
+    @Transactional
+    public ReviewContentPageInformation getReviewContentPageFromUsername(String username, int offset){
+        var count = reviewContentRepository.countByUserUsername(username);
+        int maxPageNumber = ((count - 1) / LIMIT_REVIEW_CONTENT_PAGE);
+        Pageable page = PageRequest.of(offset, LIMIT_REVIEW_CONTENT_PAGE);
+        var reviewContentInformations = reviewContentRepository.findAllByUserUsernameOrderByDateDesc(username, page).stream().map(ReviewContentInformation::from).toList();
+        return new ReviewContentPageInformation(reviewContentInformations, offset, maxPageNumber);
     }
 
     @Transactional
