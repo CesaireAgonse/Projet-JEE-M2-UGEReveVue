@@ -1,8 +1,11 @@
 document.write('<script src="/prism/prism.js"></script>');
 
 function colorCode(){
-    const codeElement = document.querySelector('.language-java')
-    codeElement.textContent = codeElement.getAttribute('data-code');;
+    const codeElements = document.querySelectorAll('.java-code');
+    codeElements.forEach(function(codeElement) {
+        codeElement.textContent = codeElement.getAttribute('data-code');
+        Prism.highlightElement(codeElement);
+    });
 }
 
 function setupFileInput(fileInputId, codeElementId) {

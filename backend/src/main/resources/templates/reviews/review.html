@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="/css/posts/post.css" />
     <link rel="stylesheet" href="/prism/prism.css">
     <div>
-        <h2 class ="title" th:text="${review.title()}"></h2>
+        <a th:href="'/reviews/'+${review.id()}"><h2 class ="title" th:text="${review.title()}"></h2></a>
         <div class ="author pre-review">
             <p>from: </p>
             <a th:href="'/users/' + ${review.userInformation().username()}" th:text="${review.userInformation().username()}"></a>
@@ -30,7 +30,7 @@
             <a th:href="'/reviews/'+${review.id()}">
                 <div class ="content">
                     <div th:each="contentReview : ${review.content}">
-                        <pre th:if="${contentReview.codeSelection() != null}"><code class="language-java" th:text="${contentReview.codeSelection}"></code></pre>
+                        <pre th:if="${contentReview.codeSelection != null && contentReview.codeSelection != ''}" ><code id="codeBlock" class="language-java java-code" th:data-code="${contentReview.codeSelection()}"></code></pre>
                         <p class="markdown description" th:text="${contentReview.content}"></p>
                     </div>
                 </div>

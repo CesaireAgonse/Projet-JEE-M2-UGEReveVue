@@ -15,7 +15,6 @@ public class ReviewContent {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @NotBlank
     @Column(columnDefinition = "VARCHAR(MAX)")
     private String content;
 

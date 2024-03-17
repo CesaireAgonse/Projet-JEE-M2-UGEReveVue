@@ -93,3 +93,19 @@ body{
     color: #999;
     font-size: 80%;
 }
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.element:hover {
+    cursor: pointer;
+}
+
+.space{
+    margin: 20px;
+}

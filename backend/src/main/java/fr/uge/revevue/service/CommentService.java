@@ -3,7 +3,6 @@ package fr.uge.revevue.service;
 import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.information.comment.CommentInformation;
 import fr.uge.revevue.information.comment.CommentPageInformation;
-import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.repository.CommentRepository;
 import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.UserRepository;
@@ -15,7 +14,7 @@ import javax.transaction.Transactional;
 
 @Service
 public class CommentService {
-    private static final int LIMIT_COMMENT_PAGE = 4;
+    private static final int LIMIT_COMMENT_PAGE = 3;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;

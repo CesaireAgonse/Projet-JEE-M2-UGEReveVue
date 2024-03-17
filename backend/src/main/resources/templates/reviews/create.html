@@ -1,27 +1,33 @@
 <div th:fragment="create(url, oldContentReview)">
     <form th:action="${url}" th:object="${reviewForm}" method="post" enctype="multipart/form-data" id="postForm">
-        <div class="form-group">
-            <label for="title-input">Title:</label>
-            <input type="text" id="title-input" name="title" th:field="*{title}" placeholder="Enter your title" required>
+        <div class="container limit ">
+            <div class="form-group">
+                <label for="title-input">Title:</label>
+                <input type="text" id="title-input" name="title" th:field="*{title}" placeholder="Enter your title" required>
+            </div>
+            <div id="dynamicFields">
+                <label for="title-input">Content:</label>
+                <!-- Les nouveaux champs seront ajoutés ici -->
+            </div>
+            <div class="space"></div>
+            <button type="button" class="button other" onclick="addTextField()">Add a field</button>
+            <div class="space"></div>
+            <button type="submit" class="button basic">Review</button>
         </div>
-        <div id="dynamicFields">
-            <!-- Les nouveaux champs seront ajoutés ici -->
-        </div>
-        <button type="button" class="button other" onclick="addTextField()">Add a field</button>
-        <div th:each="comment:${oldContentReview.reviewContent()}">
-            <div class="container">
-                <div th:data-comment-content="${comment.content}" th:data-comment-selection="${comment.codeSelection}" onclick="addContent(this)">
-                    <pre th:if="${comment.codeSelection != null && comment.codeSelection != ''}" th:text="${comment.codeSelection}"></pre>
-                    <p th:text="${comment.content}"></p>
+        <div class="container limit">
+            <label for="title-input">Previous content review:</label>
+            <div th:each="comment:${oldContentReview.reviewContent()}">
+                <div class="container element">
+                    <div th:data-comment-content="${comment.content}" th:data-comment-selection="${comment.codeSelection}" onclick="addReviewField(this)">
+                        <pre th:if="${comment.codeSelection != null && comment.codeSelection != ''}" ><code id="codeBlock" class="language-java java-code" th:data-code="${comment.codeSelection()}"></code></pre>
+                        <p th:text="${comment.content}"></p>
+                    </div>
                 </div>
             </div>
         </div>
-        <button type="submit" class="button basic">Review</button>
     </form>
     <script src="/script/addReviewContent.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            addTextField();
-        });
+        addTextField();
     </script>
 </div>

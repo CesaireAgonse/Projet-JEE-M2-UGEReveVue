@@ -48,11 +48,12 @@ public class CodeController {
                        @ModelAttribute("reviewForm") ReviewForm reviewForm,
                        @RequestParam(value = "reviewPageNumber", required = false) Integer reviewPageNumber,
                        @RequestParam(value = "commentPageNumber", required = false) Integer commentPageNumber,
+                       @RequestParam(value = "oldContentPageNumber", required = false) Integer oldContentPageNumber,
                        Model model){
         var user = userService.currentUser();
         if (user != null){
             model.addAttribute("auth", AuthInformation.from(user));
-            model.addAttribute("oldContentsReview", reviewService.getReviewContentPageFromUsername(user.getUsername(), 0));
+            model.addAttribute("oldContentsReview", reviewService.getReviewContentPageFromUsername(user.getUsername(), oldContentPageNumber));
         }
         var code = codeService.getInformation(codeId);
         if (code == null){
@@ -125,7 +126,7 @@ public class CodeController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/review/{codeId}")
     public String codeReviewed(@PathVariable("codeId") long codeId,
-                               @ModelAttribute("reviewForm") ReviewForm reviewForm,
+                               @ModelAttribute("reviewForm") @Valid ReviewForm reviewForm,
                                BindingResult result){
         if (result.hasErrors()){
             return "redirect:/codes/" + codeId;

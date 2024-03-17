@@ -1,20 +1,42 @@
 let dynamicFieldIndex = 0;
 
-function addContent(element){
-    var content = element.dataset.commentContent;
-    var codeSelection = element.dataset.commentSelection;
-    var dynamicFields = document.getElementById('dynamicFields');
-    var divWrapper = document.createElement('div');
+function addTextField() {
+    const dynamicFields = document.getElementById('dynamicFields');
+    const divWrapper = document.createElement('div');
     dynamicFields.appendChild(divWrapper);
-    var codeElement = document.createElement('code');
+
+    const codeElement = document.createElement('code');
     divWrapper.appendChild(codeElement);
-    var input = document.createElement('textarea');
-    input.classList.add('review');
-    input.required = true;
-    input.name = 'content[' + dynamicFieldIndex + '].content';
-    input.placeholder = 'Enter a comment';
+
+    const input = this.getInput();
+    divWrapper.appendChild(input);
+
+    const copyButton = this.getCopyButton(codeElement, divWrapper);
+    const deleteButton = this.getDeleteButton(divWrapper);
+    divWrapper.appendChild(copyButton);
+    divWrapper.appendChild(deleteButton);
+    dynamicFieldIndex++;
+}
+
+function addReviewField(element) {
+    const content = element.dataset.commentContent;
+    const codeSelection = element.dataset.commentSelection;
+    const dynamicFields = document.getElementById('dynamicFields');
+    const divWrapper = document.createElement('div');
+    dynamicFields.appendChild(divWrapper);
+
+    const codeElement = document.createElement('code');
+    divWrapper.appendChild(codeElement);
+
+    const input = this.getInput();
     input.textContent = content
     divWrapper.appendChild(input);
+
+    const copyButton = this.getCopyButton(codeElement, divWrapper, codeSelection);
+    const deleteButton = this.getDeleteButton(divWrapper);
+    divWrapper.appendChild(copyButton);
+    divWrapper.appendChild(deleteButton);
+
     if (codeSelection !== undefined) {
         codeElement.innerText = codeSelection;
         var hiddenInput = document.createElement('input');
@@ -22,60 +44,46 @@ function addContent(element){
         hiddenInput.name = 'content[' + (dynamicFieldIndex - 1) + '].codeSelection';
         hiddenInput.value = codeElement.innerText;
         divWrapper.appendChild(hiddenInput);
-    }
-    var deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Remove';
-    deleteButton.classList.add('button', 'other');
-    deleteButton.type = 'button';
-    deleteButton.onclick = function() {
-        if (dynamicFieldIndex > 1) {
-            divWrapper.remove();
-            dynamicFieldIndex--;
-        } else {
-            alert("You cannot remove the last field.");
+        const existingDeleteButton = divWrapper.querySelector('.delete-code-button');
+        if (!existingDeleteButton) {
+            var deleteCodeButton = getDeleteCodeButton(codeElement, hiddenInput)
+            divWrapper.appendChild(deleteCodeButton);
         }
-    };
-    divWrapper.appendChild(deleteButton);
+    }
     dynamicFieldIndex++;
 }
-function addTextField() {
-    var dynamicFields = document.getElementById('dynamicFields');
 
-    var divWrapper = document.createElement('div');
-    dynamicFields.appendChild(divWrapper);
-
-    var codeElement = document.createElement('code');
-    divWrapper.appendChild(codeElement);
-
-    var input = document.createElement('textarea');
-    input.classList.add('review');
-    input.required = true;
-    input.name = 'content[' + dynamicFieldIndex + '].content';
-    input.placeholder = 'Enter a comment';
-    divWrapper.appendChild(input);
-
+function getCopyButton(codeElement, divWrapper) {
     var copyButton = document.createElement('button');
     copyButton.classList.add('button', 'other');
     copyButton.textContent = 'Add selected code';
     copyButton.type = 'button';
-    copyButton.onclick = function() {
+    copyButton.onclick = function () {
         var selection = window.getSelection().toString().trim();
         var baseCode = document.getElementById('codeBlock').innerText;
-        if (selection !== '') {
-            codeElement.innerText = selection;
-        }
-        else {
-            codeElement.innerText = baseCode;
+        codeElement.innerText = selection !== '' ? selection : baseCode;
+        var existingHiddenInput = divWrapper.querySelector('input[type=hidden]');
+        if (existingHiddenInput) {
+            existingHiddenInput.remove();
         }
         var hiddenInput = document.createElement('input');
         hiddenInput.type = 'hidden';
         hiddenInput.name = 'content[' + (dynamicFieldIndex - 1) + '].codeSelection';
         hiddenInput.value = codeElement.innerText;
         divWrapper.appendChild(hiddenInput);
-    };
 
+        var existingDeleteButton = divWrapper.querySelector('.delete-code-button');
+        if (!existingDeleteButton) {
+            var deleteCodeButton = getDeleteCodeButton(codeElement, hiddenInput)
+            divWrapper.appendChild(deleteCodeButton);
+        }
+    };
+    return copyButton
+}
+
+function getDeleteButton(divWrapper){
     var deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Remove';
+    deleteButton.textContent = 'Remove field';
     deleteButton.classList.add('button', 'other');
     deleteButton.type = 'button';
     deleteButton.onclick = function() {
@@ -86,7 +94,26 @@ function addTextField() {
             alert("You cannot remove the last field.");
         }
     };
-    divWrapper.appendChild(copyButton);
-    divWrapper.appendChild(deleteButton);
-    dynamicFieldIndex++;
+    return deleteButton;
+}
+
+function getInput(){
+    const input = document.createElement('textarea');
+    input.classList.add('review');
+    input.required = true;
+    input.name = 'content[' + dynamicFieldIndex + '].content';
+    input.placeholder = 'Enter a comment';
+    return input;
+}
+
+function getDeleteCodeButton(codeElement, hiddenInput){
+    const deleteCodeButton = document.createElement('button');
+    deleteCodeButton.textContent = 'Delete selected code';
+    deleteCodeButton.classList.add('button', 'other', 'delete-code-button');
+    deleteCodeButton.type = 'button';
+    deleteCodeButton.onclick = function () {
+        codeElement.innerText = '';
+        hiddenInput.value = '';
+    };
+    return deleteCodeButton;
 }

@@ -39,11 +39,12 @@ public class ReviewController {
                          @ModelAttribute("reviewForm") ReviewForm reviewForm,
                          @RequestParam(value = "reviewPageNumber", required = false) Integer reviewPageNumber,
                          @RequestParam(value = "commentPageNumber", required = false) Integer commentPageNumber,
+                         @RequestParam(value = "oldContentPageNumber", required = false) Integer oldContentPageNumber,
                          Model model){
         var user = userService.currentUser();
         if (user != null){
             model.addAttribute("auth", AuthInformation.from(user));
-            model.addAttribute("oldContentsReview", reviewService.getReviewContentPageFromUsername(user.getUsername(), 0));
+            model.addAttribute("oldContentsReview", reviewService.getReviewContentPageFromUsername(user.getUsername(), oldContentPageNumber));
         }
         var review = reviewService.getInformation(reviewId);
         if (review == null){

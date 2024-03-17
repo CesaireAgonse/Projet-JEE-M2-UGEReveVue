@@ -34,16 +34,14 @@
                     <p th:text="'Failed: ' + ${code.testResultsInformation. testsFailedCount}"></p>
                     <p th:text="'Time: ' + ${code.testResultsInformation.testsTotalTime}"></p>
                     <p th:if="${code.testResultsInformation.failures != ''}" >Failures :</p>
-                    <pre th:if="${code.testResultsInformation.failures != ''}"><code id="codeBlock" class="failure language-java java-code" th:text="${code.testResultsInformation.failures}"></code></pre>
+                    <pre th:if="${code.testResultsInformation.failures != ''}"><code id="codeBlock" class="failure language-java java-code" th:data-code="${code.testResultsInformation.failures}"></code></pre>
                 </div>
 
             </div>
         </div>
     </div>
-    <script src="/script/colorCode.js"></script>
     <script src="/script/delete.js"></script>
     <script>
-        colorCode()
         del('/api/v1/codes/', 'data-code-id', 'Code deleted.', back)
     </script>
 </div>

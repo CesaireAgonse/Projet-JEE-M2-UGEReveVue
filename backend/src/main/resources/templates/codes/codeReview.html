@@ -17,14 +17,16 @@
                 </div>
                 <form th:action="@{'/codes/' + ${code.id()}}" method="get">
                     <input type="hidden" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber()}" />
-                    <button class="left button other" th:if="${commentPageInformation.pageNumber() > 0}" type="submit" name="commentPageNumber" th:value="${commentPageInformation.pageNumber() - 1}">Previous Page</button>
-                    <button class="right button other" th:if="${commentPageInformation.pageNumber() < commentPageInformation.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${commentPageInformation.pageNumber() + 1}">Next Page</button>
+                    <button class="button other" th:if="${commentPageInformation.pageNumber() > 0}" type="submit" name="commentPageNumber" th:value="${commentPageInformation.pageNumber() - 1}">Previous Page</button>
+                    <button class="button other" th:if="${commentPageInformation.pageNumber() < commentPageInformation.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${commentPageInformation.pageNumber() + 1}">Next Page</button>
                 </form>
-                <div th:if="${auth != null}" class="edit-zone">
+            </div>
+            <div th:if="${auth != null}" class="container limit">
+                <div class="edit-zone">
                     <button class="button other" onclick='getSelectedCode()'>Add selected code</button>
                     <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
                         <input type="hidden" id="codeSelection" name="codeSelection" th:field="*{codeSelection}">
-                        <pre><code id="preCodeSelection" name="preCodeSelection" ></code></pre>
+                        <pre><code id="preCodeSelection" name="preCodeSelection" class="language-java java-code"></code></pre>
                         <textarea id="content" name="content" th:field="*{content}" required></textarea>
                         <button type="submit" class="button basic">Comment</button>
                     </form>
@@ -43,18 +45,20 @@
                 </div>
                 <form th:action="@{'/codes/' + ${code.id()}}" method="get">
                     <input type="hidden" name="commentPageNumber" th:value="${commentPageInformation.pageNumber()}" />
-                    <button class="left button other" th:if="${reviewPageInformation.pageNumber() > 0}" type="submit" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber() - 1}">Previous Page</button>
-                    <button class="right button other" th:if="${reviewPageInformation.pageNumber() < reviewPageInformation.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber() + 1}">Next Page</button>
+                    <button class="button other" th:if="${reviewPageInformation.pageNumber() > 0}" type="submit" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber() - 1}">Previous Page</button>
+                    <button class="button other" th:if="${reviewPageInformation.pageNumber() < reviewPageInformation.maxPageNumber()}" type="submit" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber() + 1}">Next Page</button>
                 </form>
-                <div th:if="${auth != null}"  class="edit-zone">
-                    <div th:replace="reviews/create :: create(url=@{/codes/review/{codeId}(codeId=${code.id()})}, oldContentReview=${oldContentsReview})"></div>
-                </div>
+            </div>
+            <div th:if="${auth != null}">
+                <div th:replace="reviews/create :: create(url=@{/codes/review/{codeId}(codeId=${code.id()})}, oldContentReview=${oldContentsReview})"></div>
             </div>
         </div>
         <script src="/script/vote.js"></script>
         <script src="/script/selectCode.js"></script>
+        <script src="/script/colorCode.js"></script>
         <script src="/script/showMarkdown.js"></script>
         <script>
+            colorCode()
             markdown()
             votePost(`[[${auth}]]`);
         </script>

@@ -2,7 +2,7 @@ package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Review;
 import fr.uge.revevue.entity.ReviewContent;
-import fr.uge.revevue.form.CommentForm;
+import fr.uge.revevue.form.ReviewContentForm;
 import fr.uge.revevue.information.review.*;
 import fr.uge.revevue.repository.*;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class ReviewService {
     private static final int LIMIT_REVIEW_PAGE = 4;
-    private static final int LIMIT_REVIEW_CONTENT_PAGE = 3;
+    private static final int LIMIT_REVIEW_CONTENT_PAGE = 5;
     private final ReviewRepository reviewRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -31,7 +31,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void create(long userId, long postId, String title, List<CommentForm> commentForms){
+    public void create(long userId, long postId, String title, List<ReviewContentForm> commentForms){
         if (commentForms == null){
             throw new IllegalArgumentException("Comment Forms is null");
         }
@@ -97,20 +97,26 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewPageInformation getReviewPageFromUsername(String username, int offset){
+    public ReviewPageInformation getReviewPageFromUsername(String username, int pageNumber){
+        if (pageNumber < 0){
+            pageNumber = 0;
+        }
         var count = reviewRepository.countByUserUsername(username);
         int maxPageNumber = ((count - 1) / LIMIT_REVIEW_PAGE);
-        Pageable page = PageRequest.of(offset, LIMIT_REVIEW_PAGE);
+        Pageable page = PageRequest.of(pageNumber, LIMIT_REVIEW_PAGE);
         var reviewInformations = reviewRepository.findAllByUserUsername(username, page).stream().map(ReviewInformation::from).toList();
-        return new ReviewPageInformation(reviewInformations, offset, maxPageNumber, count);
+        return new ReviewPageInformation(reviewInformations, pageNumber, maxPageNumber, count);
     }
 
     @Transactional
-    public ReviewContentPageInformation getReviewContentPageFromUsername(String username, int offset){
+    public ReviewContentPageInformation getReviewContentPageFromUsername(String username, Integer pageNumber){
+        if (pageNumber == null || pageNumber < 0){
+            pageNumber = 0;
+        }
         var count = reviewContentRepository.countByUserUsername(username);
         int maxPageNumber = ((count - 1) / LIMIT_REVIEW_CONTENT_PAGE);
-        Pageable page = PageRequest.of(offset, LIMIT_REVIEW_CONTENT_PAGE);
+        Pageable page = PageRequest.of(pageNumber, LIMIT_REVIEW_CONTENT_PAGE);
         var reviewContentInformations = reviewContentRepository.findAllByUserUsernameOrderByDateDesc(username, page).stream().map(ReviewContentInformation::from).toList();
-        return new ReviewContentPageInformation(reviewContentInformations, offset, maxPageNumber);
+        return new ReviewContentPageInformation(reviewContentInformations, pageNumber, maxPageNumber);
     }
 }
