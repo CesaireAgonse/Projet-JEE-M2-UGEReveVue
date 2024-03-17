@@ -30,7 +30,7 @@ public class User implements UserDetails {
     @Column(name = "profile_photo", columnDefinition="BLOB")
     private byte[] profilePhoto;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(
             name = "user_followed",
             joinColumns = @JoinColumn(name = "user_id"),

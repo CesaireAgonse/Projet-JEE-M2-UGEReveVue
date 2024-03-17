@@ -1,6 +1,6 @@
 package fr.uge.revevue.controller.rest;
 
-import fr.uge.revevue.information.AuthenticationInformation;
+import fr.uge.revevue.form.AuthenticationForm;
 import fr.uge.revevue.security.RefreshToken;
 import fr.uge.revevue.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,21 +25,30 @@ public class AuthenticationRestController {
 
     @PreAuthorize("permitAll()")
     @PostMapping("/signup")
-    public Map<String, String> signup(@RequestBody @Valid AuthenticationInformation authenticationInformation){
-        authenticationService.signup(authenticationInformation.username(), authenticationInformation.password());
-        return authenticationService.login(authenticationInformation.username(), authenticationInformation.password());
+    public ResponseEntity<Map<String, String>> signup(@RequestBody @Valid AuthenticationForm authenticationInformation, BindingResult result){
+        if (result.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
+        authenticationService.signup(authenticationInformation.getUsername(), authenticationInformation.getPassword());
+        return ResponseEntity.ok(authenticationService.login(authenticationInformation.getUsername(), authenticationInformation.getPassword()));
     }
 
     @PreAuthorize("permitAll()")
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody @Valid AuthenticationInformation authenticationInformation){
-        return authenticationService.login(authenticationInformation.username(), authenticationInformation.password());
+    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid AuthenticationForm authenticationInformation, BindingResult result){
+        if (result.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(authenticationService.login(authenticationInformation.getUsername(), authenticationInformation.getPassword()));
     }
 
     @PreAuthorize("permitAll()")
     @PostMapping("/refresh")
-    public Map<String, String> refresh(@RequestBody @Valid RefreshToken token){
-        return authenticationService.refresh(Map.of("refresh", token.refresh()));
+    public ResponseEntity<Map<String, String>> refresh(@RequestBody @Valid RefreshToken token, BindingResult result){
+        if (result.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(authenticationService.refresh(Map.of("refresh", token.refresh())));
     }
 
     @PreAuthorize("isAuthenticated()")

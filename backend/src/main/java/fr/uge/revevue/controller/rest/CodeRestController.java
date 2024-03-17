@@ -46,15 +46,19 @@ public class CodeRestController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public ResponseEntity<Void> create(@ModelAttribute @Valid CodeForm codeForm, BindingResult result) throws IOException {
+    public ResponseEntity<Void> create(@ModelAttribute @Valid CodeForm codeForm, BindingResult result){
         if (result.hasErrors()){
             return ResponseEntity.badRequest().build();
         }
-        codeService.create(userService.currentUser().getId(),
-                codeForm.getTitle(),
-                codeForm.getDescription(),
-                codeForm.getJavaFile(),
-                codeForm.getUnitFile());
+        try {
+            codeService.create(userService.currentUser().getId(),
+                    codeForm.getTitle(),
+                    codeForm.getDescription(),
+                    codeForm.getJavaFile(),
+                    codeForm.getUnitFile());
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 

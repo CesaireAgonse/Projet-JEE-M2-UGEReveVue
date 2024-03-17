@@ -10,7 +10,7 @@ public class Review extends Post{
     @ManyToOne(fetch= FetchType.LAZY)
     private Post post;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     private List<ReviewContent> contents;
 
     public Review(String title, List<ReviewContent> contents, User user, Post post) {
