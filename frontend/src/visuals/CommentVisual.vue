@@ -13,6 +13,9 @@
     </div>
     <pre v-if="comment.codeSelection !== null && comment.codeSelection !== ''" class="select-code"><code class="language-java">{{ comment.codeSelection }}</code></pre>
     <pre><div v-html="markdownToHtml(comment.content)"></div></pre>
+    <button v-if="auth !== null && auth.role === 'ADMIN'" class="post-button" @click="del">
+      <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
+    </button>
   </div>
 </template>
 
@@ -26,6 +29,8 @@ import MarkdownIt from "markdown-it";
 import Prism from 'prismjs';
 import "prismjs/themes/prism-tomorrow.css"
 import 'prismjs/components/prism-java'
+import {authenticationService} from "@/services/authentication.service";
+import {commentService} from "@/services/comment.service";
 
 library.add(fas, far, fab)
 dom.watch();
@@ -39,6 +44,7 @@ export default {
   data() {
     return {
       photo: null,
+      auth: authenticationService.getAuth()
     }
   },
   props: {
@@ -57,6 +63,12 @@ export default {
     },
     highlightCode() {
       Prism.highlightAll();
+    },
+    del() {
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce commentaire ?")) {
+        commentService.del(this.comment.id)
+        this.$emit("refresh")
+      }
     }
   }
 }
@@ -102,5 +114,19 @@ export default {
   max-height: 100px;
   font-size: 75%;
 }
+
+.post-button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 30px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 
 </style>

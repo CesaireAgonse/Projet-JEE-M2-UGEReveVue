@@ -1,7 +1,5 @@
 <template  v-if="username !== null">
   <PasswordForm v-if="isPasswordModalVisible" @close-modal="hidePasswordModal" :isPasswordModalVisible="isPasswordModalVisible"/>
-
-
   <div>
     <div v-if="isAdminModalVisible" class="modal">
       <div class="modal-content">
@@ -10,6 +8,9 @@
         <div v-for="(user) in adminPage.users" :key="user">
           <div class="post">
             <p>{{ user.username }}</p>
+            <button v-if="auth !== null && auth.role === 'ADMIN'" class="post-button" @click="del(user.username)">
+              <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
+            </button>
           </div>
         </div>
         <div class="row">
@@ -41,8 +42,8 @@
           <p>{{ "Ceci est une description de profile" }}</p>
           <button v-if="auth != null && auth.username !== username && !isFollowed" class="basic-button button-profile left" @click="follow"><i class="fa-solid fa-user-plus"></i> Suivre</button>
           <button v-if="auth != null && auth.username !== username && isFollowed" class="basic-button button-profile left" @click="unfollow"><i class="fa-solid fa-user-minus"></i> Ne plus suivre</button>
-          <button v-if="auth != null && auth.username === username && auth.role === 'ADMIN'" class="basic-button button-profile left" @click="showPasswordModal">Modifier son mot de passe</button>
-          <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="showAdminModal">Page Admin</button>
+          <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="showPasswordModal">Modifier son mot de passe</button>
+          <button v-if="auth != null && auth.username === username && auth.role === 'ADMIN'" class="basic-button button-profile left" @click="showAdminModal">Page Admin</button>
           <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="uploadPhoto"><i class="fa-solid fa-camera"></i> Changer la photo de profil</button>
         </div>
       </div>
@@ -109,6 +110,7 @@ export default {
     this.reviews()
     this.comments()
     this.users()
+    console.log(this.auth)
     document.body.style.overflowY = "visible"
   },
   data() {
@@ -222,6 +224,13 @@ export default {
         this.adminPage.pageNumber = res.data.pageNumber
         this.adminPage.maxPageNumber = res.data.maxPageNumber
       })
+    },
+    del(username){
+      if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+        userService.del(username).then(() => {
+          this.allUsers()
+        })
+      }
     },
     showCodes() {
       this.selectedTab = 'codes';
@@ -418,4 +427,17 @@ export default {
 .label {
   margin-bottom: 30px;
 }
+.post-button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 30px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 </style>

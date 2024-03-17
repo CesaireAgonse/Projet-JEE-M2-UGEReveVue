@@ -19,11 +19,11 @@
       </i>
     </button>
     <div class="row">
-      <ReviewVisual :post="post" v-if="post != null"></ReviewVisual>
+      <ReviewVisual :post="post" v-if="post != null" @refresh="refreshBack"></ReviewVisual>
       <div class="comments" v-if="post != null">
         <h2>Commentaires:</h2>
         <p v-for="comment in commentsPage" :key="comment">
-          <CommentVisual  :comment="comment"></CommentVisual>
+          <CommentVisual  :comment="comment" @refresh="refresh"></CommentVisual>
         </p>
         <div class="row">
           <button v-if="pageNumber > 0" class="basic-button prevButton" @click="commentsPrev">
@@ -166,6 +166,14 @@ export default {
     },
     codeReviewed(){
       router.push("/codes/" + this.post.idPost)
+    },
+    refreshBack(){
+      if (this.post != null && this.post.typePost === 'Code'){
+        this.codeReviewed()
+      }
+      if (this.post != null && this.post.typePost === 'Review') {
+        this.reviewReviewed()
+      }
     }
   }
 }

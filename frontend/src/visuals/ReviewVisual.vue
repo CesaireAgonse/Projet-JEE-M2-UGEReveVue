@@ -101,7 +101,7 @@ export default {
       Prism.highlightAll();
     },
     del() {
-      if (confirm("Êtes-vous sûr de vouloir supprimer ce code ?")) {
+      if (confirm("Êtes-vous sûr de vouloir supprimer cette revue ?")) {
         reviewService.del(this.post.id)
         this.$emit("refresh")
       }

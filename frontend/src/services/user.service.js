@@ -52,6 +52,10 @@ let allUsers = (numberPage) => {
     return Axios.get("/api/v1/users/all/?pageNumber=" + numberPage)
 }
 
+let del = (username) => {
+    return Axios.delete("/api/v1/users/" + username)
+}
+
 export const userService = {
     profile,
     updatePassword,
@@ -64,7 +68,8 @@ export const userService = {
     followed,
     photo,
     reviewsContents,
-    allUsers
+    allUsers,
+    del
 }
 
 
