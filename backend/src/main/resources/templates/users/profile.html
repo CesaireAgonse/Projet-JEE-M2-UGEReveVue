@@ -47,7 +47,7 @@
             <div class="container limit">
                 <h2 class="content-title" >Codes:</h2>
                 <div th:each="code : ${codePageInformation.codes()}">
-                    <div th:replace="codes/codePreview :: codePreview"></div>
+                    <div th:replace="codes/codePreview :: codePreview(classPage='container')"></div>
                 </div>
                 <form th:action="@{'/users/' + ${user.username}}" method="get">
                     <input type="hidden" name="reviewPageNumber" th:value="${reviewPageInformation.pageNumber()}" />

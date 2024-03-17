@@ -129,9 +129,14 @@ public class UserService implements UserDetailsService{
         if (optionalUser.isEmpty()){
             return null;
         }
-        var optionalAuth = userRepository.findByUsername(currentUser().getUsername());
         boolean isFollowed;
-        isFollowed = optionalAuth.map(user -> user.getFollowed().contains(optionalUser.get())).orElse(false);
+        var auth = currentUser();
+        if (auth != null){
+            var optionalAuth = userRepository.findByUsername(auth.getUsername());
+            isFollowed = optionalAuth.map(user -> user.getFollowed().contains(optionalUser.get())).orElse(false);
+        }else{
+            isFollowed = false;
+        }
         return optionalUser.map(user -> UserInformation.from(user, isFollowed)).orElse(null);
     }
 

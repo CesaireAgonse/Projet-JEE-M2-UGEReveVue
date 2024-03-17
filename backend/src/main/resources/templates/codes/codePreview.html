@@ -1,4 +1,4 @@
-<div th:fragment="codePreview" class="container limit home">
+<div th:fragment="codePreview(classPage)" th:class="${classPage}">
     <p class="stats left" th:text="'score: ' + ${code.score()}"></p>
     <p class="stats left" th:text="'reviews: '+ ${code.reviews()}"></p>
     <p class="stats left" th:text="'comments: ' + ${code.comments()} "></p>

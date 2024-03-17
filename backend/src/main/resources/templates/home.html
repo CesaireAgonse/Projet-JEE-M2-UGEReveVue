@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div th:each="code : ${filter.codes}">
-                <div th:replace="codes/codePreview :: codePreview"></div>
+                <div th:replace="codes/codePreview :: codePreview(classPage='container limit home')"></div>
             </div>
             <div th:replace="footer :: footer"></div>
         </div>
