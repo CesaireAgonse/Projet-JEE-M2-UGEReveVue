@@ -1,6 +1,6 @@
 <template>
   <div class="col">
-    <button class="basic-button left" @click="home">
+    <button class="basic-button left limit" @click="home">
       <i>
         <i class="fa-solid fa-arrow-left"></i>
         Home
@@ -234,6 +234,10 @@ textarea{
 
 .cross-button{
   max-width: 20px;
+}
+
+.limit {
+  width: 100px;
 }
 
 </style>

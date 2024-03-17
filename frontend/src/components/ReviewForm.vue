@@ -30,12 +30,12 @@
       <div v-for="(field, index) in reviewForm.content" :key="index">
         <code v-if="field.codeSelection !== ''" class="language-java">{{ field.codeSelection }}</code>
         <textarea class="review" v-model="field.content" :name="'content[' + index + '].content'" placeholder="Enter a comment" required></textarea>
-        <button @click="addCode(field)" class="basic-button">Ajouter le code selectionné</button>
-        <button @click="removeField(index)" class="basic-button">Supprimer le champ</button>
+        <button type="button" @click="addCode(field)" class="basic-button">Ajouter le code selectionné</button>
+        <button type="button" @click="removeField(index)" class="basic-button">Supprimer le champ</button>
       </div>
       <div class="space"></div>
-      <button @click="addField" class="other-button">Ajouter un champ</button>
-      <button @click="addReviewField" class="other-button">Ajouter un champ d'une ancienne review</button>
+      <button type="button" @click="addField" class="other-button">Ajouter un champ</button>
+      <button type="button" @click="addReviewField" class="other-button">Ajouter un champ d'une ancienne review</button>
       <div type="submit" class="send-button" @click="review()">
         <i class="fa-regular fa-paper-plane fa-2xl" style="color: #ffffff;"></i>
       </div>

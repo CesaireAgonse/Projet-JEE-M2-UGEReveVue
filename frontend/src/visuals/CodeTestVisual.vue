@@ -54,14 +54,7 @@ export default {
   margin: 20px;
   width: calc(33.3333% - 40px); /* 1/3 de la largeur de l'écran moins la marge et le padding */
 }
-.post-code {
-  background-color: #0c0808;
-  border-radius: 8px;
-  padding: 15px;
-  font-family: 'Courier New', Courier, monospace;
-  white-space: pre-wrap;
-  text-align: left;
-}
+
 .row {
   display: flex;
   flex-direction: row;
@@ -69,11 +62,12 @@ export default {
 
 .failures{
   text-align: left;
-  padding-left: 50px;
+  padding-left: 40px;
+  max-width: 500px;
 }
+
 pre {
   max-height: 800px;
 }
-
 
 </style>

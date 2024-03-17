@@ -1,9 +1,21 @@
 <template>
   <div class="col">
-    <button class="basic-button left" @click="home">
+    <button class="basic-button left limit" @click="home">
       <i>
         <i class="fa-solid fa-arrow-left"></i>
         Home
+      </i>
+    </button>
+    <button v-if="post != null && post.typePost === 'Code'" class="basic-button left limit" @click="codeReviewed()">
+      <i>
+        <i class="fa-solid fa-arrow-left"></i>
+        Code
+      </i>
+    </button>
+    <button v-if="post != null && post.typePost === 'Review'" class="basic-button left limit" @click="reviewReviewed()">
+      <i>
+        <i class="fa-solid fa-arrow-left"></i>
+        Review
       </i>
     </button>
     <div class="row">
@@ -74,7 +86,7 @@ export default {
     }
   },
   mounted() {
-    document.title = "Code"
+    document.title = "Review"
     this.comments()
     this.reviews()
     this.code()
@@ -91,13 +103,14 @@ export default {
       pageReviewNumber:0,
       maxPageCommentNumber:0,
       maxPageReviewNumber:0,
-      auth: authenticationService.getAuth()
+      auth: authenticationService.getAuth(),
     }
   },
   methods : {
     code(){
       reviewService.get(this.$route.params.id).then(res => {
         this.post = res.data
+        console.log(this.post)
       })
     },
     home(){
@@ -147,6 +160,12 @@ export default {
     },
     refresh(){
       this.reviews()
+    },
+    reviewReviewed(){
+      router.push("/reviews/" + this.post.idPost)
+    },
+    codeReviewed(){
+      router.push("/codes/" + this.post.idPost)
     }
   }
 }
@@ -208,6 +227,10 @@ textarea{
 
 .nextButton{
   margin-bottom: 10px;
+}
+
+.limit {
+  width: 100px;
 }
 
 </style>
