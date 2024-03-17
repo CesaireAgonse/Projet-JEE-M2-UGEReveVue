@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ReviewForm {
 
-    @NotBlank
+    @NotBlank(message = "Please enter a title for your content.")
     private String title;
 
     private List<CommentForm> content = new ArrayList<>();

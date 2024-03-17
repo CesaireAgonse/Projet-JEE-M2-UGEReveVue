@@ -15,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Lob;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -31,7 +30,7 @@ public class UserRestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/{username}")
-    public ResponseEntity<UserInformation> information(@PathVariable String username){
+    public ResponseEntity<UserInformation> get(@PathVariable String username){
         var userInformation = userService.getInformation(username);
         if (userInformation == null){
             return ResponseEntity.notFound().build();
@@ -41,8 +40,8 @@ public class UserRestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/codes/{username}")
-    public ResponseEntity<CodePageInformation> codes(@PathVariable("username") @Valid String username,
-                                                     @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+    public ResponseEntity<CodePageInformation> getCodes(@PathVariable("username") String username,
+                                                        @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
@@ -51,8 +50,8 @@ public class UserRestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/reviews/{username}")
-    public ResponseEntity<ReviewPageInformation> reviews(@PathVariable("username") @Valid String username,
-                                                         @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+    public ResponseEntity<ReviewPageInformation> getReviews(@PathVariable("username") String username,
+                                                            @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
@@ -61,8 +60,8 @@ public class UserRestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/comments/{username}")
-    public ResponseEntity<CommentPageInformation> comments(@PathVariable("username") @Valid String username,
-                                                           @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+    public ResponseEntity<CommentPageInformation> getComments(@PathVariable("username") String username,
+                                                              @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
@@ -71,8 +70,8 @@ public class UserRestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/reviews/contents/{username}")
-    public ResponseEntity<ReviewContentPageInformation> reviewContent(@PathVariable("username") @Valid String username,
-                                                                      @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+    public ResponseEntity<ReviewContentPageInformation> getReviewContent(@PathVariable("username") String username,
+                                                                         @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
@@ -81,17 +80,23 @@ public class UserRestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/followed/{username}")
-    public ResponseEntity<UserPageInformation> users(@PathVariable("username") @Valid String username,
-                                                     @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+    public ResponseEntity<UserPageInformation> getFollowed(@PathVariable("username") String username,
+                                                           @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(userService.users(username, pageNumber));
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<UserPageInformation> getUser(@RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+        return ResponseEntity.ok(userService.users(pageNumber));
+    }
+
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/password")
-    public ResponseEntity<Void> password(@RequestBody @Valid UpdatePasswordInformation updatePasswordInformation, BindingResult result){
+    public ResponseEntity<Void> changePassword(@RequestBody @Valid UpdatePasswordInformation updatePasswordInformation, BindingResult result){
         if (result.hasErrors()){
             return ResponseEntity.badRequest().build();
         }
@@ -121,14 +126,18 @@ public class UserRestController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/photo")
-    public ResponseEntity<Void> photo(@RequestParam("photo") MultipartFile photo) throws IOException {
-        userService.changePhoto(photo.getBytes());
+    public ResponseEntity<Void> changePhoto(@RequestParam("photo") MultipartFile photo){
+        try {
+            userService.changePhoto(photo.getBytes());
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{username}")
-    public ResponseEntity<Void> delete(@PathVariable("username") @Valid String username) {
+    public ResponseEntity<Void> delete(@PathVariable("username") String username) {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }

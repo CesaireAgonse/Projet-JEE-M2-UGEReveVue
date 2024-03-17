@@ -1,7 +1,6 @@
 package fr.uge.revevue.controller;
 
 import fr.uge.revevue.information.user.AuthInformation;
-import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

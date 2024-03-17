@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 @Entity
 @Table(name = "Codes")
@@ -31,15 +32,21 @@ public class Code extends Post {
         this.javaContent = javaContent;
     }
 
-    public String getDescription() {return description;}
+    public String getDescription() {
+        return description;
+    }
 
-    public void setDescription(String description) {this.description = description;}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getJavaContent() {
         return new String(javaContent, StandardCharsets.UTF_8);
     }
 
-    public void setJavaContent(byte[] javaContent) {this.javaContent = javaContent;}
+    public void setJavaContent(byte[] javaContent) {
+        this.javaContent = javaContent;
+    }
 
     public String getUnitContent() {
         if (unitContent == null){
@@ -48,7 +55,9 @@ public class Code extends Post {
         return new String(unitContent, StandardCharsets.UTF_8);
     }
 
-    public void setUnitContent(byte[] unitContent) {this.unitContent = unitContent;}
+    public void setUnitContent(byte[] unitContent) {
+        this.unitContent = unitContent;
+    }
 
     public TestResults getTestResults() {
         return testResults;
@@ -56,5 +65,18 @@ public class Code extends Post {
 
     public void setTestResults(TestResults testResults) {
         this.testResults = testResults;
+    }
+
+    @Override
+    public String toString() {
+        return "Code{" +
+                "description='" + description + '\'' +
+                ", javaContent=" + Arrays.toString(javaContent) +
+                ", unitContent=" + Arrays.toString(unitContent) +
+                ", testResults=" + testResults +
+                ", votes=" + votes +
+                ", comments=" + comments +
+                ", reviews=" + reviews +
+                '}';
     }
 }

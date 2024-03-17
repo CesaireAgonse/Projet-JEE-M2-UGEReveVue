@@ -36,7 +36,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public SimpleUserInformation signup(String username, String password) {
+    public void signup(String username, String password) {
         var find = userRepository.findByUsername(username);
         if (find.isPresent()){
             throw new IllegalArgumentException("username already used");
@@ -49,7 +49,7 @@ public class AuthenticationService {
         }
         user.setRole(optionalRole.get());
         userRepository.save(user);
-        return SimpleUserInformation.from(user);
+        SimpleUserInformation.from(user);
     }
 
     public Map<String, String> login(String username, String password){

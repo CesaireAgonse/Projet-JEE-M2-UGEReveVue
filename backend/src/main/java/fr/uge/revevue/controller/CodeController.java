@@ -4,9 +4,7 @@ import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CodeForm;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
-import fr.uge.revevue.information.PagingInformation;
 import fr.uge.revevue.information.user.AuthInformation;
-import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,14 +36,14 @@ public class CodeController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/codes/create")
-    public String post(@ModelAttribute("codeForm") CodeForm codeForm, Model model){
+    public String createPage(@ModelAttribute("codeForm") CodeForm codeForm, Model model){
         model.addAttribute("auth", AuthInformation.from(userService.currentUser()));
         return "codes/create";
     }
 
     @PreAuthorize("permitAll()")
     @GetMapping("/codes/{codeId}")
-    public String code(@PathVariable("codeId") @Valid long codeId,
+    public String get(@PathVariable("codeId") long codeId,
                        @ModelAttribute("commentForm") CommentForm commentForm,
                        @ModelAttribute("reviewForm") ReviewForm reviewForm,
                        @RequestParam(value = "reviewPageNumber", required = false) Integer reviewPageNumber,
@@ -68,7 +66,7 @@ public class CodeController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/create")
-    public String post(@ModelAttribute @Valid CodeForm codeForm, BindingResult result)  throws IOException {
+    public String create(@ModelAttribute @Valid CodeForm codeForm, BindingResult result)  throws IOException {
         if (result.hasErrors()){
             return "codes/create";
         }
@@ -96,7 +94,7 @@ public class CodeController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/vote/{codeId}")
-    public String codeVoted(@PathVariable("codeId") @Valid long codeId,
+    public String codeVoted(@PathVariable("codeId") long codeId,
                             @RequestParam("voteType") Vote.VoteType voteType,
                             BindingResult result){
         if (result.hasErrors()){
@@ -111,7 +109,7 @@ public class CodeController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/comment/{codeId}")
-    public String codeCommented(@PathVariable("codeId") @Valid long codeId,
+    public String codeCommented(@PathVariable("codeId") long codeId,
                                 @ModelAttribute("commentForm") @Valid CommentForm commentForm,
                                 BindingResult result){
         if (result.hasErrors()){
@@ -126,7 +124,7 @@ public class CodeController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/review/{codeId}")
-    public String codeReviewed(@PathVariable("codeId") @Valid long codeId,
+    public String codeReviewed(@PathVariable("codeId") long codeId,
                                @ModelAttribute("reviewForm") ReviewForm reviewForm,
                                BindingResult result){
         if (result.hasErrors()){
@@ -137,5 +135,15 @@ public class CodeController {
         }
         reviewService.create(userService.currentUser().getId(),codeId, reviewForm.getTitle(), reviewForm.getContent());
         return "redirect:/codes/" + codeId;
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("codes/{codeId}")
+    public String delete(@PathVariable("codeId") long codeId) {
+        if (!codeService.isExisted(codeId)){
+            return "redirect:/";
+        }
+        codeService.delete(codeId);
+        return "redirect:/";
     }
 }

@@ -8,6 +8,7 @@ import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,7 +28,7 @@ public class CodeRestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/{codeId}")
-    public ResponseEntity<CodeInformation> code(@PathVariable("codeId") @Valid long codeId) throws IOException {
+    public ResponseEntity<CodeInformation> get(@PathVariable("codeId") long codeId) throws IOException {
         var code = codeService.getInformation(codeId);
         if (code == null) {
             return ResponseEntity.notFound().build();
@@ -45,7 +46,10 @@ public class CodeRestController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    public ResponseEntity<Void> post(@ModelAttribute @Valid CodeForm codeForm) throws IOException {
+    public ResponseEntity<Void> create(@ModelAttribute @Valid CodeForm codeForm, BindingResult result) throws IOException {
+        if (result.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
         codeService.create(userService.currentUser().getId(),
                 codeForm.getTitle(),
                 codeForm.getDescription(),
@@ -56,7 +60,7 @@ public class CodeRestController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{codeId}")
-    public ResponseEntity<Void> codeDeleted(@PathVariable("codeId") @Valid long codeId) {
+    public ResponseEntity<Void> delete(@PathVariable("codeId") long codeId) {
         if (!codeService.isExisted(codeId)){
             return ResponseEntity.notFound().build();
         }

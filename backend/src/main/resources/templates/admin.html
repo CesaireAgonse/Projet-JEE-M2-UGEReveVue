@@ -13,7 +13,7 @@
             <div>
                 <p class="text-title left">Moderation page</p>
             </div>
-            <p class="result left" th:text="${userPageInformation.users().size() == 1 ? '1 user registered' : userPageInformation.users().size() + ' registered users'} "></p>
+            <p class="result left" th:text="${userPageInformation.resultNumber() == 1 ? '1 user registered' : userPageInformation.resultNumber() + ' registered users'} "></p>
         </div>
         <div class="container limit home">
             <div th:each="user : ${userPageInformation.users()}">

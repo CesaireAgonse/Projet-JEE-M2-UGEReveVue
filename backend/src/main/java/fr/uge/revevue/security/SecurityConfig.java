@@ -39,8 +39,7 @@ public class SecurityConfig {
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/css/**", "/prism/**", "/script/**", "/h2-console/**").permitAll()
-
-// Pas besoin puisqu'on utilise les PreAuthorize pour gérer la sécurité
+// Pas besoin des antMatchers puisqu'on utilise les PreAuthorize pour gérer la sécurité
 
 //                .antMatchers("/","/signup", "/login", "/refresh").permitAll()   // Client léger
 //                .antMatchers("/codes/{codeId}", "/reviews/{reviewId}").permitAll()

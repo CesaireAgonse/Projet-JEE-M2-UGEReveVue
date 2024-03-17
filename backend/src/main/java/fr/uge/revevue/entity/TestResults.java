@@ -4,14 +4,19 @@ import javax.persistence.*;
 
 @Embeddable
 public class TestResults {
+
     @Column(columnDefinition = "BIGINT DEFAULT 0")
     private long testsTotalCount;
+
     @Column(columnDefinition = "BIGINT DEFAULT 0")
     private long testsSucceededCount;
+
     @Column(columnDefinition = "BIGINT DEFAULT 0")
     private long testsFailedCount;
+
     @Column(columnDefinition = "BIGINT DEFAULT 0")
     private long testsTotalTime;
+
     private String failures;
 
     public TestResults() {}
@@ -62,5 +67,16 @@ public class TestResults {
 
     public void setFailures(String failures) {
         this.failures = failures;
+    }
+
+    @Override
+    public String toString() {
+        return "TestResults{" +
+                "testsTotalCount=" + testsTotalCount +
+                ", testsSucceededCount=" + testsSucceededCount +
+                ", testsFailedCount=" + testsFailedCount +
+                ", testsTotalTime=" + testsTotalTime +
+                ", failures='" + failures + '\'' +
+                '}';
     }
 }

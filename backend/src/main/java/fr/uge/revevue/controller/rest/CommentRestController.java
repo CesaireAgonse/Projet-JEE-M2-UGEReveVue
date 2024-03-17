@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("api/v1/comments")
 public class CommentRestController {
@@ -20,7 +18,7 @@ public class CommentRestController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> commentDeleted(@PathVariable("commentId") @Valid long commentId) {
+    public ResponseEntity<Void> delete(@PathVariable("commentId") long commentId) {
         if (!commentService.isExisted(commentId)){
             return ResponseEntity.notFound().build();
         }

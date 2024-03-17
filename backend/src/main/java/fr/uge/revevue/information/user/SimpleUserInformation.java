@@ -1,6 +1,5 @@
 package fr.uge.revevue.information.user;
 
-import fr.uge.revevue.entity.Role;
 import fr.uge.revevue.entity.User;
 
 import java.util.Objects;
@@ -13,6 +12,7 @@ public record SimpleUserInformation(
         int nbReview,
         int nbComments
 ){
+
     public static SimpleUserInformation from(User user){
         Objects.requireNonNull(user, "[FollowedInformation] user is null");
         return new SimpleUserInformation(
@@ -24,5 +24,4 @@ public record SimpleUserInformation(
                 user.getComments().size()
         );
     }
-
 }

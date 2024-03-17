@@ -30,6 +30,7 @@ import java.util.Set;
 @Service
 public class UserService implements UserDetailsService{
     private static final int LIMIT_FOLLOWED_PAGE = 10;
+    private static final int LIMIT_USERS_PAGE = 5;
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -141,16 +142,15 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
-    public List<SimpleUserInformation> getSomeUsers(int offset, int limit){
-        Pageable page = PageRequest.of(offset, limit);
-        return userRepository.findAll(page).stream().map(SimpleUserInformation::from).toList();
-    }
-
-    @Transactional
-    public UserPageInformation getSomeUsersForAdminPage(int offset, int limit){
-        var count = userRepository.count();
-        int maxPageNumber = (int) ((count - 1) / limit);
-        return new UserPageInformation(getSomeUsers(offset, limit),  offset, maxPageNumber);
+    public UserPageInformation users(Integer pageNumber){
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        var count = (int) userRepository.count();
+        int maxPageNumber = ((count - 1) / LIMIT_USERS_PAGE);
+        Pageable page = PageRequest.of(pageNumber, LIMIT_USERS_PAGE);
+        var users = userRepository.findAll(page).stream().map(SimpleUserInformation::from).toList();
+        return new UserPageInformation(users,  pageNumber, maxPageNumber, count);
     }
     @Transactional
     public UserPageInformation getFollowedPageFromUsername(String username, int offset){
@@ -158,7 +158,7 @@ public class UserService implements UserDetailsService{
         int maxPageNumber = ((count - 1) / LIMIT_FOLLOWED_PAGE);
         Pageable page = PageRequest.of(offset, LIMIT_FOLLOWED_PAGE);
         var followedInformations = userRepository.findUserFollowedByUsername(username, page).stream().map(SimpleUserInformation::from).toList();
-        return new UserPageInformation(followedInformations, offset, maxPageNumber);
+        return new UserPageInformation(followedInformations, offset, maxPageNumber, count);
     }
 
     public boolean matchesPassword(String rawPassword, String encodedPassword){

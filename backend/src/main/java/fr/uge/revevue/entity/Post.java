@@ -123,4 +123,19 @@ public abstract class Post {
     public void setDtype(String dtype) {
         this.dtype = dtype;
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", votes=" + votes +
+                ", comments=" + comments +
+                ", reviews=" + reviews +
+                ", user=" + user +
+                ", score=" + score +
+                ", date=" + date +
+                ", title='" + title + '\'' +
+                ", dtype='" + dtype + '\'' +
+                '}';
+    }
 }

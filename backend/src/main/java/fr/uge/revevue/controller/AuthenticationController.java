@@ -33,7 +33,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/signup")
-    public String signup(@ModelAttribute("signupForm") SignupForm signupForm){
+    public String signupPage(@ModelAttribute("signupForm") SignupForm signupForm){
         if (userService.currentUser() != null){
             return "redirect:/";
         }
@@ -41,7 +41,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/login")
-    public String login(@ModelAttribute("loginForm") LoginForm loginForm){
+    public String loginPage(@ModelAttribute("loginForm") LoginForm loginForm){
         if (userService.currentUser() != null){
             return "redirect:/";
         }

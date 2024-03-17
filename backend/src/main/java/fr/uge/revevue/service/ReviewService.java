@@ -1,11 +1,9 @@
 package fr.uge.revevue.service;
 
-import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Review;
 import fr.uge.revevue.entity.ReviewContent;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.information.review.*;
-import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.repository.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +13,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ReviewService {
@@ -32,6 +29,7 @@ public class ReviewService {
         this.userRepository = userRepository;
         this.reviewContentRepository = reviewContentRepository;
     }
+
     @Transactional
     public void create(long userId, long postId, String title, List<CommentForm> commentForms){
         if (commentForms == null){
@@ -81,7 +79,7 @@ public class ReviewService {
         int maxPageNumber = ((count - 1) / LIMIT_REVIEW_PAGE);
         Pageable pageable = PageRequest.of(pageNumber, LIMIT_REVIEW_PAGE);
         var reviews = reviewRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(ReviewInformation::from).toList();
-        return new ReviewPageInformation(reviews, pageNumber, maxPageNumber);
+        return new ReviewPageInformation(reviews, pageNumber, maxPageNumber, count);
     }
 
     public boolean isExisted(long id){
@@ -104,7 +102,7 @@ public class ReviewService {
         int maxPageNumber = ((count - 1) / LIMIT_REVIEW_PAGE);
         Pageable page = PageRequest.of(offset, LIMIT_REVIEW_PAGE);
         var reviewInformations = reviewRepository.findAllByUserUsername(username, page).stream().map(ReviewInformation::from).toList();
-        return new ReviewPageInformation(reviewInformations, offset, maxPageNumber);
+        return new ReviewPageInformation(reviewInformations, offset, maxPageNumber, count);
     }
 
     @Transactional
@@ -115,11 +113,4 @@ public class ReviewService {
         var reviewContentInformations = reviewContentRepository.findAllByUserUsernameOrderByDateDesc(username, page).stream().map(ReviewContentInformation::from).toList();
         return new ReviewContentPageInformation(reviewContentInformations, offset, maxPageNumber);
     }
-
-    @Transactional
-    public long countReviewsFromUser(UserInformation user){
-        var realUser = userRepository.findByUsername(user.username());
-        return reviewRepository.countByUserId(realUser.get().getId());
-    }
-
 }

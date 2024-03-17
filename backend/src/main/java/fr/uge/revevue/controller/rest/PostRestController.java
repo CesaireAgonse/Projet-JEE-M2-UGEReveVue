@@ -34,8 +34,8 @@ public class PostRestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/comments/{postId}")
-    public ResponseEntity<CommentPageInformation> comments(@PathVariable("postId") @Valid long postId,
-                                                           @RequestParam(value = "pageNumber", required = false) int pageNumber) {
+    public ResponseEntity<CommentPageInformation> getComments(@PathVariable("postId") long postId,
+                                                              @RequestParam(value = "pageNumber", required = false) int pageNumber) {
         if (!postService.isExisted(postId)){
             return ResponseEntity.notFound().build();
         }
@@ -44,8 +44,8 @@ public class PostRestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/reviews/{postId}")
-    public ResponseEntity<ReviewPageInformation> reviews(@PathVariable("postId") @Valid long postId,
-                                                         @RequestParam(value = "pageNumber", required = false) int pageNumber) {
+    public ResponseEntity<ReviewPageInformation> getReviews(@PathVariable("postId") long postId,
+                                                            @RequestParam(value = "pageNumber", required = false) int pageNumber) {
         if (!postService.isExisted(postId)){
             return ResponseEntity.notFound().build();
         }
@@ -54,8 +54,8 @@ public class PostRestController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/vote/{postId}")
-    public ResponseEntity<Long> postVoted(@PathVariable("postId") @Valid long postId,
-                                             @RequestParam("voteType") String voteType) {
+    public ResponseEntity<Long> postVoted(@PathVariable("postId") long postId,
+                                          @RequestParam("voteType") String voteType) {
         if (!postService.isExisted(postId)){
             return ResponseEntity.notFound().build();
         }
@@ -64,9 +64,9 @@ public class PostRestController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/comment/{postId}")
-    public ResponseEntity<Void> postCommented(@PathVariable("postId") @Valid long postId,
-                                @RequestBody @Valid CommentForm commentForm,
-                                BindingResult result){
+    public ResponseEntity<Void> postCommented(@PathVariable("postId") long postId,
+                                              @RequestBody @Valid CommentForm commentForm,
+                                              BindingResult result){
         if (result.hasErrors()){
             return ResponseEntity.badRequest().build();
         }
@@ -79,9 +79,9 @@ public class PostRestController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/review/{postId}")
-    public ResponseEntity<Void> postReviewed(@PathVariable("postId") @Valid long postId,
-                               @RequestBody @Valid ReviewForm reviewForm,
-                               BindingResult result){
+    public ResponseEntity<Void> postReviewed(@PathVariable("postId") long postId,
+                                             @RequestBody @Valid ReviewForm reviewForm,
+                                             BindingResult result){
         if (result.hasErrors()){
             return ResponseEntity.badRequest().build();
         }

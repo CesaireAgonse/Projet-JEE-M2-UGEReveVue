@@ -36,4 +36,15 @@ public class Review extends Post{
     public void setContent(List<ReviewContent> contents) {
         this.contents = contents;
     }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "post=" + post +
+                ", contents=" + contents +
+                ", votes=" + votes +
+                ", comments=" + comments +
+                ", reviews=" + reviews +
+                '}';
+    }
 }

@@ -1,11 +1,8 @@
 package fr.uge.revevue.information.review;
 
-import fr.uge.revevue.entity.Code;
 import fr.uge.revevue.entity.Review;
-import fr.uge.revevue.entity.ReviewContent;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.information.user.SimpleUserInformation;
-import fr.uge.revevue.information.comment.CommentInformation;
 
 import java.util.Date;
 import java.util.List;

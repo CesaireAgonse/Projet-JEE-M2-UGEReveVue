@@ -3,8 +3,6 @@ package fr.uge.revevue.service;
 import fr.uge.revevue.entity.Comment;
 import fr.uge.revevue.information.comment.CommentInformation;
 import fr.uge.revevue.information.comment.CommentPageInformation;
-import fr.uge.revevue.information.review.ReviewInformation;
-import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.repository.CommentRepository;
 import fr.uge.revevue.repository.PostRepository;
@@ -14,12 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class CommentService {
-    private static int LIMIT_COMMENT_PAGE = 4;
+    private static final int LIMIT_COMMENT_PAGE = 4;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -46,6 +42,7 @@ public class CommentService {
         comment.setCodeSelection(codeSelection);
         commentRepository.save(comment);
     }
+
     @Transactional
     public CommentPageInformation getComments(long postId, Integer pageNumber){
         if (pageNumber == null || pageNumber < 0){
@@ -55,13 +52,7 @@ public class CommentService {
         int maxPageNumber = ((count - 1) / LIMIT_COMMENT_PAGE);
         Pageable pageable = PageRequest.of(pageNumber, LIMIT_COMMENT_PAGE);
         var comments = commentRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(CommentInformation::from).toList();
-        return new CommentPageInformation(comments, pageNumber, maxPageNumber);
-    }
-
-    @Transactional
-    public long countCommentsFromUser(UserInformation user){
-        var realUser = userRepository.findByUsername(user.username());
-        return commentRepository.countByUserId(realUser.get().getId());
+        return new CommentPageInformation(comments, pageNumber, maxPageNumber, count);
     }
 
     public boolean isExisted(long id){
@@ -69,7 +60,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentInformation delete (long reviewId){
+    public CommentInformation delete(long reviewId){
         var comment = commentRepository.findById(reviewId);
         if(comment.isEmpty()){
             throw new IllegalArgumentException("Comment not found");
@@ -84,6 +75,6 @@ public class CommentService {
         int maxPageNumber = ((count - 1) / LIMIT_COMMENT_PAGE);
         Pageable page = PageRequest.of(offset, LIMIT_COMMENT_PAGE);
         var commentInformations = commentRepository.findAllByUserUsername(username, page).stream().map(CommentInformation::from).toList();
-        return new CommentPageInformation(commentInformations, offset, maxPageNumber);
+        return new CommentPageInformation(commentInformations, offset, maxPageNumber, count);
     }
 }

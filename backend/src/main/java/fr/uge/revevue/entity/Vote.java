@@ -54,4 +54,13 @@ public class Vote {
     public VoteType getVoteType() {return voteType;}
 
     public void setVoteType(VoteType voteType) {this.voteType = voteType;}
+
+    @Override
+    public String toString() {
+        return "Vote{" +
+                "user=" + user +
+                ", post=" + post +
+                ", voteType=" + voteType +
+                '}';
+    }
 }

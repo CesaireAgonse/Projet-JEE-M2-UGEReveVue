@@ -7,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("api/v1/reviews")
 public class  ReviewRestController {
@@ -21,7 +19,7 @@ public class  ReviewRestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/{reviewId}")
-    public ResponseEntity<ReviewInformation> review(@PathVariable("reviewId") @Valid long reviewId){
+    public ResponseEntity<ReviewInformation> get(@PathVariable("reviewId") long reviewId){
         var review = reviewService.getInformation(reviewId);
         if (review == null){
             ResponseEntity.notFound().build();
@@ -31,7 +29,7 @@ public class  ReviewRestController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<Void> reviewDeleted(@PathVariable("reviewId") @Valid long reviewId) {
+    public ResponseEntity<Void> delete(@PathVariable("reviewId") long reviewId) {
         if (!reviewService.isExisted(reviewId)){
             return ResponseEntity.notFound().build();
         }

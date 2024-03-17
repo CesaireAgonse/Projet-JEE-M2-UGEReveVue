@@ -29,7 +29,7 @@ public class Comment {
 
     public Comment() {}
 
-    public Comment(String content, User user,Post post) {
+    public Comment(String content, User user, Post post) {
         this.content = content;
         this.user = user;
         this.post = post;

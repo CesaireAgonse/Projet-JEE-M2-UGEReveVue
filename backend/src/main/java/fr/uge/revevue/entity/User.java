@@ -158,7 +158,11 @@ public class User implements UserDetails {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
+                ", profilePhoto=" + Arrays.toString(profilePhoto) +
                 ", followed=" + followed +
+                ", posts=" + posts +
+                ", comments=" + comments +
+                ", votes=" + votes +
                 '}';
     }
 }

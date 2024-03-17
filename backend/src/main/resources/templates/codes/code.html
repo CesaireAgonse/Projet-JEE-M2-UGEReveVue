@@ -2,7 +2,6 @@
     <link rel="stylesheet" href="/css/style.css"/>
     <link rel="stylesheet" href="/css/posts/post.css" />
     <link rel="stylesheet" href="/prism/prism.css">
-
     <div>
         <h2 class ="title" th:text="${code.title()}"></h2>
         <div class ="author">
@@ -43,13 +42,6 @@
     </div>
     <script src="/prism/prism.js"></script>
     <script>
-        /*
-        document.querySelectorAll('.code-container').forEach(codeContainer => {
-            const codeElement = codeContainer.querySelector('.language-java');
-            const codeContent = codeElement.getAttribute('data-code');
-            codeElement.textContent = codeContent;
-        });
-        */
         const codeElement = document.querySelector('.language-java')
         const codeContent = codeElement.getAttribute('data-code');
         codeElement.textContent = codeContent;

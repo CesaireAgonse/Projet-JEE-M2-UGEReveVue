@@ -3,9 +3,7 @@ package fr.uge.revevue.controller;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.CommentForm;
 import fr.uge.revevue.form.ReviewForm;
-import fr.uge.revevue.information.PagingInformation;
 import fr.uge.revevue.information.user.AuthInformation;
-import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.service.CommentService;
 import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;
@@ -36,7 +34,7 @@ public class ReviewController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/reviews/{reviewId}")
-    public String review(@PathVariable("reviewId") @Valid long reviewId,
+    public String review(@PathVariable("reviewId") long reviewId,
                          @ModelAttribute("commentForm") CommentForm commentForm,
                          @ModelAttribute("reviewForm") ReviewForm reviewForm,
                          @RequestParam(value = "reviewPageNumber", required = false) Integer reviewPageNumber,
@@ -59,8 +57,8 @@ public class ReviewController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/reviews/vote/{reviewId}")
-    public String reviewVoted(@PathVariable("reviewId") @Valid long reviewId,
-                              @RequestParam("voteType")Vote.VoteType voteType,
+    public String reviewVoted(@PathVariable("reviewId") long reviewId,
+                              @RequestParam("voteType") @Valid Vote.VoteType voteType,
                               BindingResult result){
         if (result.hasErrors()){
             return "redirect:/reviews/" + reviewId;
@@ -74,7 +72,7 @@ public class ReviewController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/reviews/comment/{reviewId}")
-    public String reviewCommented(@PathVariable("reviewId") @Valid long reviewId,
+    public String reviewCommented(@PathVariable("reviewId") long reviewId,
                                   @ModelAttribute("commentForm") @Valid CommentForm commentForm,
                                   BindingResult result){
         if (result.hasErrors()){
@@ -89,7 +87,7 @@ public class ReviewController {
 
     @PreAuthorize("permitAll()")
     @PostMapping("/reviews/review/{reviewId}")
-    public String reviewReviewed(@PathVariable("reviewId") @Valid long reviewId,
+    public String reviewReviewed(@PathVariable("reviewId") long reviewId,
                                  @ModelAttribute("reviewForm") @Valid ReviewForm reviewForm,
                                  BindingResult result){
         if (result.hasErrors()){
@@ -100,5 +98,15 @@ public class ReviewController {
         }
         reviewService.create(userService.currentUser().getId(), reviewId,  reviewForm.getTitle(), reviewForm.getContent());
         return "redirect:/reviews/" + reviewId;
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("reviews/{reviewId}")
+    public String delete(@PathVariable("reviewId") long reviewId) {
+        if (!reviewService.isExisted(reviewId)){
+            return "redirect:/";
+        }
+        reviewService.delete(reviewId);
+        return "redirect:/";
     }
 }

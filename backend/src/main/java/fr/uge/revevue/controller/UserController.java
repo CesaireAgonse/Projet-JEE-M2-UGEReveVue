@@ -1,12 +1,7 @@
 package fr.uge.revevue.controller;
 
 import fr.uge.revevue.form.PasswordForm;
-import fr.uge.revevue.information.PagingInformation;
 import fr.uge.revevue.information.user.AuthInformation;
-import fr.uge.revevue.information.user.SimpleUserInformation;
-import fr.uge.revevue.service.CodeService;
-import fr.uge.revevue.service.CommentService;
-import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,14 +23,14 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/password")
-    public String password(@ModelAttribute("passwordForm") PasswordForm passwordForm, Model model){
-        model.addAttribute("auth", SimpleUserInformation.from(userService.currentUser()));
+    public String changePasswordPage(@ModelAttribute("passwordForm") PasswordForm passwordForm, Model model){
+        model.addAttribute("auth", AuthInformation.from(userService.currentUser()));
         return "users/password";
     }
 
     @PreAuthorize("permitAll()")
     @GetMapping("/users/{username}")
-    public String information(@PathVariable String username,
+    public String get(@PathVariable String username,
                               @RequestParam(value = "codePageNumber", required = false) Integer codePageNumber,
                               @RequestParam(value = "reviewPageNumber", required = false) Integer reviewPageNumber,
                               @RequestParam(value = "commentPageNumber", required = false) Integer commentPageNumber,
@@ -51,7 +46,7 @@ public class UserController {
         }
         model.addAttribute("user", userInformation);
         model.addAttribute("followedPageInformation", userService.users(userInformation.username(), followedPageNumber));
-        model.addAttribute("codePageInformation", userService.codes(userInformation.username(), followedPageNumber));
+        model.addAttribute("codePageInformation", userService.codes(userInformation.username(), codePageNumber));
         model.addAttribute("reviewPageInformation", userService.reviews(userInformation.username(), reviewPageNumber));
         model.addAttribute("commentPageInformation", userService.comments(userInformation.username(), commentPageNumber));
         return "users/profile";
@@ -59,7 +54,7 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/password")
-    public String password(@ModelAttribute("passwordForm") @Valid PasswordForm passwordForm, BindingResult result, Model model){
+    public String changePassword(@ModelAttribute("passwordForm") @Valid PasswordForm passwordForm, BindingResult result, Model model){
         var user = userService.currentUser();
         model.addAttribute("auth", AuthInformation.from(user));
         if (result.hasErrors()){
@@ -102,8 +97,8 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("/{username}")
-    public String delete(@PathVariable("username") @Valid String username) {
+    @DeleteMapping("users/{username}")
+    public String delete(@PathVariable("username") String username) {
         if (!userService.isExisted(username)){
             return "redirect:/";
         }

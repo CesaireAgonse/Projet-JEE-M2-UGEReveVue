@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface ReviewContentRepository extends CrudRepository<ReviewContent, Long> {
 
-    Optional<ReviewContent> findByUserUsernameAndContentAndCodeSelection(String username, String content, String codeSelection);
-
     int countByUserUsername(String username);
+
+    Optional<ReviewContent> findByUserUsernameAndContentAndCodeSelection(String username, String content, String codeSelection);
 
     List<ReviewContent> findAllByUserUsernameOrderByDateDesc(String username, Pageable page);
 }

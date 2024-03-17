@@ -6,7 +6,6 @@ import fr.uge.revevue.entity.User;
 import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.code.CodeInformation;
 import fr.uge.revevue.information.code.CodePageInformation;
-import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.repository.CodeRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class CodeService {
     public CodeInformation getInformation(long idCode){
         var code = codeRepository.findById(idCode);
         if(code.isEmpty()){
-            throw new IllegalArgumentException("Code not found");
+            throw new IllegalArgumentException("code not found");
         }
         return CodeInformation.from(code.get());
     }
@@ -52,6 +51,9 @@ public class CodeService {
     @Transactional
     public void create(long id, String title, String description, MultipartFile javaContent, MultipartFile unitContent) throws IOException {
         var user = userRepository.findById(id);
+        if (user.isEmpty()){
+            throw new IllegalArgumentException("user not found");
+        }
         var code = new Code(user.get(), title, description, javaContent.getBytes());
         if (unitContent != null && !unitContent.isEmpty()){
             code.setUnitContent(unitContent.getBytes());
@@ -71,6 +73,7 @@ public class CodeService {
                 .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCase(page, keyword, keyword, keyword);
         return codes.stream().map(CodeInformation::from).toList();
     }
+
     @Transactional
     public List<CodeInformation> findWithKeywordByNewest(String keyword, int offset, int limit) {
         Pageable page = PageRequest.of(offset, limit);
@@ -169,12 +172,6 @@ public class CodeService {
         int maxPageNumber = ((count - 1) / LIMIT);
         Pageable page = PageRequest.of(offset, LIMIT);
         var codeInformations = codeRepository.findAllByUserUsername(username, page).stream().map(CodeInformation::from).toList();
-        return new CodePageInformation(codeInformations, offset, maxPageNumber);
-    }
-
-    @Transactional
-    public long countCodesFromUser(UserInformation user){
-        var realUser = userRepository.findByUsername(user.username());
-        return codeRepository.countByUserId(realUser.get().getId());
+        return new CodePageInformation(codeInformations, offset, maxPageNumber, count);
     }
 }

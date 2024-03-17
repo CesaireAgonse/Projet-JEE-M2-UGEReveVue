@@ -36,7 +36,7 @@ public class Role {
     public String toString() {
         return "Role{" +
                 "id=" + id +
-                ", typeRole='" + typeRole + '\'' +
+                ", typeRole=" + typeRole +
                 '}';
     }
 }

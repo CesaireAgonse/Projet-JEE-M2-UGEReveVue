@@ -1,14 +1,10 @@
 package fr.uge.revevue.form;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 public class CommentForm {
 
-    @NotBlank
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "Please enter a comment for your content.")
     private String content;
 
     private String codeSelection;

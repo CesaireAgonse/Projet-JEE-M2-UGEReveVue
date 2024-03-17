@@ -65,7 +65,6 @@ public class ReviewContent {
         this.user = user;
     }
 
-
     public Date getDate() {
         return date;
     }
@@ -74,4 +73,14 @@ public class ReviewContent {
         this.date = date;
     }
 
+    @Override
+    public String toString() {
+        return "ReviewContent{" +
+                "id=" + id +
+                ", user=" + user +
+                ", content='" + content + '\'' +
+                ", codeSelection='" + codeSelection + '\'' +
+                ", date=" + date +
+                '}';
+    }
 }
