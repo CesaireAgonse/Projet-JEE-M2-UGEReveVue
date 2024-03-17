@@ -38,63 +38,8 @@
     </div>
 </body>
 </html>
-<script src="/prism/prism.js"></script>
+<script src="/script/delete.js"></script>
+<script src="/script/notification.js"></script>
 <script>
-
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const form = this.closest('form');
-            const username = form.getAttribute('data-user-username');
-            const voteType = this.value;
-            fetch('/api/v1/users/' + username , {
-                method: 'DELETE'
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to delete user');
-                    }
-                    const contentType = response.headers.get('content-type');
-                    if (contentType && contentType.includes('application/json')) {
-                        return response.json();
-                    } else {
-                        return null;
-                    }
-                })
-                .then(data => {
-                    if (data !== null) {
-                        console.log('User deleted successfully:', data);
-                    } else {
-                        console.log('User deleted successfully, no JSON data returned');
-                    }
-                    showNotification('User deleted.');
-                    window.location.href = '/admin';
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    });
-
-    function showNotification(message, type = 'success') {
-        if (!('Notification' in window)) {
-            console.error('This browser does not support notifications.');
-            return;
-        }
-
-        if (Notification.permission !== 'granted') {
-            Notification.requestPermission().then(permission => {
-                if (permission === 'granted') {
-                    displayNotification();
-                }
-            });
-        } else {
-            displayNotification();
-        }
-
-        function displayNotification() {
-            const notification = new Notification('Notification', {
-                body: message,
-                icon: ''
-            });
-        }
-    }
-
+    del('/api/v1/users/', 'data-user-username', 'User deleted.', backToAdmin)
 </script>

@@ -40,69 +40,10 @@
             </div>
         </div>
     </div>
-    <script src="/prism/prism.js"></script>
+    <script src="/script/colorCode.js"></script>
+    <script src="/script/delete.js"></script>
     <script>
-        const codeElement = document.querySelector('.language-java')
-        const codeContent = codeElement.getAttribute('data-code');
-        codeElement.textContent = codeContent;
-
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const form = this.closest('form');
-                const codeId = form.getAttribute('data-code-id');
-                const voteType = this.value;
-                console.log("delete id " + codeId);
-                fetch('../api/v1/codes/' + codeId , {
-                    method: 'DELETE'
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to delete code');
-                        }
-                        const contentType = response.headers.get('content-type');
-                        if (contentType && contentType.includes('application/json')) {
-                            return response.json();
-                        } else {
-                            return null;
-                        }
-                    })
-                    .then(data => {
-                        if (data !== null) {
-                            console.log('Code deleted successfully:', data);
-                        } else {
-                            console.log('Code deleted successfully, no JSON data returned');
-                        }
-                        showNotification('Code deleted.');
-                        window.location.href = '/';
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-        });
-
-        function showNotification(message, type = 'success') {
-            if (!('Notification' in window)) {
-                console.error('This browser does not support notifications.');
-                return;
-            }
-
-            if (Notification.permission !== 'granted') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        displayNotification();
-                    }
-                });
-            } else {
-                displayNotification();
-            }
-
-            function displayNotification() {
-                const notification = new Notification('Notification', {
-                    body: message,
-                    icon: ''
-                });
-            }
-        }
-
+        colorCode()
+        del('/api/v1/codes/', 'data-code-id', 'Code deleted.', back)
     </script>
-
 </div>

@@ -86,15 +86,7 @@
         </div>
     </body>
 </html>
-<script src="/markdown-it/markdown-it.min.js"></script>
+<script src="/script/showMarkdown.js"></script>
 <script>
-    var md = window.markdownit();
-    var divs = document.getElementsByClassName('markdown');
-    for (var i = 0; i < divs.length; i++) {
-        if (!divs[i].hasAttribute('data-rendered')) {
-            var content = divs[i].innerHTML;
-            divs[i].innerHTML = md.render(content);
-            divs[i].setAttribute('data-rendered', 'true');
-        }
-    }
+    markdown()
 </script>

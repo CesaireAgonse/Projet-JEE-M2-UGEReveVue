@@ -39,28 +39,8 @@
                 </form>
             </div>
         </div>
-        <script src="/prism/prism.js"></script>
+        <script src="/script/colorCode.js"></script>
         <script>
-            function setupFileInput(fileInputId, codeElementId) {
-                document.getElementById(fileInputId).addEventListener('change', function (e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const codeElement = document.getElementById(codeElementId);
-                            codeElement.textContent = e.target.result;
-                            Prism.highlightElement(codeElement);
-                            const preElement = codeElement.parentElement;
-                            if (e.target.result.trim().length > 0) {
-                                preElement.style.display = 'block';
-                            } else {
-                                preElement.style.display = 'none';
-                            }
-                        };
-                        reader.readAsText(file);
-                    }
-                });
-            }
             setupFileInput('java-file-input', 'java-code');
             setupFileInput('unit-file-input', 'unit-code');
         </script>

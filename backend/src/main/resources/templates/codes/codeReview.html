@@ -21,7 +21,7 @@
                     <button class="right button other" th:if="${commentPageInformation.pageNumber() < commentPageInformation.maxPageNumber()}" type="submit" name="commentPageNumber" th:value="${commentPageInformation.pageNumber() + 1}">Next Page</button>
                 </form>
                 <div th:if="${auth != null}" class="edit-zone">
-                    <button class="button other" onclick='selectedCode()'>Add selected code</button>
+                    <button class="button other" onclick='getSelectedCode()'>Add selected code</button>
                     <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
                         <input type="hidden" id="codeSelection" name="codeSelection" th:field="*{codeSelection}">
                         <pre><code id="preCodeSelection" name="preCodeSelection" ></code></pre>
@@ -51,24 +51,12 @@
                 </div>
             </div>
         </div>
-        <script src="/script/post.js"></script>
+        <script src="/script/vote.js"></script>
+        <script src="/script/selectCode.js"></script>
+        <script src="/script/showMarkdown.js"></script>
         <script>
-            votePost('.vote-btn', 'data-code-id', '.vote-score');
-            function selectedCode() {
-                getSelectedCode("codeBlock", "codeSelection", "preCodeSelection")
-            }
-        </script>
-        <script src="/markdown-it/markdown-it.min.js"></script>
-        <script>
-            var md = window.markdownit();
-            var divs = document.getElementsByClassName('markdown');
-            for (var i = 0; i < divs.length; i++) {
-                if (!divs[i].hasAttribute('data-rendered')) {
-                    var content = divs[i].innerHTML;
-                    divs[i].innerHTML = md.render(content);
-                    divs[i].setAttribute('data-rendered', 'true');
-                }
-            }
+            markdown()
+            votePost(`[[${auth}]]`);
         </script>
     </body>
 </html>

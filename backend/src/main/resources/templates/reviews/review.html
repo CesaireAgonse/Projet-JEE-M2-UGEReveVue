@@ -37,71 +37,8 @@
             </a>
         </div>
     </div>
-    <script src="/prism/prism.js"></script>
+    <script src="/script/delete.js"></script>
     <script>
-
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const form = this.closest('form');
-                const codeId = form.getAttribute('data-code-id');
-                const postId = form.getAttribute('data-post-id');
-                const postType = form.getAttribute('data-post-type');
-                const voteType = this.value;
-                console.log("delete id " + codeId);
-                fetch('../api/v1/reviews/' + codeId , {
-                    method: 'DELETE'
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to delete code');
-                        }
-                        const contentType = response.headers.get('content-type');
-                        if (contentType && contentType.includes('application/json')) {
-                            return response.json();
-                        } else {
-                            return null;
-                        }
-                    })
-                    .then(data => {
-                        if (data !== null) {
-                            console.log('Review deleted successfully:', data);
-                        } else {
-                            console.log('Review deleted successfully, no JSON data returned');
-                        }
-                        showNotification('Review deleted.');
-                        if (postType === 'Code') {
-                            window.location.href = '/codes/' + postId;
-                        } else {
-                            window.location.href = '/reviews/' + postId;
-                        }
-
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-        });
-
-        function showNotification(message, type = 'success') {
-            if (!('Notification' in window)) {
-                console.error('This browser does not support notifications.');
-                return;
-            }
-
-            if (Notification.permission !== 'granted') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        displayNotification();
-                    }
-                });
-            } else {
-                displayNotification();
-            }
-
-            function displayNotification() {
-                const notification = new Notification('Notification', {
-                    body: message,
-                    icon: ''
-                });
-            }
-        }
+        delReview()
     </script>
 </div>
