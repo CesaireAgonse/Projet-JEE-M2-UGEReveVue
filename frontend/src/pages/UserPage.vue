@@ -1,5 +1,29 @@
 <template  v-if="username !== null">
   <PasswordForm v-if="isPasswordModalVisible" @close-modal="hidePasswordModal" :isPasswordModalVisible="isPasswordModalVisible"/>
+
+
+  <div>
+    <div v-if="isAdminModalVisible" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="hideAdminModal">&times;</span>
+        <h1 class="label">Page Admin</h1>
+        <div v-for="(user) in adminPage.users" :key="user">
+          <div class="post">
+            <p>{{ user.username }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <button v-if="adminPage.pageNumber > 0" class="basic-button prevButton" @click="prevAdmin">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <button v-if="adminPage.pageNumber < adminPage.maxPageNumber" class="basic-button nextButton" @click="nextAdmin">
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="banner-profile">
     <button class="basic-button left" @click="home">
       <i>
@@ -17,7 +41,8 @@
           <p>{{ "Ceci est une description de profile" }}</p>
           <button v-if="auth != null && auth.username !== username && !isFollowed" class="basic-button button-profile left" @click="follow"><i class="fa-solid fa-user-plus"></i> Suivre</button>
           <button v-if="auth != null && auth.username !== username && isFollowed" class="basic-button button-profile left" @click="unfollow"><i class="fa-solid fa-user-minus"></i> Ne plus suivre</button>
-          <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="showPasswordModal">Modifier son mot de passe</button>
+          <button v-if="auth != null && auth.username === username && auth.role === 'ADMIN'" class="basic-button button-profile left" @click="showPasswordModal">Modifier son mot de passe</button>
+          <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="showAdminModal">Page Admin</button>
           <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="uploadPhoto"><i class="fa-solid fa-camera"></i> Changer la photo de profil</button>
         </div>
       </div>
@@ -94,7 +119,13 @@ export default {
       isFollowed:false,
       auth: authenticationService.getAuth(),
       isPasswordModalVisible: false,
+      isAdminModalVisible:false,
       selectedTab: 'followed',
+      adminPage:{
+        users:[],
+        pageNumber:0,
+        totalPage:0
+      },
       codePage:{
         codes:[],
         pageNumber:0,
@@ -135,6 +166,18 @@ export default {
     hidePasswordModal() {
       this.isPasswordModalVisible = false;
     },
+    showAdminModal() {
+      this.allUsers()
+      this.isAdminModalVisible = true;
+    },
+    hideAdminModal() {
+      this.isAdminModalVisible = false;
+    },
+    handleModalClick(event) {
+      if (!event.target.closest('.modal-content')) {
+        this.hideAdminModal();
+      }
+    },
     user(){
       userService.user(this.$route.params.name).then(res => {
         this.username = res.data.username
@@ -172,6 +215,13 @@ export default {
         this.userPage.pageNumber = res.data.pageNumber
         this.userPage.totalPage = res.data.maxPageNumber
       }).catch(err => console.log(err))
+    },
+    allUsers(){
+      userService.allUsers(this.adminPage.pageNumber).then((res) => {
+        this.adminPage.users = res.data.users
+        this.adminPage.pageNumber = res.data.pageNumber
+        this.adminPage.maxPageNumber = res.data.maxPageNumber
+      })
     },
     showCodes() {
       this.selectedTab = 'codes';
@@ -216,6 +266,14 @@ export default {
     nextUser(){
       this.userPage.pageNumber += 1
       this.users()
+    },
+    prevAdmin(){
+      this.adminPage.pageNumber -= 1
+      this.allUsers()
+    },
+    nextAdmin(){
+      this.adminPage.pageNumber += 1
+      this.allUsers()
     },
     uploadPhoto() {
       // Créez une référence à l'élément input de type file
@@ -311,10 +369,53 @@ export default {
   color: white;
 }
 
-.column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+.post {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
+  margin: 20px;
+  text-align: left;
+  padding: 10px;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  border: 2px solid #fff;
+  backdrop-filter: blur(10px);
+}
+
+.close {
+  color: #fff;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+.label {
+  margin-bottom: 30px;
 }
 </style>

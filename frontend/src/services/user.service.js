@@ -48,6 +48,10 @@ let reviewsContents = (username, numberPage) => {
     return Axios.get("/api/v1/users/reviews/contents/" + username + "?pageNumber=" + numberPage)
 }
 
+let allUsers = (numberPage) => {
+    return Axios.get("/api/v1/users/all/?pageNumber=" + numberPage)
+}
+
 export const userService = {
     profile,
     updatePassword,
@@ -59,7 +63,8 @@ export const userService = {
     comments,
     followed,
     photo,
-    reviewsContents
+    reviewsContents,
+    allUsers
 }
 
 
