@@ -29,7 +29,7 @@ public class AdminController {
             throw new IllegalStateException("user is null");
         }
         model.addAttribute("auth", AuthInformation.from(user));
-        model.addAttribute("userPageInformation", userService.users(pageNumber));
+        model.addAttribute("userPageInformation", userService.usersNonAdmin(pageNumber));
         return "/admin";
     }
 }

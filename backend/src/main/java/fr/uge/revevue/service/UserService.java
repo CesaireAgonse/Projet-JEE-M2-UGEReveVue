@@ -1,6 +1,5 @@
 package fr.uge.revevue.service;
 
-import fr.uge.revevue.entity.Post;
 import fr.uge.revevue.information.code.CodeInformation;
 import fr.uge.revevue.information.code.CodePageInformation;
 import fr.uge.revevue.information.code.FilterInformation;
@@ -11,7 +10,6 @@ import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.information.user.UserPageInformation;
-import fr.uge.revevue.repository.PostRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +23,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsService{
@@ -34,7 +31,6 @@ public class UserService implements UserDetailsService{
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final PostRepository postRepository;
     private final CodeService codeService;
     private final ReviewService reviewService;
     private final CommentService commentService;
@@ -42,11 +38,9 @@ public class UserService implements UserDetailsService{
     @Autowired
     public UserService(UserRepository userRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                       PostRepository postRepository,
                        CodeService codeService, ReviewService reviewService, CommentService commentService){
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.postRepository = postRepository;
         this.codeService = codeService;
         this.reviewService = reviewService;
         this.commentService = commentService;
@@ -142,14 +136,14 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
-    public UserPageInformation users(Integer pageNumber){
+    public UserPageInformation usersNonAdmin(Integer pageNumber){
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;
         }
-        var count = (int) userRepository.count();
+        var count = userRepository.countNonAdminUsers();
         int maxPageNumber = ((count - 1) / LIMIT_USERS_PAGE);
         Pageable page = PageRequest.of(pageNumber, LIMIT_USERS_PAGE);
-        var users = userRepository.findAll(page).stream().map(SimpleUserInformation::from).toList();
+        var users = userRepository.findAllNonAdminUsers(page).stream().map(SimpleUserInformation::from).toList();
         return new UserPageInformation(users,  pageNumber, maxPageNumber, count);
     }
     @Transactional

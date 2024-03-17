@@ -91,7 +91,7 @@ public class UserRestController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<UserPageInformation> getUser(@RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
-        return ResponseEntity.ok(userService.users(pageNumber));
+        return ResponseEntity.ok(userService.usersNonAdmin(pageNumber));
     }
 
     @PreAuthorize("isAuthenticated()")

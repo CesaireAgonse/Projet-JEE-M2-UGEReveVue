@@ -31,8 +31,8 @@
                 </div>
             </div>
             <form th:action="@{/admin}" method="get">
-                <button class="left button other" th:if="${userPageInformation.pageNumber()} > 0" type="submit" th:name="pageNumber" th:value="${userPageInformation.pageNumber()-1}">Previous Page</button>
-                <button class="right button other" th:if="${userPageInformation.pageNumber()} < ${userPageInformation.maxPageNumber()}" type="submit" th:name="pageNumber" th:value="${userPageInformation.pageNumber()+1}">Next Page</button>
+                <button class="button other" th:if="${userPageInformation.pageNumber()} > 0" type="submit" th:name="pageNumber" th:value="${userPageInformation.pageNumber()-1}">Previous Page</button>
+                <button class="button other" th:if="${userPageInformation.pageNumber()} < ${userPageInformation.maxPageNumber()}" type="submit" th:name="pageNumber" th:value="${userPageInformation.pageNumber()+1}">Next Page</button>
             </form>
         </div>
     </div>

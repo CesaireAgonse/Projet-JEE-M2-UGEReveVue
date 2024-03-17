@@ -26,9 +26,13 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     int countUserFollowedByUsername(String username);
 
+    @Query("SELECT COUNT(u) FROM User u WHERE u.role <> '1'")
+    int countNonAdminUsers();
+
     Optional<User> findByUsername(String username);
 
-    List<User> findAll(Pageable page);
+    @Query("SELECT u FROM User u WHERE u.role <> '1'")
+    List<User> findAllNonAdminUsers(Pageable page);
 
     @Query("SELECT u.followed FROM User u WHERE u.id= :userId ")
     List<User> findFollowedById(long userId);
