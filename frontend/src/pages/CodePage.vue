@@ -23,6 +23,7 @@
           </button>
         </div>
         <div v-if="auth != null">
+          <button type="button" @click="addSelectedCode" class="basic-button add">Ajouter le code selectionné</button>
           <div v-if="selectedCode !== ''" class="basic-button cross-button right" @click="removeSelection"> <i class="fa-solid fa-xmark"></i></div>
           <pre v-if="selectedCode !== ''" class="select-code"><code class="language-java">{{ selectedCode }}</code></pre>
           <div class="row">
@@ -89,6 +90,7 @@ export default {
       contentTextarea: '',
       reviewTextarea:'',
       title:'',
+      selectedCodePre:'',
       selectedCode:'',
       commentsPage:null,
       pageNumber:0,
@@ -149,7 +151,14 @@ export default {
       Prism.highlightAll();
     },
     updateSelectedCode(code) {
-      this.selectedCode = code;
+      this.selectedCodePre = code;
+    },
+    addSelectedCode(){
+      if (this.selectedCode !== ''){
+        this.selectedCode = this.selectedCodePre
+      }else {
+        alert("Veuillez selectionner un morceau de code en le surlignant avec votre souris.")
+      }
     },
     removeSelection(){
       this.selectedCode = ''
@@ -240,6 +249,10 @@ textarea{
 
 .limit {
   width: 100px;
+}
+
+.add {
+  margin-bottom: 10px;
 }
 
 </style>

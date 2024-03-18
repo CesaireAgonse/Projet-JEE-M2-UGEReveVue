@@ -19,9 +19,6 @@
       </div>
     </div>
   </div>
-
-
-
   <div>
     <form enctype="multipart/form-data" id="postForm">
       <div class="form-group">
@@ -29,6 +26,7 @@
       </div>
       <div v-for="(field, index) in reviewForm.content" :key="index">
         <code v-if="field.codeSelection !== ''" class="language-java">{{ field.codeSelection }}</code>
+        <div v-if="field.codeSelection !== ''" class="basic-button cross-button right" @click="removeCode(field)"> <i class="fa-solid fa-xmark"></i></div>
         <textarea class="review" v-model="field.content" :name="'content[' + index + '].content'" placeholder="Enter a comment" required></textarea>
         <button type="button" @click="addCode(field)" class="basic-button">Ajouter le code selectionné</button>
         <button type="button" @click="removeField(index)" class="basic-button">Supprimer le champ</button>
@@ -81,13 +79,15 @@ export default {
       }
     },
     addCode(field) {
-      const baseCode = document.getElementById('codeBlock').innerText;
       const selection = window.getSelection().toString().trim();
       if (selection !== '') {
         field.codeSelection = selection;
-      } else {
-        field.codeSelection = baseCode;
+      }else{
+        alert("Veuillez selectionner un morceau de code en le surlignant avec votre souris.")
       }
+    },
+    removeCode(field){
+      field.codeSelection = '';
     },
     review(){
       postService.review(this.$route.params.id, this.reviewForm).then(() => {
