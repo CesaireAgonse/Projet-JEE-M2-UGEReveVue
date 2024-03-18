@@ -9,6 +9,10 @@ function getSelectedCode() {
                 selectedCode = range.toString();
             }
         }
+        if (selection.toString().trim() === ''){
+            alert("Please select a piece of code by highlighting it with your mouse.")
+            return
+        }
     } else if (document.selection && document.selection.type !== "Control") {
         var textRange = document.selection.createRange();
         if (codeElement.contains(textRange.parentElement())) {
@@ -17,4 +21,9 @@ function getSelectedCode() {
     }
     document.getElementById("codeSelection").value = selectedCode;
     document.getElementById("preCodeSelection").textContent = selectedCode;
+}
+
+function deleteSelectedCode() {
+    document.getElementById("codeSelection").textContent = '';
+    document.getElementById("preCodeSelection").textContent = '';
 }

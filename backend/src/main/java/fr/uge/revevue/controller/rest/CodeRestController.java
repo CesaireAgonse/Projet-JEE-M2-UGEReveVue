@@ -41,7 +41,7 @@ public class CodeRestController {
     public ResponseEntity<FilterInformation> filter(@RequestParam(value = "sortBy", required = false) String sortBy,
                                                     @RequestParam(value = "q", required = false, defaultValue = "") String query,
                                                     @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
-        return ResponseEntity.ok(userService.filter(sortBy, query, pageNumber));
+        return ResponseEntity.ok(codeService.filter(sortBy, query, pageNumber, userService.currentUser()));
     }
 
     @PreAuthorize("isAuthenticated()")

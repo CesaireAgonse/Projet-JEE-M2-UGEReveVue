@@ -7,6 +7,8 @@ import fr.uge.revevue.information.review.ReviewContentPageInformation;
 import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.information.user.UserPageInformation;
+import fr.uge.revevue.service.CodeService;
+import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +24,14 @@ import java.io.IOException;
 @RequestMapping("api/v1/users")
 public class UserRestController {
     private final UserService userService;
+    private final CodeService codeService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public UserRestController(UserService userService){
+    public UserRestController(UserService userService, CodeService codeService, ReviewService reviewService){
         this.userService = userService;
+        this.codeService = codeService;
+        this.reviewService = reviewService;
     }
 
     @PreAuthorize("permitAll()")
@@ -45,7 +51,7 @@ public class UserRestController {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(userService.codes(username, pageNumber));
+        return ResponseEntity.ok(codeService.codes(username, pageNumber));
     }
 
     @PreAuthorize("permitAll()")
@@ -55,7 +61,7 @@ public class UserRestController {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(userService.reviews(username, pageNumber));
+        return ResponseEntity.ok(reviewService.reviews(username, pageNumber));
     }
 
     @PreAuthorize("permitAll()")
@@ -75,7 +81,7 @@ public class UserRestController {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(userService.reviewsContents(username, pageNumber));
+        return ResponseEntity.ok(reviewService.reviewsContents(username, pageNumber));
     }
 
     @PreAuthorize("permitAll()")

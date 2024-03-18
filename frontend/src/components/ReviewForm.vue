@@ -76,6 +76,8 @@ export default {
     removeField(index) {
       if (this.reviewForm.content.length > 1){
         this.reviewForm.content.splice(index, 1);
+      }else{
+        alert("Il doit y avoir au moins un commentaire pour créer une revue");
       }
     },
     addCode(field) {

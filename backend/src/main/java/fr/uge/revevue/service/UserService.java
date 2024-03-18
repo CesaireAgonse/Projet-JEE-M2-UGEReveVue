@@ -1,8 +1,5 @@
 package fr.uge.revevue.service;
 
-import fr.uge.revevue.information.code.CodeInformation;
-import fr.uge.revevue.information.code.CodePageInformation;
-import fr.uge.revevue.information.code.FilterInformation;
 import fr.uge.revevue.information.comment.CommentPageInformation;
 import fr.uge.revevue.information.review.ReviewContentPageInformation;
 import fr.uge.revevue.information.review.ReviewPageInformation;
@@ -21,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,18 +27,14 @@ public class UserService implements UserDetailsService{
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final CodeService codeService;
-    private final ReviewService reviewService;
     private final CommentService commentService;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                       CodeService codeService, ReviewService reviewService, CommentService commentService){
+                       CommentService commentService){
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.codeService = codeService;
-        this.reviewService = reviewService;
         this.commentService = commentService;
     }
 
@@ -174,64 +166,11 @@ public class UserService implements UserDetailsService{
         userRepository.delete(user);
     }
 
-    @Transactional
-    public FilterInformation filter(String sortBy, String query, Integer pageNumber){
-        var user = currentUser();
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
-        }
-        List<CodeInformation> codes;
-        var count = codeService.countCodeWithQuery(query);
-        int maxPageNumber = (count - 1) / CodeService.LIMIT;
-        switch (sortBy != null ? sortBy : "") {
-            // Display all codes by newest
-            case "newest" -> {
-                codes = codeService.findWithKeywordByNewest(query, pageNumber, CodeService.LIMIT);
-            }
-            // Display all codes by relevance
-            case "relevance"-> {
-                codes = codeService.findWithKeywordByScore(query, pageNumber, CodeService.LIMIT);
-            }
-            default -> {
-                if(user != null) {
-                    // Display codes from follows
-                    codes = codeService.getCodeFromFollowed(user, query, pageNumber, CodeService.LIMIT);
-                }
-                else {
-                    // Display all codes
-                    codes = codeService.findWithKeyword(query, pageNumber, CodeService.LIMIT);
-                }
-            }
-        }
-        return new FilterInformation(codes, sortBy, query, pageNumber, maxPageNumber, count);
-    }
-
-    public CodePageInformation codes(String username, Integer pageNumber) {
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
-        }
-        return codeService.getCodePageFromUsername(username, pageNumber);
-    }
-
-    public ReviewPageInformation reviews(String username, Integer pageNumber) {
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
-        }
-        return reviewService.getReviewPageFromUsername(username, pageNumber);
-    }
-
     public CommentPageInformation comments(String username, Integer pageNumber) {
         if(pageNumber == null || pageNumber < 0) {
             pageNumber = 0;
         }
         return commentService.getCommentPageFromUsername(username, pageNumber);
-    }
-
-    public ReviewContentPageInformation reviewsContents(String username, Integer pageNumber) {
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
-        }
-        return reviewService.getReviewContentPageFromUsername(username, pageNumber);
     }
 
     @Transactional

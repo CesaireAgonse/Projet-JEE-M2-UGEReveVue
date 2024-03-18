@@ -60,8 +60,11 @@ function getCopyButton(codeElement, divWrapper) {
     copyButton.type = 'button';
     copyButton.onclick = function () {
         var selection = window.getSelection().toString().trim();
-        var baseCode = document.getElementById('codeBlock').innerText;
-        codeElement.innerText = selection !== '' ? selection : baseCode;
+        if (selection === ''){
+            alert("Please select a piece of code by highlighting it with your mouse.")
+            return
+        }
+        codeElement.innerText = selection;
         var existingHiddenInput = divWrapper.querySelector('input[type=hidden]');
         if (existingHiddenInput) {
             existingHiddenInput.remove();

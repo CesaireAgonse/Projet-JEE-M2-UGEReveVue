@@ -2,6 +2,8 @@ package fr.uge.revevue.controller;
 
 import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.information.user.AuthInformation;
+import fr.uge.revevue.service.CodeService;
+import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +17,14 @@ import javax.validation.Valid;
 @Controller
 public class UserController {
     private final UserService userService;
+    private final CodeService codeService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, CodeService codeService, ReviewService reviewService){
         this.userService = userService;
+        this.codeService = codeService;
+        this.reviewService = reviewService;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -46,8 +52,8 @@ public class UserController {
         }
         model.addAttribute("user", userInformation);
         model.addAttribute("followedPageInformation", userService.users(userInformation.username(), followedPageNumber));
-        model.addAttribute("codePageInformation", userService.codes(userInformation.username(), codePageNumber));
-        model.addAttribute("reviewPageInformation", userService.reviews(userInformation.username(), reviewPageNumber));
+        model.addAttribute("codePageInformation", codeService.codes(userInformation.username(), codePageNumber));
+        model.addAttribute("reviewPageInformation", reviewService.reviews(userInformation.username(), reviewPageNumber));
         model.addAttribute("commentPageInformation", userService.comments(userInformation.username(), commentPageNumber));
         return "users/profile";
     }

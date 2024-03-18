@@ -84,9 +84,9 @@ public abstract class Post {
         this.score = score;
     }
 
-    public Vote.VoteType getVoteUser(){
+    public Vote.VoteType getVoteUser(String username){
         return votes.stream()
-                .filter(vote -> vote.getUser().getUsername().equals(user.getUsername()))
+                .filter(vote -> vote.getUser().getUsername().equals(username))
                 .map(Vote::getVoteType)
                 .findFirst()
                 .orElse(Vote.VoteType.NotVoted);

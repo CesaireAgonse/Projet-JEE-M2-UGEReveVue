@@ -1,6 +1,8 @@
 package fr.uge.revevue.information.code;
 
 import fr.uge.revevue.entity.Code;
+import fr.uge.revevue.entity.Review;
+import fr.uge.revevue.entity.User;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.information.UnitTestResultInformation;
@@ -22,12 +24,19 @@ public record CodeInformation(
         int reviews
 ) {
 
-    public static CodeInformation from(Code code){
+    private static Vote.VoteType getVoteOfAuth(User auth, Code code){
+        if (auth != null){
+            return code.getVoteUser(auth.getUsername());
+        }
+        return Vote.VoteType.NotVoted;
+    }
+
+    public static CodeInformation from(Code code, User auth){
         Objects.requireNonNull(code, "[CodeInformation] code is null");
         return new CodeInformation(
                 code.getId(),
                 SimpleUserInformation.from(code.getUser()),
-                code.getVoteUser(),
+                getVoteOfAuth(auth, code),
                 code.getTitle(),
                 code.getDescription(),
                 code.getJavaContent(),

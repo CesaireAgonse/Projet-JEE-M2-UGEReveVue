@@ -2,6 +2,7 @@ package fr.uge.revevue.service;
 
 import fr.uge.revevue.entity.Review;
 import fr.uge.revevue.entity.ReviewContent;
+import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.form.ReviewContentForm;
 import fr.uge.revevue.information.review.*;
 import fr.uge.revevue.repository.*;
@@ -22,12 +23,14 @@ public class ReviewService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ReviewContentRepository reviewContentRepository;
+    private final UserService userService;
 
-    public ReviewService(ReviewRepository reviewRepository, PostRepository postRepository, UserRepository userRepository, ReviewContentRepository reviewContentRepository) {
+    public ReviewService(ReviewRepository reviewRepository, PostRepository postRepository, UserRepository userRepository, ReviewContentRepository reviewContentRepository, UserService userService) {
         this.reviewRepository = reviewRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.reviewContentRepository = reviewContentRepository;
+        this.userService = userService;
     }
 
     @Transactional
@@ -67,7 +70,7 @@ public class ReviewService {
         if(review.isEmpty()){
             throw new IllegalArgumentException("Review not found");
         }
-        return ReviewInformation.from(review.get());
+        return ReviewInformation.from(review.get(), userService.currentUser());
     }
 
     @Transactional
@@ -78,7 +81,7 @@ public class ReviewService {
         var count = reviewRepository.countByPostId(postId);
         int maxPageNumber = ((count - 1) / LIMIT_REVIEW_PAGE);
         Pageable pageable = PageRequest.of(pageNumber, LIMIT_REVIEW_PAGE);
-        var reviews = reviewRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(ReviewInformation::from).toList();
+        var reviews = reviewRepository.findByPostIdOrderByDateDesc(pageable, postId).stream().map(review -> ReviewInformation.from(review, userService.currentUser())).toList();
         return new ReviewPageInformation(reviews, pageNumber, maxPageNumber, count);
     }
 
@@ -93,7 +96,7 @@ public class ReviewService {
             throw new IllegalArgumentException("Review not found");
         }
         reviewRepository.delete(review.get());
-        return ReviewInformation.from(review.get());
+        return ReviewInformation.from(review.get(), userService.currentUser());
     }
 
     @Transactional
@@ -104,7 +107,7 @@ public class ReviewService {
         var count = reviewRepository.countByUserUsername(username);
         int maxPageNumber = ((count - 1) / LIMIT_REVIEW_PAGE);
         Pageable page = PageRequest.of(pageNumber, LIMIT_REVIEW_PAGE);
-        var reviewInformations = reviewRepository.findAllByUserUsername(username, page).stream().map(ReviewInformation::from).toList();
+        var reviewInformations = reviewRepository.findAllByUserUsername(username, page).stream().map(review -> ReviewInformation.from(review, userService.currentUser())).toList();
         return new ReviewPageInformation(reviewInformations, pageNumber, maxPageNumber, count);
     }
 
@@ -118,5 +121,19 @@ public class ReviewService {
         Pageable page = PageRequest.of(pageNumber, LIMIT_REVIEW_CONTENT_PAGE);
         var reviewContentInformations = reviewContentRepository.findAllByUserUsernameOrderByDateDesc(username, page).stream().map(ReviewContentInformation::from).toList();
         return new ReviewContentPageInformation(reviewContentInformations, pageNumber, maxPageNumber);
+    }
+    @Transactional
+    public ReviewPageInformation reviews(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        return getReviewPageFromUsername(username, pageNumber);
+    }
+    @Transactional
+    public ReviewContentPageInformation reviewsContents(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        return getReviewContentPageFromUsername(username, pageNumber);
     }
 }

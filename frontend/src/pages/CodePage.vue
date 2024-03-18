@@ -154,7 +154,7 @@ export default {
       this.selectedCodePre = code;
     },
     addSelectedCode(){
-      if (this.selectedCode !== ''){
+      if (this.selectedCodePre !== ''){
         this.selectedCode = this.selectedCodePre
       }else {
         alert("Veuillez selectionner un morceau de code en le surlignant avec votre souris.")

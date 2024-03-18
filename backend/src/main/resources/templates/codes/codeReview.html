@@ -24,6 +24,7 @@
             <div th:if="${auth != null}" class="container limit">
                 <div class="edit-zone">
                     <button class="button other" onclick='getSelectedCode()'>Add selected code</button>
+                    <button class="button other" onclick='deleteSelectedCode()'>Delete selected code</button>
                     <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
                         <input type="hidden" id="codeSelection" name="codeSelection" th:field="*{codeSelection}">
                         <pre><code id="preCodeSelection" name="preCodeSelection" class="language-java java-code"></code></pre>

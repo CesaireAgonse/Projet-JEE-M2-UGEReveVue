@@ -6,6 +6,7 @@ import fr.uge.revevue.entity.User;
 import fr.uge.revevue.form.UnitTestClassForm;
 import fr.uge.revevue.information.code.CodeInformation;
 import fr.uge.revevue.information.code.CodePageInformation;
+import fr.uge.revevue.information.code.FilterInformation;
 import fr.uge.revevue.repository.CodeRepository;
 import fr.uge.revevue.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +24,17 @@ import java.util.*;
 
 @Service
 public class CodeService {
-    private CodeRepository codeRepository;
-    private UserRepository userRepository;
+    private final CodeRepository codeRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
     private EntityManager em;
     private EntityManagerFactory emf;
     public final static int LIMIT = 4;
 
-    public CodeService(){}
-
     @Autowired
-    public CodeService(CodeRepository codeRepository, UserRepository userRepository, EntityManager em, EntityManagerFactory emf) {
+    public CodeService(CodeRepository codeRepository, UserRepository userRepository, UserService userService, EntityManager em, EntityManagerFactory emf) {
         this.codeRepository = codeRepository;
+        this.userService = userService;
         this.em = em;
         this.emf = emf;
         this.userRepository = userRepository;
@@ -45,7 +46,7 @@ public class CodeService {
         if(code.isEmpty()){
             throw new IllegalArgumentException("code not found");
         }
-        return CodeInformation.from(code.get());
+        return CodeInformation.from(code.get(), userService.currentUser());
     }
 
     @Transactional
@@ -71,7 +72,7 @@ public class CodeService {
         Pageable page = PageRequest.of(offset, limit);
         var codes = codeRepository
                 .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCase(page, keyword, keyword, keyword);
-        return codes.stream().map(CodeInformation::from).toList();
+        return codes.stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
     }
 
     @Transactional
@@ -79,7 +80,7 @@ public class CodeService {
         Pageable page = PageRequest.of(offset, limit);
         var codes = codeRepository
           .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByDateDesc(page, keyword, keyword, keyword);
-        return codes.stream().map(CodeInformation::from).toList();
+        return codes.stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
     }
 
     @Transactional
@@ -87,7 +88,7 @@ public class CodeService {
         Pageable page = PageRequest.of(offset, limit);
         var codes = codeRepository
           .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByScoreDesc(page, keyword, keyword, keyword);
-        return codes.stream().map(CodeInformation::from).toList();
+        return codes.stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
     }
 
     @Transactional
@@ -101,7 +102,7 @@ public class CodeService {
         query.setParameter("username", user.getUsername());
         query.setFirstResult(offset);
         query.setMaxResults(limit);
-        return query.getResultList().stream().map(CodeInformation::from).toList();
+        return query.getResultList().stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
     }
     
     ArrayDeque<User> addNonFollowToQueueFollow(ArrayDeque<User> queueFollow, List<User> usersAlreadySeen) {
@@ -163,7 +164,7 @@ public class CodeService {
             throw new IllegalArgumentException("Code not found");
         }
         codeRepository.delete(code.get());
-        return CodeInformation.from(code.get());
+        return CodeInformation.from(code.get(), userService.currentUser());
     }
 
     @Transactional
@@ -171,7 +172,46 @@ public class CodeService {
         var count = codeRepository.countByUserUsername(username);
         int maxPageNumber = ((count - 1) / LIMIT);
         Pageable page = PageRequest.of(offset, LIMIT);
-        var codeInformations = codeRepository.findAllByUserUsername(username, page).stream().map(CodeInformation::from).toList();
+        var codeInformations = codeRepository.findAllByUserUsername(username, page).stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
         return new CodePageInformation(codeInformations, offset, maxPageNumber, count);
+    }
+
+    @Transactional
+    public FilterInformation filter(String sortBy, String query, Integer pageNumber, User user){
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        List<CodeInformation> codes;
+        var count = countCodeWithQuery(query);
+        int maxPageNumber = (count - 1) / CodeService.LIMIT;
+        switch (sortBy != null ? sortBy : "") {
+            // Display all codes by newest
+            case "newest" -> {
+                codes = findWithKeywordByNewest(query, pageNumber, CodeService.LIMIT);
+            }
+            // Display all codes by relevance
+            case "relevance"-> {
+                codes = findWithKeywordByScore(query, pageNumber, CodeService.LIMIT);
+            }
+            default -> {
+                if(user != null) {
+                    // Display codes from follows
+                    codes = getCodeFromFollowed(user, query, pageNumber, CodeService.LIMIT);
+                }
+                else {
+                    // Display all codes
+                    codes = findWithKeyword(query, pageNumber, CodeService.LIMIT);
+                }
+            }
+        }
+        return new FilterInformation(codes, sortBy, query, pageNumber, maxPageNumber, count);
+    }
+
+    @Transactional
+    public CodePageInformation codes(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        return getCodePageFromUsername(username, pageNumber);
     }
 }
