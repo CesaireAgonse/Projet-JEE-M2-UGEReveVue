@@ -6,8 +6,8 @@
         <span class="close" @click="hideAdminModal">&times;</span>
         <h1 class="label">Page Admin</h1>
         <div v-for="(user) in adminPage.users" :key="user">
-          <div class="post">
-            <p>{{ user.username }}</p>
+          <div class="userAdmin">
+            <UserVisual :user="user"/>
             <button v-if="auth !== null && auth.role === 'ADMIN'" class="post-button" @click="del(user.username)">
               <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
             </button>
@@ -56,7 +56,11 @@
       <button class="profile-tab" :class="{ 'profile-tab-selected': selectedTab === 'comments' }" @click="showComments">Commentaires</button>
     </div>
   <div v-if="selectedTab === 'followed'">
-    <div class="row" v-for="user in userPage.users" :key="user"><p>{{ user.username }}</p></div>
+    <div class="row" v-for="user in userPage.users" :key="user">
+      <div class="userPost">
+        <UserVisual :user="user"/>
+      </div>
+    </div>
     <div>
       <button v-if="userPage.pageNumber > 0" class="basic-button" @click="prevUser">Page précédente</button>
       <button v-if="userPage.pageNumber < userPage.totalPage" class="basic-button" @click="nextUser">Page suivante</button>
@@ -98,11 +102,22 @@ import PasswordForm from "@/components/PasswordForm.vue";
 import CodeVisual from "@/visuals/CodeVisual.vue";
 import ReviewVisual from "@/visuals/ReviewVisual.vue";
 import CommentVisual from "@/visuals/CommentVisual.vue";
+import UserVisual from "@/visuals/UserVisual.vue";
 library.add(fas, far, fab)
 dom.watch();
 
 export default {
-  components: {ReviewVisual, CodeVisual, PasswordForm, CommentVisual},
+  components: {UserVisual, ReviewVisual, CodeVisual, PasswordForm, CommentVisual},
+  watch: {
+    '$route.params.name': function() {
+      this.user()
+      this.codes()
+      this.reviews()
+      this.comments()
+      this.users()
+      document.body.style.overflowY = "visible"
+    }
+  },
   mounted() {
     document.title = "Profile"
     this.user()
@@ -110,7 +125,6 @@ export default {
     this.reviews()
     this.comments()
     this.users()
-    console.log(this.auth)
     document.body.style.overflowY = "visible"
   },
   data() {
@@ -186,6 +200,9 @@ export default {
         this.nbFollowed = res.data.nbFollowed
         if (res.data.profilePhoto != null){
           this.photo = "data:image/jpg;base64," + res.data.profilePhoto;
+        }
+        else {
+          this.photo = null
         }
         this.isFollowed = res.data.isFollowed
       }).catch(err => console.log(err))
@@ -389,13 +406,14 @@ export default {
 
 .modal {
   display: block;
-  position: fixed;
+  position: absolute;
   z-index: 1;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
+  overflow-y: visible;
 }
 
 .modal-content {
@@ -438,6 +456,25 @@ export default {
   margin-bottom: 10px;
   cursor: pointer;
   border-radius: 5px;
+}
+
+.userPost {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
+  margin: 20px;
+  text-align: left;
+  padding: 10px;
+  width: 33%;
+}
+
+.userAdmin {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
+  margin: 20px;
+  text-align: left;
+  padding: 10px;
 }
 
 </style>
