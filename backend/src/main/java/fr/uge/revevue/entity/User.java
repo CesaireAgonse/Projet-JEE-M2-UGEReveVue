@@ -13,7 +13,8 @@ import java.util.*;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @SequenceGenerator(name = "user_seq", sequenceName = "USERS_SEQ", allocationSize = 1)
     private long id;
 
     @NotBlank
@@ -30,7 +31,7 @@ public class User implements UserDetails {
     @Column(name = "profile_photo", columnDefinition="BLOB")
     private byte[] profilePhoto;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_followed",
             joinColumns = @JoinColumn(name = "user_id"),
