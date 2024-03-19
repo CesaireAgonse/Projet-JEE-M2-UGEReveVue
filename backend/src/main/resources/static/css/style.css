@@ -109,3 +109,8 @@ label {
 .space{
     margin: 20px;
 }
+
+.pre-comment{
+    overflow-x: auto;
+    max-width: 100%;
+}

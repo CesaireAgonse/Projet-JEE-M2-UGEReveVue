@@ -31,6 +31,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
+    List<User> findUserByFollowedId(long followedId);
+
     @Query("SELECT u FROM User u WHERE u.role <> '1'")
     List<User> findAllNonAdminUsers(Pageable page);
 

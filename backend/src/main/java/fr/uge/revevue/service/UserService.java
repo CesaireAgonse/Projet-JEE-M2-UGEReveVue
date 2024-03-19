@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
@@ -170,6 +172,7 @@ public class UserService implements UserDetailsService{
             throw new IllegalArgumentException("User not found");
         }
         var user = userOptional.get();
+        unfollowFollowers(user);
         userRepository.delete(user);
     }
 
@@ -180,6 +183,13 @@ public class UserService implements UserDetailsService{
             return optionalAuth.map(user -> user.getFollowed().contains(follower)).orElse(false);
         }
         return false;
+    }
+
+    private void unfollowFollowers(User user){
+        var followers = userRepository.findUserByFollowedId(user.getId());
+        for(var follower:followers){
+            follower.getFollowed().remove(user);
+        }
     }
 }
 

@@ -30,7 +30,7 @@
     <div th:if="${auth != null}" class="container limit">
         <div class="edit-zone">
             <form th:action="@{/reviews/comment/{reviewId}(reviewId=${review.id()})}" th:object="${commentForm}" method="post">
-                <textarea id="content" name="content" th:field="*{content}" required></textarea>
+                <textarea id="content" name="content" th:field="*{content}" placeholder="Enter a comment (Markdown)" required></textarea>
                 <button type="submit" class="button basic">Comment</button>
             </form>
         </div>

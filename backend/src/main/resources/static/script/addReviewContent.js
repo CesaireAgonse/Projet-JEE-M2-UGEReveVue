@@ -1,3 +1,5 @@
+document.write('<script src="/script/colorCode.js"></script>');
+
 let dynamicFieldIndex = 0;
 
 function addTextField() {
@@ -5,7 +7,9 @@ function addTextField() {
     const divWrapper = document.createElement('div');
     dynamicFields.appendChild(divWrapper);
 
-    const codeElement = document.createElement('code');
+    const codeElement = document.createElement('pre');
+    codeElement.style.overflowX = 'auto';
+    codeElement.style.maxWidth = '100%';
     divWrapper.appendChild(codeElement);
 
     const input = this.getInput();
@@ -25,7 +29,9 @@ function addReviewField(element) {
     const divWrapper = document.createElement('div');
     dynamicFields.appendChild(divWrapper);
 
-    const codeElement = document.createElement('code');
+    const codeElement = document.createElement('pre');
+    codeElement.style.overflowX = 'auto';
+    codeElement.style.maxWidth = '100%';
     divWrapper.appendChild(codeElement);
 
     const input = this.getInput();
@@ -105,7 +111,7 @@ function getInput(){
     input.classList.add('review');
     input.required = true;
     input.name = 'content[' + dynamicFieldIndex + '].content';
-    input.placeholder = 'Enter a comment';
+    input.placeholder = 'Enter a comment (Markdown)';
     return input;
 }
 

@@ -28,8 +28,8 @@
                     <button class="button other" onclick='deleteSelectedCode()'>Delete selected code</button>
                     <form th:action="@{/codes/comment/{codeId}(codeId=${code.id()})}" th:object="${commentForm}" method="post">
                         <input type="hidden" id="codeSelection" name="codeSelection" th:field="*{codeSelection}">
-                        <pre><code id="preCodeSelection" name="preCodeSelection" class="language-java java-code"></code></pre>
-                        <textarea id="content" name="content" th:field="*{content}" required></textarea>
+                        <pre class="pre-comment"><code id="preCodeSelection" name="preCodeSelection"></code></pre>
+                        <textarea id="content" name="content" th:field="*{content}" placeholder="Enter a comment (Markdown)" required></textarea>
                         <button type="submit" class="button basic">Comment</button>
                     </form>
                 </div>
