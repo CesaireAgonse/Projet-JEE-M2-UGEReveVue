@@ -8,6 +8,7 @@ import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.information.user.UserPageInformation;
 import fr.uge.revevue.service.CodeService;
+import fr.uge.revevue.service.CommentService;
 import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,14 @@ public class UserRestController {
     private final UserService userService;
     private final CodeService codeService;
     private final ReviewService reviewService;
+    private final CommentService commentService;
 
     @Autowired
-    public UserRestController(UserService userService, CodeService codeService, ReviewService reviewService){
+    public UserRestController(UserService userService, CodeService codeService, ReviewService reviewService, CommentService commentService){
         this.userService = userService;
         this.codeService = codeService;
         this.reviewService = reviewService;
+        this.commentService = commentService;
     }
 
     @PreAuthorize("permitAll()")
@@ -71,7 +74,7 @@ public class UserRestController {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(userService.comments(username, pageNumber));
+        return ResponseEntity.ok(commentService.comments(username, pageNumber));
     }
 
     @PreAuthorize("permitAll()")
@@ -116,7 +119,7 @@ public class UserRestController {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
-        userService.follow(userService.currentUser().getUsername(), username);
+        userService.follow(username);
         return ResponseEntity.ok().build();
     }
 
@@ -126,7 +129,7 @@ public class UserRestController {
         if (!userService.isExisted(username)){
             return ResponseEntity.notFound().build();
         }
-        userService.unfollow(userService.currentUser().getUsername(), username);
+        userService.unfollow(username);
         return ResponseEntity.ok().build();
     }
 

@@ -1,8 +1,5 @@
 package fr.uge.revevue.service;
 
-import fr.uge.revevue.information.comment.CommentPageInformation;
-import fr.uge.revevue.information.review.ReviewContentPageInformation;
-import fr.uge.revevue.information.review.ReviewPageInformation;
 import fr.uge.revevue.information.user.SimpleUserInformation;
 import fr.uge.revevue.information.user.UserInformation;
 import fr.uge.revevue.entity.User;
@@ -27,15 +24,24 @@ public class UserService implements UserDetailsService{
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final CommentService commentService;
 
     @Autowired
     public UserService(UserRepository userRepository,
-                       BCryptPasswordEncoder bCryptPasswordEncoder,
-                       CommentService commentService){
+                       BCryptPasswordEncoder bCryptPasswordEncoder){
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.commentService = commentService;
+    }
+
+    public boolean isExisted(String username){
+        return userRepository.existsByUsername(username);
+    }
+
+    public Optional<User> findUserByName(String username){
+        return userRepository.findByUsername(username);
+    }
+
+    public boolean matchesPassword(String rawPassword, String encodedPassword){
+        return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
     }
 
     @Transactional
@@ -52,15 +58,19 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
-    public void follow(String followerUsername, String followedUsername){
-        if (followerUsername.equals(followedUsername)){
+    public void follow(String followedUsername){
+        var currentUser = currentUser();
+        if (currentUser == null){
+            throw new IllegalStateException("user not logged");
+        }
+        if (currentUser.getUsername().equals(followedUsername)){
             throw new IllegalStateException("follower and followed are the same user");
         }
         var optionalFollowedUser = userRepository.findByUsername(followedUsername);
         if (optionalFollowedUser.isEmpty()){
             throw new IllegalStateException("user follower not found");
         }
-        var optionalFollowerUser = userRepository.findByUsername(followerUsername);
+        var optionalFollowerUser = userRepository.findByUsername(currentUser.getUsername());
         if (optionalFollowerUser.isEmpty()){
             throw new IllegalStateException("user followed not found");
         }
@@ -70,15 +80,19 @@ public class UserService implements UserDetailsService{
     }
 
     @Transactional
-    public void unfollow(String followerUsername, String followedUsername){
-        if (followerUsername.equals(followedUsername)){
+    public void unfollow(String followedUsername){
+        var currentUser = currentUser();
+        if (currentUser == null){
+            throw new IllegalStateException("user not logged");
+        }
+        if (currentUser.getUsername().equals(followedUsername)){
             throw new IllegalStateException("follower and followed are the same user");
         }
         var optionalFollowedUser = userRepository.findByUsername(followedUsername);
         if (optionalFollowedUser.isEmpty()){
             throw new IllegalStateException("user follower not found");
         }
-        var optionalFollowerUser = userRepository.findByUsername(followerUsername);
+        var optionalFollowerUser = userRepository.findByUsername(currentUser.getUsername());
         if (optionalFollowerUser.isEmpty()){
             throw new IllegalStateException("user followed not found");
         }
@@ -107,29 +121,25 @@ public class UserService implements UserDetailsService{
        return null;
     }
 
-    public boolean isExisted(String username){
-        return userRepository.existsByUsername(username);
-    }
-
-    public Optional<User> findUserByName(String username){
-        return userRepository.findByUsername(username);
-    }
-
     @Transactional
     public UserInformation getInformation(String username){
         var optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()){
-            return null;
+            throw new IllegalArgumentException("user not found");
         }
-        boolean isFollowed;
-        var auth = currentUser();
-        if (auth != null){
-            var optionalAuth = userRepository.findByUsername(auth.getUsername());
-            isFollowed = optionalAuth.map(user -> user.getFollowed().contains(optionalUser.get())).orElse(false);
-        }else{
-            isFollowed = false;
+        return optionalUser.map(user -> UserInformation.from(user, isFollowed(optionalUser.get()))).orElse(null);
+    }
+
+    @Transactional
+    public UserPageInformation users(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
         }
-        return optionalUser.map(user -> UserInformation.from(user, isFollowed)).orElse(null);
+        var count = userRepository.countUserFollowedByUsername(username);
+        int maxPageNumber = ((count - 1) / LIMIT_FOLLOWED_PAGE);
+        Pageable page = PageRequest.of(pageNumber, LIMIT_FOLLOWED_PAGE);
+        var followedInformations = userRepository.findUserFollowedByUsername(username, page).stream().map(SimpleUserInformation::from).toList();
+        return new UserPageInformation(followedInformations, pageNumber, maxPageNumber, count);
     }
 
     @Transactional
@@ -143,17 +153,14 @@ public class UserService implements UserDetailsService{
         var users = userRepository.findAllNonAdminUsers(page).stream().map(SimpleUserInformation::from).toList();
         return new UserPageInformation(users,  pageNumber, maxPageNumber, count);
     }
-    @Transactional
-    public UserPageInformation getFollowedPageFromUsername(String username, int offset){
-        var count = userRepository.countUserFollowedByUsername(username);
-        int maxPageNumber = ((count - 1) / LIMIT_FOLLOWED_PAGE);
-        Pageable page = PageRequest.of(offset, LIMIT_FOLLOWED_PAGE);
-        var followedInformations = userRepository.findUserFollowedByUsername(username, page).stream().map(SimpleUserInformation::from).toList();
-        return new UserPageInformation(followedInformations, offset, maxPageNumber, count);
-    }
 
-    public boolean matchesPassword(String rawPassword, String encodedPassword){
-        return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
+    @Transactional
+    public void changePhoto(byte[] photo) {
+        var user = currentUser();
+        if (user == null){
+            throw new IllegalStateException("User not found");
+        }
+        userRepository.changePhoto(user.getUsername(), photo);
     }
 
     @Transactional
@@ -166,28 +173,13 @@ public class UserService implements UserDetailsService{
         userRepository.delete(user);
     }
 
-    public CommentPageInformation comments(String username, Integer pageNumber) {
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
+    private boolean isFollowed(User follower){
+        var auth = currentUser();
+        if (auth != null){
+            var optionalAuth = userRepository.findByUsername(auth.getUsername());
+            return optionalAuth.map(user -> user.getFollowed().contains(follower)).orElse(false);
         }
-        return commentService.getCommentPageFromUsername(username, pageNumber);
-    }
-
-    @Transactional
-    public UserPageInformation users(String username, Integer pageNumber) {
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
-        }
-        return getFollowedPageFromUsername(username, pageNumber);
-    }
-
-    @Transactional
-    public void changePhoto(byte[] photo) {
-        var user = currentUser();
-        if (user == null){
-            throw new IllegalStateException("User not found");
-        }
-        userRepository.changePhoto(user.getUsername(), photo);
+        return false;
     }
 }
 

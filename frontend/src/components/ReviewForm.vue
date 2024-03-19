@@ -19,7 +19,7 @@
       </div>
     </div>
   </div>
-  <div>
+  <div class="create">
     <form enctype="multipart/form-data" id="postForm">
       <div class="form-group">
         <input type="text" id="title-input" v-model="reviewForm.title" placeholder="Enter your title" required>
@@ -231,6 +231,15 @@ input {
 
 .label {
   margin-bottom: 30px;
+}
+
+.create {
+  background-color: #282828;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
+  margin: 20px;
+  padding: 20px;
+  width: calc(60% - 40px);
 }
 
 </style>

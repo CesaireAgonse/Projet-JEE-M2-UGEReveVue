@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 @Service
 public class CommentService {
     private static final int LIMIT_COMMENT_PAGE = 3;
+
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -59,6 +60,18 @@ public class CommentService {
     }
 
     @Transactional
+    public CommentPageInformation comments(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        var count = commentRepository.countByUserUsername(username);
+        int maxPageNumber = ((count - 1) / LIMIT_COMMENT_PAGE);
+        Pageable page = PageRequest.of(pageNumber, LIMIT_COMMENT_PAGE);
+        var commentInformations = commentRepository.findAllByUserUsername(username, page).stream().map(CommentInformation::from).toList();
+        return new CommentPageInformation(commentInformations, pageNumber, maxPageNumber, count);
+    }
+
+    @Transactional
     public CommentInformation delete(long reviewId){
         var comment = commentRepository.findById(reviewId);
         if(comment.isEmpty()){
@@ -66,14 +79,5 @@ public class CommentService {
         }
         commentRepository.delete(comment.get());
         return CommentInformation.from(comment.get());
-    }
-
-    @Transactional
-    public CommentPageInformation getCommentPageFromUsername(String username, int offset){
-        var count = commentRepository.countByUserUsername(username);
-        int maxPageNumber = ((count - 1) / LIMIT_COMMENT_PAGE);
-        Pageable page = PageRequest.of(offset, LIMIT_COMMENT_PAGE);
-        var commentInformations = commentRepository.findAllByUserUsername(username, page).stream().map(CommentInformation::from).toList();
-        return new CommentPageInformation(commentInformations, offset, maxPageNumber, count);
     }
 }

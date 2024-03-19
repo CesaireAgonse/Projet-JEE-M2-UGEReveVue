@@ -3,6 +3,7 @@ package fr.uge.revevue.controller;
 import fr.uge.revevue.form.PasswordForm;
 import fr.uge.revevue.information.user.AuthInformation;
 import fr.uge.revevue.service.CodeService;
+import fr.uge.revevue.service.CommentService;
 import fr.uge.revevue.service.ReviewService;
 import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,14 @@ public class UserController {
     private final UserService userService;
     private final CodeService codeService;
     private final ReviewService reviewService;
+    private final CommentService commentService;
 
     @Autowired
-    public UserController(UserService userService, CodeService codeService, ReviewService reviewService){
+    public UserController(UserService userService, CodeService codeService, ReviewService reviewService, CommentService commentService){
         this.userService = userService;
         this.codeService = codeService;
         this.reviewService = reviewService;
+        this.commentService = commentService;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -54,7 +57,7 @@ public class UserController {
         model.addAttribute("followedPageInformation", userService.users(userInformation.username(), followedPageNumber));
         model.addAttribute("codePageInformation", codeService.codes(userInformation.username(), codePageNumber));
         model.addAttribute("reviewPageInformation", reviewService.reviews(userInformation.username(), reviewPageNumber));
-        model.addAttribute("commentPageInformation", userService.comments(userInformation.username(), commentPageNumber));
+        model.addAttribute("commentPageInformation", commentService.comments(userInformation.username(), commentPageNumber));
         return "users/profile";
     }
 
@@ -88,7 +91,7 @@ public class UserController {
         if (!userService.isExisted(username)){
             return "redirect:/";
         }
-        userService.follow(userService.currentUser().getUsername(), username);
+        userService.follow(username);
         return "redirect:/users/" + username;
     }
 
@@ -98,7 +101,7 @@ public class UserController {
         if (!userService.isExisted(username)){
             return "redirect:/";
         }
-        userService.unfollow(userService.currentUser().getUsername(), username);
+        userService.unfollow(username);
         return "redirect:/users/" + username;
     }
 

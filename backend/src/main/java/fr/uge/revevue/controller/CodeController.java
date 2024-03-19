@@ -47,20 +47,21 @@ public class CodeController {
                        @ModelAttribute("commentForm") CommentForm commentForm,
                        @ModelAttribute("reviewForm") ReviewForm reviewForm,
                        @RequestParam(value = "reviewPageNumber", required = false) Integer reviewPageNumber,
+                       @RequestParam(value = "sortBy", required = false, defaultValue = "newest") String sortBy,
                        @RequestParam(value = "commentPageNumber", required = false) Integer commentPageNumber,
                        @RequestParam(value = "oldContentPageNumber", required = false) Integer oldContentPageNumber,
                        Model model){
         var user = userService.currentUser();
         if (user != null){
             model.addAttribute("auth", AuthInformation.from(user));
-            model.addAttribute("oldContentsReview", reviewService.getReviewContentPageFromUsername(user.getUsername(), oldContentPageNumber));
+            model.addAttribute("oldContentsReview", reviewService.reviewsContents(user.getUsername(), oldContentPageNumber));
         }
         var code = codeService.getInformation(codeId);
         if (code == null){
             throw new IllegalStateException("code not found");
         }
         model.addAttribute("code", code);
-        model.addAttribute("reviewPageInformation", reviewService.getReviews(code.id(), reviewPageNumber));
+        model.addAttribute("reviewPageInformation", reviewService.getReviews(code.id(), sortBy, reviewPageNumber));
         model.addAttribute("commentPageInformation", commentService.getComments(code.id(), commentPageNumber));
         return "codes/codeReview";
     }
@@ -134,7 +135,7 @@ public class CodeController {
         if (!codeService.isExisted(codeId)){
             return "redirect:/";
         }
-        reviewService.create(userService.currentUser().getId(),codeId, reviewForm.getTitle(), reviewForm.getContent());
+        reviewService.create(codeId, reviewForm.getTitle(), reviewForm.getContent());
         return "redirect:/codes/" + codeId;
     }
 

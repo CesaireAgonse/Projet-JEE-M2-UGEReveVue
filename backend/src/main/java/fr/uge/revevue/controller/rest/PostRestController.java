@@ -45,11 +45,12 @@ public class PostRestController {
     @PreAuthorize("permitAll()")
     @GetMapping("/reviews/{postId}")
     public ResponseEntity<ReviewPageInformation> getReviews(@PathVariable("postId") long postId,
-                                                            @RequestParam(value = "pageNumber", required = false) int pageNumber) {
+                                                            @RequestParam(value = "pageNumber", required = false) int pageNumber,
+                                                            @RequestParam(value = "sortBy", required = false, defaultValue = "newest") String sortBy) {
         if (!postService.isExisted(postId)){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(reviewService.getReviews(postId, pageNumber));
+        return ResponseEntity.ok(reviewService.getReviews(postId, sortBy, pageNumber));
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -73,7 +74,7 @@ public class PostRestController {
         if (!postService.isExisted(postId)){
             return ResponseEntity.notFound().build();
         }
-        commentService.postCommented(userService.currentUser().getId(),postId,commentForm.getContent(), commentForm.getCodeSelection());
+        commentService.postCommented(userService.currentUser().getId(), postId, commentForm.getContent(), commentForm.getCodeSelection());
         return ResponseEntity.ok().build();
     }
 
@@ -88,7 +89,7 @@ public class PostRestController {
         if (!postService.isExisted(postId)){
             return ResponseEntity.notFound().build();
         }
-        reviewService.create(userService.currentUser().getId(), postId, reviewForm.getTitle(), reviewForm.getContent());
+        reviewService.create(postId, reviewForm.getTitle(), reviewForm.getContent());
         return ResponseEntity.ok().build();
     }
 }

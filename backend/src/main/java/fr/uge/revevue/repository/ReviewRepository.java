@@ -19,4 +19,6 @@ public interface ReviewRepository extends CrudRepository<Review,Long> {
     List<Review> findAllByUserUsername(String username, Pageable page);
 
     List<Review> findByPostIdOrderByDateDesc(Pageable pageable, long postId);
+
+    List<Review> findByPostIdOrderByScoreDesc(Pageable pageable, long postId);
 }

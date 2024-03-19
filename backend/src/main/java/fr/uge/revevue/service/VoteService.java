@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class VoteService {
-    private VoteServiceWithFailure voteServiceWithFailure;
+    private final VoteServiceWithFailure voteServiceWithFailure;
 
     @Autowired
     public VoteService(VoteServiceWithFailure voteServiceWithFailure){

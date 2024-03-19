@@ -38,20 +38,21 @@ public class ReviewController {
                          @ModelAttribute("commentForm") CommentForm commentForm,
                          @ModelAttribute("reviewForm") ReviewForm reviewForm,
                          @RequestParam(value = "reviewPageNumber", required = false) Integer reviewPageNumber,
+                         @RequestParam(value = "sortBy", required = false, defaultValue = "newest") String sortBy,
                          @RequestParam(value = "commentPageNumber", required = false) Integer commentPageNumber,
                          @RequestParam(value = "oldContentPageNumber", required = false) Integer oldContentPageNumber,
                          Model model){
         var user = userService.currentUser();
         if (user != null){
             model.addAttribute("auth", AuthInformation.from(user));
-            model.addAttribute("oldContentsReview", reviewService.getReviewContentPageFromUsername(user.getUsername(), oldContentPageNumber));
+            model.addAttribute("oldContentsReview", reviewService.reviewsContents(user.getUsername(), oldContentPageNumber));
         }
         var review = reviewService.getInformation(reviewId);
         if (review == null){
             throw new IllegalStateException("review not found");
         }
         model.addAttribute("review", review);
-        model.addAttribute("reviewPageInformation", reviewService.getReviews(review.id(), reviewPageNumber));
+        model.addAttribute("reviewPageInformation", reviewService.getReviews(review.id(), sortBy, reviewPageNumber));
         model.addAttribute("commentPageInformation", commentService.getComments(review.id(), commentPageNumber));
         return "reviews/reviewReview";
     }
@@ -97,7 +98,7 @@ public class ReviewController {
         if (!reviewService.isExisted(reviewId)){
             return "redirect:/";
         }
-        reviewService.create(userService.currentUser().getId(), reviewId,  reviewForm.getTitle(), reviewForm.getContent());
+        reviewService.create(reviewId,  reviewForm.getTitle(), reviewForm.getContent());
         return "redirect:/reviews/" + reviewId;
     }
 

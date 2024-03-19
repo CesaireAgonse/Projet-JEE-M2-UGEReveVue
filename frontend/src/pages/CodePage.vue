@@ -37,6 +37,10 @@
     </div>
     <div class="reviews" v-if="post != null">
       <h2>Reviews:</h2>
+      <button v-if="sortBy !== 'newest'" class="basic-button" @click="newest">Les plus récents</button>
+      <button v-if="sortBy === 'newest'" class="select-button" @click="newest">Les plus récents</button>
+      <button v-if="sortBy !== 'relevance'" class="basic-button" @click="relevance">Les mieux notés</button>
+      <button v-if="sortBy === 'relevance'" class="select-button" @click="relevance">Les mieux notés</button>
       <p v-for="review in reviewsPage" :key="review">
         <ReviewVisual  :post="review" @refresh="refresh"></ReviewVisual>
       </p>
@@ -48,9 +52,9 @@
             <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
-      <div v-if="auth != null">
-        <ReviewForm @refresh="reviews"></ReviewForm>
-      </div>
+    </div>
+    <div v-if="auth != null">
+      <ReviewForm @refresh="reviews"></ReviewForm>
     </div>
   </div>
 </template>
@@ -97,6 +101,7 @@ export default {
       maxPageCommentNumber:0,
       maxPageReviewNumber:0,
       reviewsPage:null,
+      sortBy: 'newest',
       pageReviewNumber:0,
       auth: authenticationService.getAuth()
     }
@@ -133,7 +138,7 @@ export default {
       this.comments()
     },
     reviews(){
-      postService.reviews(this.$route.params.id, this.pageReviewNumber).then(res => {
+      postService.reviews(this.$route.params.id, this.pageReviewNumber, this.sortBy).then(res => {
         this.reviewsPage = res.data.reviews
         this.pageReviewNumber = res.data.pageNumber
         this.maxPageReviewNumber = res.data.maxPageNumber
@@ -167,6 +172,14 @@ export default {
       this.code()
       this.comments()
       this.reviews()
+    },
+    newest(){
+      this.sortBy = "newest";
+      this.reviews();
+    },
+    relevance(){
+      this.sortBy = "relevance";
+      this.reviews();
     }
   }
 }

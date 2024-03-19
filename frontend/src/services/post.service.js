@@ -16,8 +16,8 @@ let comments = (postId, pageNumber) => {
     return Axios.get('/api/v1/posts/comments/' + postId + "/?pageNumber=" + pageNumber)
 }
 
-let reviews = (postId, pageNumber) => {
-    return Axios.get('/api/v1/posts/reviews/' + postId + "/?pageNumber=" + pageNumber)
+let reviews = (postId, pageNumber, sortBy="newest") => {
+    return Axios.get('/api/v1/posts/reviews/' + postId + "/?pageNumber=" + pageNumber + "&sortBy=" + sortBy)
 }
 
 

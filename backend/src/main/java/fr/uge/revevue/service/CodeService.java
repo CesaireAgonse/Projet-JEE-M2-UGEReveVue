@@ -24,12 +24,13 @@ import java.util.*;
 
 @Service
 public class CodeService {
+    public final static int LIMIT = 4;
+
     private final CodeRepository codeRepository;
     private final UserRepository userRepository;
     private final UserService userService;
-    private EntityManager em;
-    private EntityManagerFactory emf;
-    public final static int LIMIT = 4;
+    private final EntityManager em;
+    private final EntityManagerFactory emf;
 
     @Autowired
     public CodeService(CodeRepository codeRepository, UserRepository userRepository, UserService userService, EntityManager em, EntityManagerFactory emf) {
@@ -38,6 +39,10 @@ public class CodeService {
         this.em = em;
         this.emf = emf;
         this.userRepository = userRepository;
+    }
+
+    public boolean isExisted(long id){
+        return codeRepository.existsById(id);
     }
 
     @Transactional
@@ -68,35 +73,90 @@ public class CodeService {
     }
 
     @Transactional
-    public List<CodeInformation> findWithKeyword(String keyword, int offset, int limit) {
+    public CodePageInformation codes(String username, Integer pageNumber) {
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        var count = codeRepository.countByUserUsername(username);
+        int maxPageNumber = ((count - 1) / LIMIT);
+        Pageable page = PageRequest.of(pageNumber, LIMIT);
+        var codeInformations = codeRepository.findAllByUserUsername(username, page).stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
+        return new CodePageInformation(codeInformations, pageNumber, maxPageNumber, count);
+    }
+
+    @Transactional
+    public FilterInformation filter(String sortBy, String query, Integer pageNumber, User user){
+        if(pageNumber == null || pageNumber < 0) {
+            pageNumber = 0;
+        }
+        List<CodeInformation> codes;
+        var count = codeRepository.countByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(query, query, query);;
+        int maxPageNumber = (count - 1) / CodeService.LIMIT;
+        switch (sortBy != null ? sortBy : "") {
+            // Display all codes by newest
+            case "newest" -> {
+                codes = findWithKeywordByNewest(query, pageNumber, CodeService.LIMIT);
+            }
+            // Display all codes by relevance
+            case "relevance"-> {
+                codes = findWithKeywordByScore(query, pageNumber, CodeService.LIMIT);
+            }
+            default -> {
+                if(user != null) {
+                    // Display codes from follows
+                    codes = getCodeFromFollowed(user, query, pageNumber, CodeService.LIMIT);
+                }
+                else {
+                    // Display all codes
+                    codes = findWithKeyword(query, pageNumber, CodeService.LIMIT);
+                }
+            }
+        }
+        return new FilterInformation(codes, sortBy, query, pageNumber, maxPageNumber, count);
+    }
+
+    @Transactional
+    public CodeInformation delete (long codeId){
+        var code = codeRepository.findById(codeId);
+        if(code.isEmpty()){
+            throw new IllegalArgumentException("Code not found");
+        }
+        codeRepository.delete(code.get());
+        return CodeInformation.from(code.get(), userService.currentUser());
+    }
+
+    private ArrayDeque<User> addNonFollowToQueueFollow(ArrayDeque<User> queueFollow, List<User> usersAlreadySeen) {
+        var nonFollowers = userRepository.findUserFilterUsers(usersAlreadySeen);
+        queueFollow.addAll(nonFollowers);
+        return queueFollow;
+    }
+
+    private List<CodeInformation> findWithKeyword(String keyword, int offset, int limit) {
         Pageable page = PageRequest.of(offset, limit);
         var codes = codeRepository
                 .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCase(page, keyword, keyword, keyword);
         return codes.stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
     }
 
-    @Transactional
-    public List<CodeInformation> findWithKeywordByNewest(String keyword, int offset, int limit) {
+    private List<CodeInformation> findWithKeywordByNewest(String keyword, int offset, int limit) {
         Pageable page = PageRequest.of(offset, limit);
         var codes = codeRepository
-          .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByDateDesc(page, keyword, keyword, keyword);
+                .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByDateDesc(page, keyword, keyword, keyword);
         return codes.stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
     }
 
-    @Transactional
-    public List<CodeInformation> findWithKeywordByScore(String keyword, int offset, int limit) {
+    private List<CodeInformation> findWithKeywordByScore(String keyword, int offset, int limit) {
         Pageable page = PageRequest.of(offset, limit);
         var codes = codeRepository
-          .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByScoreDesc(page, keyword, keyword, keyword);
+                .findByTitleContainingOrDescriptionContainingOrUserUsernameContainingAllIgnoreCaseOrderByScoreDesc(page, keyword, keyword, keyword);
         return codes.stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
     }
 
-    @Transactional
-    public List<CodeInformation> getCodeWithLimitAndOffset(User user, String keyword, int offset, int limit) {
+    private List<CodeInformation> getCodeWithLimitAndOffset(User user, String keyword, int offset, int limit) {
         var q = "SELECT c FROM Code c WHERE c.user.username = :username" +
-          " AND (LOWER(c.description) LIKE :keyword" +
-          " OR LOWER(c.title) LIKE :keyword" +
-          " OR LOWER(c.user.username) LIKE :keyword)";
+                " AND (LOWER(c.description) LIKE :keyword" +
+                " OR LOWER(c.title) LIKE :keyword" +
+                " OR LOWER(c.user.username) LIKE :keyword)";
         var query = em.createQuery(q, Code.class);
         query.setParameter("keyword", "%"+keyword.toLowerCase()+"%");
         query.setParameter("username", user.getUsername());
@@ -104,15 +164,8 @@ public class CodeService {
         query.setMaxResults(limit);
         return query.getResultList().stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
     }
-    
-    ArrayDeque<User> addNonFollowToQueueFollow(ArrayDeque<User> queueFollow, List<User> usersAlreadySeen) {
-        var nonFollowers = userRepository.findUserFilterUsers(usersAlreadySeen);
-        queueFollow.addAll(nonFollowers);
-        return queueFollow;
-    }
 
-    @Transactional
-    public List<CodeInformation> getCodeFromFollowed(User user, String keyword, int offset, int limit) {
+    private List<CodeInformation> getCodeFromFollowed(User user, String keyword, int offset, int limit) {
         List<CodeInformation> codes = new ArrayList<>();
         List<User> usersAlreadySeen = new ArrayList<>();
         List<User> followed = userRepository.findFollowedById(user.getId());
@@ -148,70 +201,5 @@ public class CodeService {
         }
         return codes;
     }
-
-    int countCodeWithQuery(String query){
-        return codeRepository.countByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrUserUsernameContainingIgnoreCase(query, query, query);
-    }
-
-    public boolean isExisted(long id){
-        return codeRepository.existsById(id);
-    }
-
-    @Transactional
-    public CodeInformation delete (long codeId){
-        var code = codeRepository.findById(codeId);
-        if(code.isEmpty()){
-            throw new IllegalArgumentException("Code not found");
-        }
-        codeRepository.delete(code.get());
-        return CodeInformation.from(code.get(), userService.currentUser());
-    }
-
-    @Transactional
-    public CodePageInformation getCodePageFromUsername(String username, int offset){
-        var count = codeRepository.countByUserUsername(username);
-        int maxPageNumber = ((count - 1) / LIMIT);
-        Pageable page = PageRequest.of(offset, LIMIT);
-        var codeInformations = codeRepository.findAllByUserUsername(username, page).stream().map(code -> CodeInformation.from(code, userService.currentUser())).toList();
-        return new CodePageInformation(codeInformations, offset, maxPageNumber, count);
-    }
-
-    @Transactional
-    public FilterInformation filter(String sortBy, String query, Integer pageNumber, User user){
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
-        }
-        List<CodeInformation> codes;
-        var count = countCodeWithQuery(query);
-        int maxPageNumber = (count - 1) / CodeService.LIMIT;
-        switch (sortBy != null ? sortBy : "") {
-            // Display all codes by newest
-            case "newest" -> {
-                codes = findWithKeywordByNewest(query, pageNumber, CodeService.LIMIT);
-            }
-            // Display all codes by relevance
-            case "relevance"-> {
-                codes = findWithKeywordByScore(query, pageNumber, CodeService.LIMIT);
-            }
-            default -> {
-                if(user != null) {
-                    // Display codes from follows
-                    codes = getCodeFromFollowed(user, query, pageNumber, CodeService.LIMIT);
-                }
-                else {
-                    // Display all codes
-                    codes = findWithKeyword(query, pageNumber, CodeService.LIMIT);
-                }
-            }
-        }
-        return new FilterInformation(codes, sortBy, query, pageNumber, maxPageNumber, count);
-    }
-
-    @Transactional
-    public CodePageInformation codes(String username, Integer pageNumber) {
-        if(pageNumber == null || pageNumber < 0) {
-            pageNumber = 0;
-        }
-        return getCodePageFromUsername(username, pageNumber);
-    }
 }
+
