@@ -97,7 +97,7 @@ public class CodeController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/vote/{codeId}")
     public String codeVoted(@PathVariable("codeId") long codeId,
-                            @RequestParam("voteType") Vote.VoteType voteType,
+                            @RequestParam("voteType") String voteType,
                             BindingResult result){
         if (result.hasErrors()){
             return "redirect:/codes/" + codeId;
@@ -105,7 +105,7 @@ public class CodeController {
         if (!codeService.isExisted(codeId)){
             return "redirect:/";
         }
-        voteService.postVotedWithOptimisticLock(userService.currentUser().getId(), codeId, voteType);
+        voteService.postVotedWithOptimisticLock(userService.currentUser().getId(), codeId, Vote.VoteType.valueOf(voteType));
         return "redirect:/codes/" + codeId;
     }
 

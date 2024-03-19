@@ -15,9 +15,11 @@
             <div class ="buttons">
                 <div class ="votes">
                     <form name="vote" id="vote" th:data-code-id="${review.id()}">
-                        <button class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
+                        <button th:if="${review.voteType.toString() != 'UpVote'}" class="btn vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
+                        <button th:if="${review.voteType.toString() == 'UpVote'}" class="btn-selected vote-btn upvote-btn" type="button" name="voteType" value="UpVote">▲</button>
                         <p class="vote-score" th:text="${review.score()}"></p>
-                        <button class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+                        <button th:if="${review.voteType.toString() != 'DownVote'}" class="btn vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
+                        <button th:if="${review.voteType.toString() == 'DownVote'}" class="btn-selected vote-btn downvote-btn" type="button" name="voteType" value="DownVote">▼</button>
                     </form>
                 </div>
                 <form th:if="${auth != null && auth.isAdmin()}" name="delete" id="delete"

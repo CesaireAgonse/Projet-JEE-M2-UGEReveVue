@@ -60,7 +60,7 @@ public class ReviewController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/reviews/vote/{reviewId}")
     public String reviewVoted(@PathVariable("reviewId") long reviewId,
-                              @RequestParam("voteType") @Valid Vote.VoteType voteType,
+                              @RequestParam("voteType") String voteType,
                               BindingResult result){
         if (result.hasErrors()){
             return "redirect:/reviews/" + reviewId;
@@ -68,7 +68,7 @@ public class ReviewController {
         if (!reviewService.isExisted(reviewId)){
             return "redirect:/";
         }
-        voteService.postVotedWithOptimisticLock(userService.currentUser().getId(),reviewId,voteType);
+        voteService.postVotedWithOptimisticLock(userService.currentUser().getId(),reviewId,Vote.VoteType.valueOf(voteType));
         return "redirect:/reviews/" + reviewId;
     }
 
