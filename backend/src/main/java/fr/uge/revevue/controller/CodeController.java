@@ -87,11 +87,11 @@ public class CodeController {
             return "codes/create";
         }
         codeService.create(
-                userService.currentUser().getId(),
                 codeForm.getTitle(),
                 codeForm.getDescription(),
                 codeForm.getJavaFile(),
-                codeForm.getUnitFile());
+                codeForm.getUnitFile()
+        );
         return "redirect:/";
     }
 
@@ -119,7 +119,7 @@ public class CodeController {
         if (!codeService.isExisted(codeId)){
             return "redirect:/";
         }
-        commentService.postCommented(userService.currentUser().getId(),codeId,commentForm.getContent(), commentForm.getCodeSelection());
+        commentService.postCommented(codeId,commentForm.getContent(), commentForm.getCodeSelection());
         return "redirect:/codes/" + codeId;
     }
 
@@ -141,7 +141,6 @@ public class CodeController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/codes/delete/{codeId}")
     public String delete(@PathVariable("codeId") long codeId) {
-        System.out.println("TEST");
         if (!codeService.isExisted(codeId)){
             return "redirect:/";
         }

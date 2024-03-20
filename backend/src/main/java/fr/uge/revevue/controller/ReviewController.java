@@ -83,7 +83,7 @@ public class ReviewController {
         if (!reviewService.isExisted(reviewId)){
             return "redirect:/";
         }
-        commentService.postCommented(userService.currentUser().getId(), reviewId, commentForm.getContent(), commentForm.getCodeSelection());
+        commentService.postCommented(reviewId, commentForm.getContent(), commentForm.getCodeSelection());
         return "redirect:/reviews/" + reviewId;
     }
 

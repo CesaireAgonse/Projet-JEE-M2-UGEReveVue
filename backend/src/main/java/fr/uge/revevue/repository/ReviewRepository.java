@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends CrudRepository<Review,Long> {
 
-    int countByUserId(long userId);
-
     int countByUserUsername(String username);
 
     int countByPostId(long postId);

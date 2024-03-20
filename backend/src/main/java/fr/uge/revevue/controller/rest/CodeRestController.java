@@ -51,11 +51,12 @@ public class CodeRestController {
             return ResponseEntity.badRequest().build();
         }
         try {
-            codeService.create(userService.currentUser().getId(),
+            codeService.create(
                     codeForm.getTitle(),
                     codeForm.getDescription(),
                     codeForm.getJavaFile(),
-                    codeForm.getUnitFile());
+                    codeForm.getUnitFile()
+            );
         } catch (IOException e) {
             return ResponseEntity.badRequest().build();
         }

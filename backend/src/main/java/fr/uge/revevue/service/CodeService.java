@@ -55,12 +55,12 @@ public class CodeService {
     }
 
     @Transactional
-    public void create(long id, String title, String description, MultipartFile javaContent, MultipartFile unitContent) throws IOException {
-        var user = userRepository.findById(id);
-        if (user.isEmpty()){
-            throw new IllegalArgumentException("user not found");
+    public void create(String title, String description, MultipartFile javaContent, MultipartFile unitContent) throws IOException {
+        var user = userService.currentUser();
+        if (user == null){
+            throw new IllegalArgumentException("user not logged");
         }
-        var code = new Code(user.get(), title, description, javaContent.getBytes());
+        var code = new Code(user, title, description, javaContent.getBytes());
         if (unitContent != null && !unitContent.isEmpty()){
             code.setUnitContent(unitContent.getBytes());
             var results = WebClientService.microServiceExecute(new UnitTestClassForm(javaContent.getBytes(), unitContent.getBytes()));

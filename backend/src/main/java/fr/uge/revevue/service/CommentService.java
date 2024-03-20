@@ -18,25 +18,24 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository,UserRepository userRepository) {
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserService userService) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Transactional
-    public void postCommented(long userId, long postId, String content, String codeSelection){
-        var findUser = userRepository.findById(userId);
-        if (findUser.isEmpty()){
-            throw new IllegalStateException("User not found");
+    public void postCommented(long postId, String content, String codeSelection){
+       var user = userService.currentUser();
+        if (user == null){
+            throw new IllegalStateException("user not logged");
         }
         var findPost = postRepository.findById(postId);
         if (findPost.isEmpty()){
-            throw new IllegalStateException("Post not found");
+            throw new IllegalStateException("post not found");
         }
-        var user = findUser.get();
         var post = findPost.get();
         var comment = new Comment(content, user, post);
         comment.setCodeSelection(codeSelection);

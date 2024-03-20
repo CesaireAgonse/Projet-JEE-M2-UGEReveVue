@@ -74,7 +74,7 @@ public class PostRestController {
         if (!postService.isExisted(postId)){
             return ResponseEntity.notFound().build();
         }
-        commentService.postCommented(userService.currentUser().getId(), postId, commentForm.getContent(), commentForm.getCodeSelection());
+        commentService.postCommented(postId, commentForm.getContent(), commentForm.getCodeSelection());
         return ResponseEntity.ok().build();
     }
 

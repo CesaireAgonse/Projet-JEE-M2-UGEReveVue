@@ -9,8 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.HashMap;
-
 @Controller
 public class AdminController {
     private final UserService userService;
@@ -30,6 +28,6 @@ public class AdminController {
         }
         model.addAttribute("auth", AuthInformation.from(user));
         model.addAttribute("userPageInformation", userService.usersNonAdmin(pageNumber));
-        return "/admin";
+        return "admin";
     }
 }

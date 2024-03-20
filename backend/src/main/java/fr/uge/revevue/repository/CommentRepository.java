@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends CrudRepository<Comment,Long> {
 
-    int countByUserId(long userId);
-
     int countByUserUsername(String username);
 
     int countByPostId(long postId);

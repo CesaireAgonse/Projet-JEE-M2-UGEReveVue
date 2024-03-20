@@ -1,7 +1,6 @@
 package fr.uge.revevue.information.code;
 
 import fr.uge.revevue.entity.Code;
-import fr.uge.revevue.entity.Review;
 import fr.uge.revevue.entity.User;
 import fr.uge.revevue.entity.Vote;
 import fr.uge.revevue.information.user.SimpleUserInformation;

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Map;
+
 @Service
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
@@ -23,6 +24,7 @@ public class AuthenticationService {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtService jwtService;
+
     @Autowired
     public AuthenticationService(AuthenticationManager authenticationManager, UserRepository userRepository,
                        RoleRepository roleRepository,

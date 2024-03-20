@@ -44,7 +44,7 @@ public class ReviewService {
 
         var findPost = postRepository.findById(postId);
         if (findPost.isEmpty()){
-            throw new IllegalStateException("Post not found");
+            throw new IllegalStateException("post not found");
         }
         var post = findPost.get();
         List<ReviewContent> contents = new ArrayList<>();

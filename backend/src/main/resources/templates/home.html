@@ -12,8 +12,8 @@
             <div class="container limit option">
                 <div>
                     <p class="text-title left">All Codes</p>
-                    <a th:if="${auth != null && auth.isAdmin()}" th:href="'admin/'" class="button basic right">Admin page</a>
-                    <a th:if="${auth != null}" th:href="'codes/create'" class="button basic right">Post Code</a>
+                    <a th:if="${auth != null && auth.isAdmin()}" th:href="'/admin'" class="button basic right">Admin page</a>
+                    <a th:if="${auth != null}" th:href="'/codes/create'" class="button basic right">Post Code</a>
                 </div>
                 <div>
                     <p class="result left" th:text="${filter.resultNumber() == 0 ? '0 result' : filter.resultNumber() + ' results'} +

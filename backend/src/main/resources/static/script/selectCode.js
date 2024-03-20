@@ -24,6 +24,6 @@ function getSelectedCode() {
 }
 
 function deleteSelectedCode() {
-    document.getElementById("codeSelection").textContent = '';
+    document.getElementById("codeSelection").value = '';
     document.getElementById("preCodeSelection").textContent = '';
 }
