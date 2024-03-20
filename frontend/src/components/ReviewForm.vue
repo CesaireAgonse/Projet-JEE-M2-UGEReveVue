@@ -1,12 +1,12 @@
 <template>
-  <div v-if="modal" class="modal">
+  <div v-if="modal" class="modal" @click="handleModalClick">
     <div class="modal-content">
       <span class="close" @click="hideCodeModal">&times;</span>
       <h2 class="label">Ajouter un champ d'une ancienne review</h2>
       <div v-for="(content) in reviewContent" :key="content">
         <div class="post" @click="select(content)">
-          <pre v-if="content.codeSelection !== null && content.codeSelection !== ''" class="select-code"><code class="language-java">{{ content.codeSelection }}</code></pre>
-          <pre><div v-html="markdownToHtml(content.content)"></div></pre>
+          <pre v-if="content.codeSelection !== null && content.codeSelection !== ''" class="message"><code class="language-java">{{ content.codeSelection }}</code></pre>
+          <pre class="message"><div v-html="markdownToHtml(content.content)"></div></pre>
         </div>
       </div>
       <div class="row">
@@ -127,6 +127,7 @@ export default {
     },
     select(content){
       this.reviewForm.content.push({ content: content.content, codeSelection: content.codeSelection });
+      this.hideCodeModal()
     }
   },
 };
@@ -137,9 +138,11 @@ export default {
   background-color: #1e1e1e;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
-  margin: 20px;
+  margin: 10px;
   text-align: left;
-  padding: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 75%;
 }
 .send-button{
   margin: 15px 100px 25px;
@@ -155,6 +158,7 @@ export default {
 
 textarea {
   margin-top: 30px;
+  height: 100px;
 }
 
 textarea,
@@ -201,6 +205,7 @@ input {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
+  overflow-y: auto;
 }
 
 .modal-content {
@@ -209,7 +214,7 @@ input {
   padding: 20px;
   border-radius: 10px;
   width: 80%;
-  max-width: 600px;
+  max-width: 800px;
   border: 2px solid #fff;
   backdrop-filter: blur(10px);
 }
@@ -240,6 +245,13 @@ input {
   margin: 20px;
   padding: 20px;
   width: calc(60% - 40px);
+}
+
+
+.message{
+  max-width: 100%;
+  max-height: 100px;
+  overflow-y: auto;
 }
 
 </style>

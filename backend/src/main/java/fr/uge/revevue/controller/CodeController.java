@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
@@ -97,16 +98,14 @@ public class CodeController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/codes/vote/{codeId}")
     public String codeVoted(@PathVariable("codeId") long codeId,
-                            @RequestParam("voteType") String voteType,
-                            BindingResult result){
-        if (result.hasErrors()){
-            return "redirect:/codes/" + codeId;
-        }
+                            @RequestParam("voteType") Vote.VoteType voteType,
+                            HttpServletRequest request){
         if (!codeService.isExisted(codeId)){
             return "redirect:/";
         }
-        voteService.postVotedWithOptimisticLock(userService.currentUser().getId(), codeId, Vote.VoteType.valueOf(voteType));
-        return "redirect:/codes/" + codeId;
+        voteService.postVotedWithOptimisticLock(userService.currentUser().getId(), codeId, voteType);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/codes/" + codeId);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -140,8 +139,9 @@ public class CodeController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("codes/{codeId}")
+    @PostMapping("/codes/delete/{codeId}")
     public String delete(@PathVariable("codeId") long codeId) {
+        System.out.println("TEST");
         if (!codeService.isExisted(codeId)){
             return "redirect:/";
         }

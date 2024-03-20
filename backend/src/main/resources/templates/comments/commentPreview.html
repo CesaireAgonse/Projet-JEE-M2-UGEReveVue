@@ -1,6 +1,6 @@
 <div th:fragment="commentPreview" class="container">
     <b><a class ="title" th:if="${comment.typePost() == 'Code'}" th:href="'/codes/' + ${comment.idPost()}"> from this code</a></b>
     <a class ="title" th:if="${comment.typePost() == 'Review'}" th:href="'/reviews/' + ${comment.idPost()}"> from this review</a>
-    <p class="markdown message" th:text="${comment.content()}"></p>
+    <pre class="markdown message" th:text="${comment.content()}"></pre>
     <p class="date right" th:text="${comment.date()}"></p>
 </div>

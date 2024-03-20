@@ -7,6 +7,7 @@ import fr.uge.revevue.repository.RoleRepository;
 import fr.uge.revevue.repository.UserRepository;
 import fr.uge.revevue.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -64,5 +65,19 @@ public class AuthenticationService {
 
     public Map<String, String> refresh(Map<String, String> refreshToken){
         return this.jwtService.refreshToken(refreshToken);
+    }
+
+    @Bean
+    void initialisationDataBase() {
+        Role roleAdmin = new Role(Role.TypeRole.ADMIN);
+        Role roleUser = new Role(Role.TypeRole.USER);
+        roleRepository.save(roleAdmin);
+        roleRepository.save(roleUser);
+        User admin = new User("admin", bCryptPasswordEncoder.encode("admin"));
+        admin.setRole(roleAdmin);
+        User arnaud = new User("arnaud", bCryptPasswordEncoder.encode("arnaud"));
+        arnaud.setRole(roleUser);
+        userRepository.save(admin);
+        userRepository.save(arnaud);
     }
 }

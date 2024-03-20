@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -106,12 +107,14 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("users/{username}")
-    public String delete(@PathVariable("username") String username) {
+    @PostMapping("/users/delete/{username}")
+    public String delete(@PathVariable("username") String username,
+                         HttpServletRequest request) {
         if (!userService.isExisted(username)){
             return "redirect:/";
         }
         userService.delete(username);
-        return "redirect:/";
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : '/');
     }
 }

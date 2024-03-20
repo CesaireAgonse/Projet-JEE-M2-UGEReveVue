@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface CodeRepository  extends CrudRepository<Code, Long> {
 
-    int countByUserId(long userId);
-
     int countByUserUsername(String username);
 
     int countByUserIdAndTitleContainingIgnoreCaseOrUserIdAndDescriptionContainingIgnoreCaseOrUserIdAndUserUsernameContainingIgnoreCase(long userIdTitle, String titleKeyword, long userIdDescription, String descriptionKeyword, long userIdUsername, String userUsernameKeyword);

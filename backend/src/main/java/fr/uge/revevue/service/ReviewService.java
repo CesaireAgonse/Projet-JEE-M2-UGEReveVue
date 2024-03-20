@@ -41,6 +41,7 @@ public class ReviewService {
         if (user == null){
             throw new IllegalStateException("user not logged");
         }
+
         var findPost = postRepository.findById(postId);
         if (findPost.isEmpty()){
             throw new IllegalStateException("Post not found");

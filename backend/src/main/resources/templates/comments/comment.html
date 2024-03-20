@@ -6,16 +6,12 @@
         <div class ="author">
             <a th:href="'/users/' + ${comment.userInformation().username()}" th:text="${comment.userInformation().username()}"></a>
         </div>
-        <form th:if="${auth != null && auth.isAdmin()}" name="delete" id="delete"
-              th:data-comment-id="${comment.id()}">
-            <button class="btn delete-btn" type="button" name="voteType" value="UpVote">🗑</button>
+        <form th:if="${auth != null && auth.isAdmin()}"
+              th:action="@{/comments/delete/{commentId}(commentId=${comment.id()})}" th:method="post">
+            <button class="btn delete-btn" type="submit">🗑</button>
         </form>
         <pre th:if="${comment.codeSelection != null && comment.codeSelection != ''}"><code id="codeBlock" class="language-java java-code" th:data-code="${comment.codeSelection()}"></code></pre>
         <pre class="markdown message" th:text="${comment.content()}"></pre>
         <p class="date right" th:text="${comment.date()}"></p>
     </div>
-    <script src="/script/delete.js"></script>
-    <script>
-        del('/api/v1/comments/', 'data-comment-id', 'Comment deleted.', reload)
-    </script>
 </div>

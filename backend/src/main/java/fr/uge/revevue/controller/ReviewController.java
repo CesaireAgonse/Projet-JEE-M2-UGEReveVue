@@ -15,7 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Arrays;
 
 @Controller
 public class ReviewController {
@@ -61,15 +63,13 @@ public class ReviewController {
     @PostMapping("/reviews/vote/{reviewId}")
     public String reviewVoted(@PathVariable("reviewId") long reviewId,
                               @RequestParam("voteType") String voteType,
-                              BindingResult result){
-        if (result.hasErrors()){
-            return "redirect:/reviews/" + reviewId;
-        }
+                              HttpServletRequest request){
         if (!reviewService.isExisted(reviewId)){
             return "redirect:/";
         }
         voteService.postVotedWithOptimisticLock(userService.currentUser().getId(),reviewId,Vote.VoteType.valueOf(voteType));
-        return "redirect:/reviews/" + reviewId;
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/reviews/" + reviewId);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -103,12 +103,31 @@ public class ReviewController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @DeleteMapping("reviews/{reviewId}")
-    public String delete(@PathVariable("reviewId") long reviewId) {
+    @PostMapping("/reviews/delete/{reviewId}")
+    public String delete(@PathVariable("reviewId") long reviewId,
+                         HttpServletRequest request) {
         if (!reviewService.isExisted(reviewId)){
             return "redirect:/";
         }
+        var reviewInformation = reviewService.getInformation(reviewId);
         reviewService.delete(reviewId);
+        String referer = request.getHeader("Referer");
+        if (referer != null){
+            var split = Arrays.stream(referer.split("/")).toList();
+            var number = Long.parseLong(split.get(split.size() - 1));
+            if (number == reviewId){
+                var type = reviewInformation.typePost();
+                var id = reviewInformation.idPost();
+                if (type.equals("Code")){
+                    return "redirect:/codes/" + id;
+                }
+                if (type.equals("Review")){
+                    return "redirect:/reviews/" + id;
+                }
+            } else {
+                return "redirect:" + referer;
+            }
+        }
         return "redirect:/";
     }
 }
