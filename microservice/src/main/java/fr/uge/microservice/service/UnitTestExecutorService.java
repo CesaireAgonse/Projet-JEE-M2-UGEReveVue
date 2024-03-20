@@ -26,7 +26,7 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 
 @Service
 public class UnitTestExecutorService {
-    private static final int TIMEOUT = 60;
+    private static final int TIMEOUT = 10;
 
 
     private static String findClassName(String code){
