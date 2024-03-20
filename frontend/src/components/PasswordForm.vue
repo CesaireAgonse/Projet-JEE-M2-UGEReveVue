@@ -6,6 +6,7 @@
         <h1 class="label">Modifier son mot de passe</h1>
         <form @submit.prevent="updatePassword">
           <input type="password" id="currentPassword" v-model="currentPassword" placeholder="Mot de passe actuel" required>
+          <span v-if="exist" class="error-message">Mot de passe actuel incorrect</span>
           <input type="password" id="newPassword" v-model="newPassword" placeholder="Nouveau mot de passe" required>
           <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="Confirmation du nouveau mot de passe" required>
           <span v-if="newPassword !== confirmPassword" class="error-message">Les mots de passe ne correspondent pas.</span>
@@ -29,17 +30,18 @@ export default {
     return {
       currentPassword: '',
       newPassword: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      exist: false
     };
   },
   methods: {
     async updatePassword() {
-      let response = userService.updatePassword({currentPassword: this.currentPassword, newPassword: this.newPassword})
-      console.log(response);
-      this.currentPassword = '';
-      this.newPassword = '';
-      this.confirmPassword = '';
-      this.$emit('close-modal');
+      userService.updatePassword({currentPassword: this.currentPassword, newPassword: this.newPassword}).then(() => {
+        this.currentPassword = '';
+        this.newPassword = '';
+        this.confirmPassword = '';
+        this.$emit('close-modal');
+      }).catch(() => this.exist = true)
     },
     hideUpdateModal() {
       this.$emit('close-modal');

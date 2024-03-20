@@ -15,7 +15,7 @@ let refreshSubscribers = [];
 Axios.interceptors.response.use(response => response, async error => {
     const { config, response: { status } } = error;
     const originalRequest = config;
-    if ((status === 401 || status === 403 || status === 500) && !refresh) {
+    if ((status === 401 || status === 403) && !refresh) {
         refresh = true;
         authenticationService.removeToken('bearer')
         await Axios.post("api/v1/refresh", { refresh: localStorage.getItem("refresh")}).then(res =>

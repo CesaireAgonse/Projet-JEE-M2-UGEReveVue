@@ -7,6 +7,7 @@
         <form @submit.prevent="connect">
           <input type="text" id="username" v-model="username" placeholder="Nom d'utilisateur" required>
           <input type="password" id="password" v-model="password" placeholder="Mot de passe" required>
+          <span v-if="exist" class="error-message">Nom d'utilisateur ou mot de passe incorrect</span>
           <button type="submit">Se connecter</button>
         </form>
       </div>
@@ -26,21 +27,23 @@ export default {
   data() {
     return {
       username: '',
-      password: ''
+      password: '',
+      exist: false
     };
   },
   methods: {
     connect() {
       authenticationService.login({username: this.username,  password: this.password})
           .then(res => {
-              authenticationService.addToken('bearer', res.data.bearer)
-              authenticationService.addToken('refresh', res.data.refresh)
-              this.username = '';
-              this.password = '';
-              this.$emit('close-modal');
-              this.$emit('connect');
+            authenticationService.addToken('bearer', res.data.bearer)
+            authenticationService.addToken('refresh', res.data.refresh)
+            this.username = '';
+            this.password = '';
+            this.$emit('close-modal');
+            this.$emit('connect');
+
           })
-          .catch(err => console.log(err))
+          .catch(() => this.exist = true)
     },
     hideLoginModal() {
       this.$emit('close-modal');
@@ -129,5 +132,10 @@ button:hover {
   background-color: #fff;
   transition: all .5s;
   color: #000;
+}
+.error-message {
+  color: #ff4d4d; /* Red color */
+  font-size: small;
+  padding-bottom: 10px;
 }
 </style>

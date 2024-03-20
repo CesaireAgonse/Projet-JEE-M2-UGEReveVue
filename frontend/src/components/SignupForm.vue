@@ -6,6 +6,7 @@
         <h1 class="label">Inscription</h1>
         <form @submit.prevent="register">
           <input type="text" id="username" v-model="username" placeholder="Nom d'utilisateur" required>
+          <span v-if="exist" class="error-message">Nom d'utilisateur déja utilisé</span>
           <input type="password" id="password" v-model="password" placeholder="Mot de passe" required>
           <input type="password" id="ConfirmPassword" v-model="ConfirmPassword" placeholder="Confirmation du mot de passe" required>
           <span v-if="password !== ConfirmPassword" class="error-message">Les mots de passe ne correspondent pas.</span>
@@ -29,7 +30,8 @@ export default {
     return {
       username: '',
       password: '',
-      ConfirmPassword: ''
+      ConfirmPassword: '',
+      exist: false
     };
   },
   methods: {
@@ -47,7 +49,7 @@ export default {
         this.password = '';
         this.$emit('close-modal');
         this.$emit('connect');
-      }).catch(err => console.log(err))
+      }).catch(() => this.exist = true)
     },
     hideSignupModal() {
       this.$emit('close-modal');

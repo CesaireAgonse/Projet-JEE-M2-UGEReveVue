@@ -3,6 +3,7 @@ package fr.uge.revevue.controller.rest;
 import fr.uge.revevue.form.AuthenticationForm;
 import fr.uge.revevue.security.RefreshToken;
 import fr.uge.revevue.service.AuthenticationService;
+import fr.uge.revevue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,16 +18,21 @@ import java.util.Map;
 @RequestMapping("api/v1")
 public class AuthenticationRestController {
     private final AuthenticationService authenticationService;
+    private final UserService userService;
 
     @Autowired
-    public AuthenticationRestController(AuthenticationService authenticationService){
+    public AuthenticationRestController(AuthenticationService authenticationService, UserService userService){
         this.authenticationService = authenticationService;
+        this.userService = userService;
     }
 
     @PreAuthorize("permitAll()")
     @PostMapping("/signup")
     public ResponseEntity<Map<String, String>> signup(@RequestBody @Valid AuthenticationForm authenticationInformation, BindingResult result){
         if (result.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
+        if (userService.isExisted(authenticationInformation.getUsername())){
             return ResponseEntity.badRequest().build();
         }
         authenticationService.signup(authenticationInformation.getUsername(), authenticationInformation.getPassword());
@@ -37,6 +43,9 @@ public class AuthenticationRestController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody @Valid AuthenticationForm authenticationInformation, BindingResult result){
         if (result.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
+        if (!userService.isExisted(authenticationInformation.getUsername())){
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(authenticationService.login(authenticationInformation.getUsername(), authenticationInformation.getPassword()));

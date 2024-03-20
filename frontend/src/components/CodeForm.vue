@@ -24,6 +24,7 @@
             <span v-if="unitFile">Fichier sélectionné: {{ unitFile.name }}</span>
           </div>
           <button type="submit">Poster</button>
+          <i v-if="send" class="fa-solid fa-spinner fa-spin-pulse"></i>
         </form>
       </div>
     </div>
@@ -44,11 +45,13 @@ export default {
       title: '',
       description: '',
       javaFile: null,
-      unitFile: null
+      unitFile: null,
+      send:false
     };
   },
   methods: {
     post() {
+      this.send = true;
       const javaFile = this.$refs.javaFile.files[0];
       const unitFile = this.$refs.unitFile.files[0];
       const formData = new FormData();
