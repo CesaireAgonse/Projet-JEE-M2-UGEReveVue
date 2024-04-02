@@ -35,13 +35,19 @@ export default {
     };
   },
   methods: {
-    async updatePassword() {
-      userService.updatePassword({currentPassword: this.currentPassword, newPassword: this.newPassword}).then(() => {
+    updatePassword() {
+      userService.updatePassword({currentPassword: this.currentPassword, newPassword: this.newPassword}).then((res) => {
         this.currentPassword = '';
         this.newPassword = '';
         this.confirmPassword = '';
+        this.exist = true
+        if (res.response.status !== 400){
+          this.$emit('close-modal');
+        }
+      }).catch(() => {
+        this.exist = true
         this.$emit('close-modal');
-      }).catch(() => this.exist = true)
+      })
     },
     hideUpdateModal() {
       this.$emit('close-modal');
