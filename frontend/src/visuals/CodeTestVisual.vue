@@ -1,5 +1,5 @@
 <template>
-  <div class="post"  v-if="post.unitContent !== null && post.unitContent !== ''">
+  <div  v-if="post.unitContent !== null && post.unitContent !== ''">
     <pre><code class="language-java">{{ post.unitContent }}</code></pre>
     <div class="row">
       <div>
@@ -47,7 +47,7 @@ export default {
 
 <style scoped>
 .post {
-  background-color: #282828;
+  background-color: #1e1e1e;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
   padding: 20px;
