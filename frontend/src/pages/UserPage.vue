@@ -39,7 +39,6 @@
         <div class="profile-info">
           <p style="font-size: 200%">{{ username }}</p>
           <p style="margin-top: -20px">{{nbFollowed}} <i class="fa-solid fa-user-group"></i></p>
-          <p>{{ "Ceci est une description de profile" }}</p>
           <button v-if="auth != null && auth.username !== username && !isFollowed" class="basic-button button-profile left" @click="follow"><i class="fa-solid fa-user-plus"></i> Suivre</button>
           <button v-if="auth != null && auth.username !== username && isFollowed" class="basic-button button-profile left" @click="unfollow"><i class="fa-solid fa-user-minus"></i> Ne plus suivre</button>
           <button v-if="auth != null && auth.username === username" class="basic-button button-profile left" @click="showPasswordModal">Modifier son mot de passe</button>
@@ -59,6 +58,9 @@
     <div class="row" v-for="user in userPage.users" :key="user">
       <div class="userPost">
         <UserVisual :user="user"/>
+          <button v-if="auth !== null && auth.role === 'ADMIN'" class="post-button" @click="del(user.username)">
+            <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
+          </button>
       </div>
     </div>
     <div>
@@ -67,21 +69,31 @@
     </div>
   </div>
     <div v-if="selectedTab === 'codes'">
-      <div class="row" v-for="code in codePage.codes" :key="code"><CodeVisual :post="code" @refresh="codes"/></div>
+      <div class="row" v-for="code in codePage.codes" :key="code">
+        <div class="userPost">
+          <CodeVisual :post="code" @refresh="codes"/>
+        </div>
+      </div>
       <div>
         <button v-if="codePage.pageNumber > 0" class="basic-button" @click="prevCode">Page précédente</button>
         <button v-if="codePage.pageNumber < codePage.totalPage" class="basic-button" @click="nextCode">Page suivante</button>
       </div>
     </div>
     <div v-if="selectedTab === 'reviews'">
-      <div class="row" v-for="review in reviewPage.reviews" :key="review"><ReviewVisual :post="review" @refresh="reviews"/></div>
+      <div class="row" v-for="review in reviewPage.reviews" :key="review">
+        <div class="userPost">
+          <ReviewVisual :post="review" @refresh="reviews"/></div>
+        </div>
       <div>
         <button v-if="reviewPage.pageNumber > 0" class="basic-button" @click="prevReview">Page précédente</button>
         <button v-if="reviewPage.pageNumber < reviewPage.totalPage" class="basic-button" @click="nextReview">Page suivante</button>
       </div>
     </div>
     <div v-if="selectedTab === 'comments'">
-      <div class="row" v-for="comment in commentPage.comments" :key="comment"><CommentVisual :comment="comment" @refresh="comments"/></div>
+      <div class="row" v-for="comment in commentPage.comments" :key="comment">
+        <div class="userPost">
+          <CommentVisual :comment="comment" @refresh="comments"/></div>
+        </div>
       <div>
         <button v-if="commentPage.pageNumber > 0" class="basic-button" @click="prevComment">Page précédente</button>
         <button v-if="commentPage.pageNumber < commentPage.totalPage" class="basic-button" @click="nextComment">Page suivante</button>
@@ -327,8 +339,9 @@ export default {
 </script>
 <style scoped>
 .button-profile {
-  font-size: 110%;
-  margin-bottom: 20px;
+  font-size: 100%;
+  margin-bottom: 10px;
+  margin-left: -5px;
 }
 
 .profile {
@@ -376,7 +389,7 @@ export default {
 .profile-tab {
   margin: 0 5px; /* Espacement entre les onglets */
   padding: 5px 10px; /* Espacement interne des onglets */
-  font-size: 14px; /* Taille de la police des onglets */
+  font-size: 20px; /* Taille de la police des onglets */
   border: 1px solid #282828; /* Ajout d'une bordure */
   border-radius: 5px; /* Bordure arrondie */
   background-color: white; /* Couleur de fond transparente */
@@ -465,7 +478,7 @@ export default {
   margin: 20px;
   text-align: left;
   padding: 10px;
-  width: 33%;
+  width: 40%;
 }
 
 .userAdmin {
