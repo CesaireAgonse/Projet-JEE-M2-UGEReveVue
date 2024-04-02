@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div>
     <div class="post-header">
       <div class="post-header-info" @click="user()">
         <img v-if="photo == null" class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
@@ -12,7 +12,7 @@
       <div class="post-actions"></div>
     </div>
     <pre v-if="comment.codeSelection !== null && comment.codeSelection !== ''" class="select-code"><code class="language-java">{{ comment.codeSelection }}</code></pre>
-    <pre><div v-html="markdownToHtml(comment.content)"></div></pre>
+    <pre class="post-content"><div v-html="markdownToHtml(comment.content)"></div></pre>
     <button v-if="auth !== null && auth.role === 'ADMIN'" class="post-button" @click="del">
       <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
     </button>
@@ -66,8 +66,9 @@ export default {
     },
     del() {
       if (confirm("Êtes-vous sûr de vouloir supprimer ce commentaire ?")) {
-        commentService.del(this.comment.id)
-        this.$emit("refresh")
+        commentService.del(this.comment.id).then(() => {
+          this.$emit("refresh")
+        })
       }
     }
   }
@@ -128,5 +129,9 @@ export default {
   border-radius: 5px;
 }
 
+.post-content{
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
 
 </style>
