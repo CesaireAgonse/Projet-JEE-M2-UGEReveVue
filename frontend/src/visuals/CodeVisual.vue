@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div>
       <div class="post-header">
         <div class="post-header-info" @click="user()">
           <img v-if="photo == null" class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
@@ -12,9 +12,11 @@
           <p class="post-date">{{ post.date }}</p>
         </div>
       </div>
-    <div @click="code()">
-      <h2 class="post-title">{{ post.title }}</h2>
-      <p class="post-description">{{ post.description }}</p>
+    <div @click="code()" class="element">
+      <div class="head-text">
+        <h2 class="post-title">{{ post.title }}</h2>
+        <p class="post-description">{{ post.description }}</p>
+      </div>
       <pre @mouseup="handleSelection"><code id="codeBlock" class="language-java">{{ post.javaContent }}</code></pre>
     </div>
     <div class="post-footer">
@@ -36,15 +38,15 @@
         <button v-if="auth !== null && auth.role === 'ADMIN'" class="post-button" @click="del">
           <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
         </button>
-      <div  class="post-votes">
+      <div  class="post-votes" @click="code()">
         <button class="post-button">
-          <i class="fa-regular fa-comment fa-bounce" style="color: #74C0FC"></i>
+          <i class="fa-regular fa-comment" style="color: #74C0FC"></i>
         </button>
         <p style="padding-right: 7px">{{post.comments }}</p>
         <button class="post-button" >
-          <i class="fa-regular fa-pen-to-square fa-2xs fa-bounce" style="color: #74C0FC"></i>
+          <i class="fa-regular fa-pen-to-square fa-2xs" style="color: #74C0FC"></i>
         </button>
-        <p>{{post.reviews }}</p>
+        <p>{{post.reviews}}</p>
       </div>
     </div>
   </div>
@@ -129,7 +131,7 @@ export default {
 <style scoped>
 
 .post {
-  background-color: #282828;
+  background-color: #1e1e1e;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   padding: 20px;
@@ -171,12 +173,14 @@ export default {
   font-size: 20px;
   margin-bottom: 10px;
   text-align: left;
+  word-wrap: break-word;
 }
 
 .post-description {
   font-size: 16px;
   margin-bottom: 15px;
   text-align: left;
+  word-wrap: break-word;
 }
 
 .post-footer {
@@ -212,5 +216,13 @@ export default {
 
 pre {
   max-height: 800px;
+}
+
+.element:hover {
+  cursor: pointer;
+}
+
+.head-text{
+  padding-left: 5px;
 }
 </style>
