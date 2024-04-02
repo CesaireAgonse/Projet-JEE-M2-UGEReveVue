@@ -64,10 +64,11 @@ public class CodeService {
         if (unitContent != null && !unitContent.isEmpty()){
             code.setUnitContent(unitContent.getBytes());
             var results = WebClientService.microServiceExecute(new UnitTestClassForm(javaContent.getBytes(), unitContent.getBytes()));
-            if (results == null){
-                throw new IllegalStateException("results is null");
+            if (results != null){
+                code.setTestResults(new TestResults(results.testsTotalCount(), results.testsSucceededCount(), results.testsFailedCount(), results.testsTotalTime(), results.failures()));
+            }else{
+                code.setTestResults(new TestResults());
             }
-            code.setTestResults(new TestResults(results.testsTotalCount(), results.testsSucceededCount(), results.testsFailedCount(), results.testsTotalTime(), results.failures()));
         }
         codeRepository.save(code);
     }
