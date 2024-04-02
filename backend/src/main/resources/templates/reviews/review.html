@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="/css/posts/post.css" />
     <link rel="stylesheet" href="/prism/prism.css">
     <div>
-        <a th:href="'/reviews/'+${review.id()}"><h2 class ="title" th:text="${review.title()}"></h2></a>
+        <a th:href="'/reviews/'+${review.id()}"><h2 class ="title post-content" th:text="${review.title()}"></h2></a>
         <div class ="author pre-review">
             <p>from: </p>
             <a th:href="'/users/' + ${review.userInformation().username()}" th:text="${review.userInformation().username()}"></a>
