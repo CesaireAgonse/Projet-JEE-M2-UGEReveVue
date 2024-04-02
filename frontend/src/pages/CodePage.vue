@@ -7,13 +7,19 @@
       </i>
     </button>
     <div class="row">
-      <CodeVisual :post="post" v-if="post != null" @code-selected="updateSelectedCode" @refresh="refresh"></CodeVisual>
-      <CodeTestVisual :post="post" v-if="post != null"></CodeTestVisual>
+      <div class="post">
+        <CodeVisual :post="post" v-if="post != null" @code-selected="updateSelectedCode" @refresh="refresh"></CodeVisual>
+      </div>
+      <div v-if="post != null && post.unitContent != null && post.unitContent !== ''" class="post">
+          <CodeTestVisual :post="post"></CodeTestVisual>
+      </div>
       <div class="comments" v-if="post != null">
         <h2>Commentaires:</h2>
-        <p v-for="comment in commentsPage" :key="comment">
-          <CommentVisual  :comment="comment" @refresh="refresh"></CommentVisual>
-        </p>
+        <div v-for="comment in commentsPage" :key="comment">
+          <div class="postContent">
+            <CommentVisual  :comment="comment" @refresh="refresh"></CommentVisual>
+          </div>
+        </div>
         <div class="row">
           <button v-if="pageNumber > 0" class="basic-button prevButton" @click="commentsPrev">
               <i class="fa-solid fa-arrow-left"></i>
@@ -41,9 +47,11 @@
       <button v-if="sortBy === 'newest'" class="select-button" @click="newest">Les plus récents</button>
       <button v-if="sortBy !== 'relevance'" class="basic-button" @click="relevance">Les mieux notés</button>
       <button v-if="sortBy === 'relevance'" class="select-button" @click="relevance">Les mieux notés</button>
-      <p v-for="review in reviewsPage" :key="review">
-        <ReviewVisual  :post="review" @refresh="refresh"></ReviewVisual>
-      </p>
+      <div v-for="review in reviewsPage" :key="review">
+        <div class="postContent">
+          <ReviewVisual  :post="review" @refresh="refresh"></ReviewVisual>
+        </div>
+      </div>
       <div class="row">
         <button v-if="pageReviewNumber > 0" class="basic-button prevButton" @click="reviewsPrev">
             <i class="fa-solid fa-arrow-left"></i>
@@ -186,6 +194,27 @@ export default {
 </script>
 
 <style scoped>
+  
+.post {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  margin: 20px;
+  width: calc(33.3333% - 40px);
+  text-align: left;
+}
+
+.postContent {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(26, 26, 26, 0.2);
+  padding: 10px;
+  margin: 20px;
+  width: calc(100% - 80px);
+  text-align: left;
+
+}
 
 .comments {
   background-color: #282828;
