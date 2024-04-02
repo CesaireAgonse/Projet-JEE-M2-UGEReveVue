@@ -19,13 +19,15 @@
             <div th:each="comment:${oldContentReview.reviewContent()}">
                     <div class="container element" th:data-comment-content="${comment.content}" th:data-comment-selection="${comment.codeSelection}" onclick="addReviewField(this)">
                         <pre th:if="${comment.codeSelection != null && comment.codeSelection != ''}" ><code id="codeBlock" class="language-java java-code" th:data-code="${comment.codeSelection()}"></code></pre>
-                        <p th:text="${comment.content}"></p>
+                        <pre class="markdown message post-content" th:text="${comment.content}"></pre>
                     </div>
             </div>
         </div>
     </form>
     <script src="/script/addReviewContent.js"></script>
+    <script src="/script/showMarkdown.js"></script>
     <script>
         addTextField();
+        markdown();
     </script>
 </div>
