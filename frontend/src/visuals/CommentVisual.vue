@@ -76,14 +76,6 @@ export default {
 </script>
 
 <style scoped>
-.post {
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
-  margin: 20px;
-  text-align: left;
-  padding: 10px;
-}
 
 .post-header {
   display: flex;
