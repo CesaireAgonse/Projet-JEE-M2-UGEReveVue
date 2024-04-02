@@ -31,6 +31,7 @@ public abstract class Post {
     private Date date;
 
     @NotBlank
+    @Column(columnDefinition = "VARCHAR(MAX)")
     private String title;
 
     @Column(name = "dtype", insertable = false, updatable = false)
