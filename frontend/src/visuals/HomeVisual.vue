@@ -48,7 +48,7 @@
         <button v-if="sortBy === 'relevance'" class="select-button right" @click="relevance">Les mieux notés</button>
       </div>
       <div style="padding: 10px"></div>
-      <div v-for="post in posts" :key="post"><CodeVisual :post="post" @refresh="refresh"/></div>
+      <div v-for="post in posts" :key="post" class="post"><CodeVisual :post="post" @refresh="refresh"/></div>
       <div class="footer-button">
         <button v-if="pageNumber > 0" class="basic-button" @click="prev">Page précédente</button>
         <button v-if="pageNumber < totalPage" class="basic-button" @click="next">Page suivante</button>
@@ -210,6 +210,15 @@ export default {
 </script>
 
 <style>
+.post {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  margin: 20px;
+  width: calc(33.3333% - 40px);
+}
+  
 input::placeholder {
   color: #ccc;
 }
