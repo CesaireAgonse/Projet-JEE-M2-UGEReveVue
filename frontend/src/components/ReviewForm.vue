@@ -6,7 +6,7 @@
       <div v-for="(content) in reviewContent" :key="content">
         <div class="post" @click="select(content)">
           <pre v-if="content.codeSelection !== null && content.codeSelection !== ''" class="message"><code class="language-java">{{ content.codeSelection }}</code></pre>
-          <pre class="message"><div v-html="markdownToHtml(content.content)"></div></pre>
+          <pre class="post-content"><div v-html="markdownToHtml(content.content)"></div></pre>
         </div>
       </div>
       <div class="row">
@@ -50,6 +50,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import MarkdownIt from "markdown-it";
+import Prism from "prismjs";
 library.add(fas, far, fab)
 dom.watch();
 export default {
@@ -128,6 +129,9 @@ export default {
     select(content){
       this.reviewForm.content.push({ content: content.content, codeSelection: content.codeSelection });
       this.hideCodeModal()
+    },
+    highlightCode() {
+      Prism.highlightAll();
     }
   },
 };
@@ -253,6 +257,11 @@ input {
   max-width: 100%;
   max-height: 100px;
   overflow-y: auto;
+}
+
+.post-content{
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 </style>
