@@ -30,7 +30,7 @@
                 <div class ="content">
                     <div th:each="contentReview : ${review.content}">
                         <pre th:if="${contentReview.codeSelection != null && contentReview.codeSelection != ''}" ><code id="codeBlock" class="language-java java-code" th:data-code="${contentReview.codeSelection()}"></code></pre>
-                        <pre class="markdown message" th:text="${contentReview.content}"></pre>
+                        <pre class="markdown message post-content" th:text="${contentReview.content}"></pre>
                     </div>
                 </div>
             </a>
