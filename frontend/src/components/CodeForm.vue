@@ -160,7 +160,7 @@ button:hover {
   color: #000;
 }
 textarea {
-  height: 150px;
+  height: 100px;
   resize: none;
 }
 </style>
