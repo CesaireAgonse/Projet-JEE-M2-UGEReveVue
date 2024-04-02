@@ -6,7 +6,7 @@
         <a th:href="'/users/' + ${review.userInformation().username()}" th:text="${review.userInformation().username()}"></a>
     </div>
     <a th:href="'/reviews/' + ${review.id()}">
-        <h2 class ="title" th:text="${review.title()}"></h2>
+        <h2 class ="title post-content" th:text="${review.title()}"></h2>
         <p class="date right" th:text="${review.date()}"></p>
     </a>
 </div>
