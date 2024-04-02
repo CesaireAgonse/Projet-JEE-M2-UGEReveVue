@@ -11,13 +11,13 @@
         <div th:replace="navbar :: navbar"></div>
         <div class="main">
             <div class="container limit">
-                <p th:text="'Total : ' + ${results.testsTotalCount()}"></p>
-                <p th:text="'Time : ' + ${results.testsTotalTime()}"></p>
-                <p th:text="'Succeded : ' + ${results.testsSucceededCount()}"></p>
-                <p th:text="'Failed : ' + ${results.testsFailedCount()}"></p>
-                <ul th:each="failure : ${results.failures().entrySet()}">
+                <p th:text="'Total : ' + ${results.testsTotalCount()}" class="post-content"></p>
+                <p th:text="'Time : ' + ${results.testsTotalTime()}" class="post-content"></p>
+                <p th:text="'Succeded : ' + ${results.testsSucceededCount()}" class="post-content"></p>
+                <p th:text="'Failed : ' + ${results.testsFailedCount()}" class="post-content"></p>
+                <ul th:each="failure : ${results.failures().entrySet()}" class="post-content">
                     <li>
-                        <p th:text="'Failure : ' + ${failure.getKey()} + ' - ' + ${failure.getValue()}"/>
+                        <p th:text="'Failure : ' + ${failure.getKey()} + ' - ' + ${failure.getValue()}" class="post-content"/>
                     </li>
                 </ul>
                 <a th:href="'/'" class="basic button">Home</a>
