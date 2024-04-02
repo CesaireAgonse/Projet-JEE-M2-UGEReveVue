@@ -138,11 +138,12 @@ export default {
   background-color: #1e1e1e;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Ombre tout autour */
-  margin: 10px;
   text-align: left;
-  padding-left: 10px;
-  padding-right: 10px;
   font-size: 75%;
+  width: 100%;
+  margin: 10px 10px 10px -10px;
+  padding: 0 10px;
+
 }
 .send-button{
   margin: 15px 100px 25px;
