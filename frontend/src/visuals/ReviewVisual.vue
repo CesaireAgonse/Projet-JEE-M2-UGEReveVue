@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div>
     <div class="post-header">
       <div class="post-header-info" @click="user()">
         <img v-if="photo == null" class="post-author-avatar" src="../assets/profile.jpg" alt="Author Avatar" />
@@ -11,12 +11,12 @@
       <p class="post-date">{{ post.date }}</p>
       <div class="post-actions"></div>
     </div>
-    <div @click="review()">
+    <div @click="review()" class="element">
       <h2 class="post-title">{{ post.title }}</h2>
-      <p v-for="contentReview in post.content" :key="contentReview">
+      <div v-for="contentReview in post.content" :key="contentReview">
         <pre v-if="contentReview.codeSelection != null && contentReview.codeSelection !== ''"><code class="language-java">{{ contentReview.codeSelection }}</code></pre>
-        <pre><code v-html="markdownToHtml(contentReview.content)"></code></pre>
-      </p>
+        <pre class="post-content"><code v-html="markdownToHtml(contentReview.content)"></code></pre>
+      </div>
     </div>
     <div class="post-footer">
       <div class="post-votes">
@@ -37,13 +37,13 @@
       <button v-if="auth !== null && auth.role === 'ADMIN'" class="post-button" @click="del">
         <i class="fa-solid fa-trash-can fa-bounce fa-xs" style="color: #b3b2b2;"></i>
       </button>
-      <div  class="post-votes">
+      <div class="post-votes" @click="review()">
         <button class="post-button">
-          <i class="fa-regular fa-comment fa-bounce" style="color: #74C0FC"></i>
+          <i class="fa-regular fa-comment" style="color: #74C0FC"></i>
         </button>
         <p style="padding-right: 7px">{{post.comments }}</p>
         <button class="post-button" >
-          <i class="fa-regular fa-pen-to-square fa-2xs fa-bounce" style="color: #74C0FC"></i>
+          <i class="fa-regular fa-pen-to-square fa-2xs" style="color: #74C0FC"></i>
         </button>
         <p>{{post.reviews }}</p>
       </div>
@@ -170,6 +170,7 @@ export default {
   font-size: 20px;
   margin-bottom: 10px;
   text-align: left;
+  word-wrap: break-word;
 }
 
 .post-footer {
@@ -202,4 +203,14 @@ export default {
   font-size: 20px;
   margin-right: 5px;
 }
+
+.element:hover {
+  cursor: pointer;
+}
+
+.post-content{
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 </style>
