@@ -114,3 +114,9 @@ label {
     overflow-x: auto;
     max-width: 100%;
 }
+
+.post-content{
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-y: auto;
+}
