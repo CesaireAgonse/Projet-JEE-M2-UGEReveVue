@@ -6,7 +6,7 @@
         <p>Total: {{post.testResultsInformation.testsTotalCount}}</p>
         <p><i class="fa-solid fa-check" style="color: #63E6BE;"></i> {{post.testResultsInformation.testsSucceededCount}}</p>
         <p><i class="fa-solid fa-xmark" style="color: #f44e4e;"></i> {{post.testResultsInformation.testsFailedCount}}</p>
-        <p><i class="fa-solid fa-hourglass-end" style="color: #74C0FC;"></i> {{post.testResultsInformation.testsTotalTime}}</p>
+        <p><i class="fa-solid fa-hourglass-end" style="color: #74C0FC;"></i> {{post.testResultsInformation.testsTotalTime}} ms</p>
       </div>
       <div class="failures">
         <p>Echecs: </p>
@@ -55,19 +55,11 @@ export default {
   width: calc(33.3333% - 40px); /* 1/3 de la largeur de l'écran moins la marge et le padding */
 }
 
-.row {
-  display: flex;
-  flex-direction: row;
-}
-
 .failures{
   text-align: left;
-  padding-left: 40px;
-  max-width: 500px;
-}
-
-pre {
-  max-height: 800px;
+  padding-left: 10px;
+  padding-right: 10px;
+  max-width: 100%;
 }
 
 </style>
