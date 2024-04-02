@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="/css/posts/post.css" />
     <link rel="stylesheet" href="/prism/prism.css">
     <div>
-        <h2 class ="title" th:text="${code.title()}"></h2>
+        <h2 class ="title post-content" th:text="${code.title()}"></h2>
         <div class ="author">
             <p>from: </p>
             <a th:href="'/users/' + ${code.userInformation().username()}" th:text="${code.userInformation().username()}"></a>
@@ -27,14 +27,14 @@
                 </form>
             </div>
             <div class ="content">
-                <p class="description" th:text="${code.description()}"></p>
+                <p class="description post-content" th:text="${code.description()}"></p>
                 <pre><code id="codeBlock" class="language-java java-code" th:data-code="${code.javaContent()}"></code></pre>
                 <pre th:if="${code.unitContent() != null}"><code class="language-java" th:text="${code.unitContent()}"></code></pre>
                 <div th:if="${code.unitContent() != null}">
                     <p th:text="'Total: ' + ${code.testResultsInformation.testsTotalCount}"> </p>
                     <p th:text="'Success: ' + ${code.testResultsInformation.testsSucceededCount}"></p>
                     <p th:text="'Failed: ' + ${code.testResultsInformation. testsFailedCount}"></p>
-                    <p th:text="'Time: ' + ${code.testResultsInformation.testsTotalTime}"></p>
+                    <p th:text="'Time: ' + ${code.testResultsInformation.testsTotalTime} + ' ms'"></p>
                     <p th:if="${code.testResultsInformation.failures != ''}" >Failures :</p>
                     <pre th:if="${code.testResultsInformation.failures != ''}"><code id="codeBlock" class="failure language-java java-code" th:data-code="${code.testResultsInformation.failures}"></code></pre>
                 </div>
