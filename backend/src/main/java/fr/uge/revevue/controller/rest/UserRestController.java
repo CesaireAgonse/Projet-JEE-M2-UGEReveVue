@@ -109,6 +109,9 @@ public class UserRestController {
         if (result.hasErrors()){
             return ResponseEntity.badRequest().build();
         }
+        if(!userService.matchesPassword(updatePasswordInformation.currentPassword(), userService.currentUser().getPassword())){
+            return ResponseEntity.badRequest().build();
+        }
         userService.modifyPassword(updatePasswordInformation.currentPassword(), updatePasswordInformation.newPassword());
         return ResponseEntity.ok().build();
     }
